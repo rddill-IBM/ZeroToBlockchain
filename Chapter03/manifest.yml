@@ -1,0 +1,8 @@
+applications:
+- path: .
+  memory: 128M
+  instances: 1
+  domain: mybluemix.net
+  name: Z2B-Chapter03
+  host: Z2B-Chapter03
+  disk_quota: 1024M
