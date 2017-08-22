@@ -5,6 +5,24 @@
  GREEN='\033[1;32m'
  RESET='\033[0m'
 
+# exit on error
+
+# Array of supported versions
+declare -a versions=('trusty' 'xenial' 'yakkety');
+
+# check the version and extract codename of ubuntu if release codename not provided by user
+    lsb_release -a || (echo "Error: Release information not found, run script passing Ubuntu version codename as a parameter"; exit 1)
+    CODENAME=$(lsb_release -a | grep 'Codename:' | awk '{print $2}')
+
+# check version is supported
+if echo ${versions[@]} | grep -q -w ${CODENAME}; then
+    echo "Installing Hyperledger Composer prereqs for Ubuntu ${CODENAME}"
+else
+    echo "Error: Ubuntu ${CODENAME} is not supported"
+    exit 1
+fi
+
+
 # indent text on echo
 function indent() {
   c='s/^/       /'
@@ -32,16 +50,14 @@ function showStep ()
     }
 
 # update and upgrade apt-get
-function checkapt-get ()
+function checkaptget ()
     {
         showStep "updating apt-get to latest repositories"
         sudo apt-get update
         showStep "upgrading your installed packages"
-        sudo apt-get upgrade
-        sudo apt-get install dos2unix
-        #
-        # install build foundation
-        #
+        yes | sudo apt-get upgrade			
+	showStep "installing dos2unix exec"
+        sudo apt-get install -y dos2unix
     }
 
 # check to see if nodev6 is installed. install it if it's not already there. 
@@ -50,12 +66,11 @@ function check4node ()
         if [[ $NODE_INSTALL == "true" ]]; then 
             which node
             if [ "$?" -ne 0 ]; then
-                showStep "${RED}node not installed. installing Node V6"
-                sudo apt-get install node@6
+		nodeV6Install
             else            
                 if [[ `apt-get search /node@6/` != "node@6" ]]; then
                 showStep "${RED}found node $? installed, but not V6. installing Node V6"
-                sudo apt-get install node@6
+                nodeV6Install
                 else
                     showStep "${GREEN}Node V6 already installed"
                 fi
@@ -65,6 +80,35 @@ function check4node ()
         fi
     }
 
+# install Node V6
+function nodeV6Install()
+{
+        showStep "${RED}node not installed. installing Node V6"
+	# Install nvm dependencies
+	showStep "Installing nvm dependencies"
+	sudo apt-get -y install build-essential libssl-dev
+
+	# Execute nvm installation script
+	showStep "Executing nvm installation script"
+	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+
+	showStep "Set up nvm environment without restarting the shell"
+	export NVM_DIR="${HOME}/.nvm"
+	[ -s "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
+	[ -s "${NVM_DIR}/bash_completion" ] && . "${NVM_DIR}/bash_completion"
+
+	showStep "Installing nodeJS"
+	nvm install --lts
+
+	showStep "Configure nvm to use version 6.x"
+	nvm use --lts
+	nvm alias default 'lts/*'
+
+	# Install the latest version of npm
+	showStep "Installing npm"
+	npm install npm@latest -g
+
+}
 # check to see if git is installed. install it if it's not already there. 
 function check4git ()
     {
@@ -72,7 +116,9 @@ function check4git ()
             which git
             if [ "$?" -ne 0 ]; then
                 showStep "${RED}git not installed. installing git"
-                sudo apt-get install git
+		sudo apt-add-repository -y ppa:git-core/ppa
+		sudo apt-get update
+                sudo apt-get install -y git
             else
                 showStep "${GREEN}git already installed"
             fi
@@ -103,9 +149,37 @@ function installNodeDev ()
 # Install docker
 function install_docker ()
 {
-    sudo apt-get install -y docker-engine
-    sudo service docker start
-    sudo systemctl enable docker
+       if [[ $HLF_INSTALL == "true" ]]; then
+	 	showStep "Ensure that CA certificates are installed"
+		sudo apt-get -y install apt-transport-https ca-certificates
+
+		showStep "Add Docker repository key to APT keychain"
+		curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+		showStep "Update where APT will search for Docker Packages"
+		echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${CODENAME} stable" | \
+		    sudo tee /etc/apt/sources.list.d/docker.list
+
+		showStep "Update package lists"
+		sudo apt-get update
+
+		showStep "Verifies APT is pulling from the correct Repository"
+		sudo apt-cache policy docker-ce
+
+		showStep "Install kernel packages which allows us to use aufs storage driver if V14 (trusty/utopic)"
+		if [ "${CODENAME}" == "trusty" ]; then
+		    showStep "Installing required kernel packages"
+		    sudo apt-get -y install linux-image-extra-$(uname -r) linux-image-extra-virtual
+		fi
+
+		showStep "Install Docker"
+		sudo apt-get -y install docker-ce
+
+		showStep "Add user account to the docker group"
+		sudo usermod -aG docker $(whoami)
+	else
+		showStep "${RED} docker installation skipped"
+	fi
 }
 
 # create a folder for the hyperledger fabric images and get them from the server
@@ -227,13 +301,15 @@ do
 
     getCurrent
     showStep "checking apt-get status"
-    checkapt-get
+    checkaptget
     showStep "checking git"
     check4git
     showStep "checking nodejs"
     check4node
     showStep "installing nodejs SDK for hyperledger composer"
     installNodeDev
+	showStep "Installing docker for Ubuntu"
+	install_docker
     showStep "installing hyperledger docker images"
     install_hlf
     showStep "installation complete"
