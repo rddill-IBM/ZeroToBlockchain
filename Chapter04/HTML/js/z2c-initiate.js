@@ -12,12 +12,13 @@
  * limitations under the License.
  */
 
-var extend = require('extend');
-var watson = require('watson-developer-cloud');
-var vcapServices = require('vcap_services');
+// z2c-initiate.js
 
-var config = require('../../env.json');
-
-exports.placeholder = function(req, res) {
-
+/**
+ * standard routine used to start tutorial pages
+ */
+function initPage ()
+{
+  goMultiLingual("US_English", "index");
+  loadAPIList();
 }

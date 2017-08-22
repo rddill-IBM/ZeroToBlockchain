@@ -13,11 +13,13 @@
  */
 
 var extend = require('extend');
-var watson = require('watson-developer-cloud');
-var vcapServices = require('vcap_services');
+var fs = require('fs');
+var path = require('path');
+var APIFile = require("./resources/hfcCapabilities.json");
+var languages = require('./text/languages.json');
+var locations = require('./text/text-locations.json');
 
-var config = require('../../env.json');
+exports.getDocs = function(req, res) {res.send(APIFile);}
 
-exports.placeholder = function(req, res) {
-
-}
+exports.getEducation = function(req, res)
+{ }

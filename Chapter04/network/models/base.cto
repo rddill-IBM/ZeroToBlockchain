@@ -12,12 +12,11 @@
  * limitations under the License.
  */
 
-var extend = require('extend');
-var watson = require('watson-developer-cloud');
-var vcapServices = require('vcap_services');
+/**
+  * A library of standard reusable types
+  */
+namespace composer.base
 
-var config = require('../../env.json');
-
-exports.placeholder = function(req, res) {
-
+abstract participant Member {
+  o String companyName
 }

@@ -1,0 +1,35 @@
+{
+    "speech_to_text": {
+      "version": "v1"
+      },
+    "text_to_speech": {
+        "version": "v1"
+      },
+     "natural_language_classifier": {
+         "version": "v1",
+          "localJSON": true
+     },
+     "cloudantNoSQLDB": {
+        "port": 443,
+        "url": "https://e6744634-2c3d-41c1-9a69-a62e9a50bd4f-bluemix:370a4e95752f268e1fdced45b9b136ec8aed00b57e4ee61c17c45eb1c02fc496@e6744634-2c3d-41c1-9a69-a62e9a50bd4f-bluemix.cloudant.com"
+      },
+      "alchemy_api" :{
+      },
+      "watson_vision_combined": {
+      },
+      "conversation": {
+        "workspace": "b3254a66-93cc-482b-ab33-665006b49167"
+      },
+      "retrieve_and_rank": {
+        "config_name": "IBV4Z2C",
+        "cluster_id": "sc2c46ac51_4d85_4b7e_b642_a73b44f65cc5",
+        "collection_name": "Z2C_IBV_Articles",
+        "rankerName": "Z2C_ranker",
+        "rankerID": "76643bx23-rank-387"
+      },
+      "document_conversion": {
+        "source_path": "HTML/IBV_Documents",
+        "json_out_path": "HTML/IBV_Conversion"
+      },
+      "streaming-analytics":{}
+}

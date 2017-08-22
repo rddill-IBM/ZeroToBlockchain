@@ -12,12 +12,17 @@
  * limitations under the License.
  */
 
-var extend = require('extend');
-var watson = require('watson-developer-cloud');
-var vcapServices = require('vcap_services');
+'use strict';
 
-var config = require('../../env.json');
+const composerSteps = require('composer-cucumber-steps');
+const cucumber = require('cucumber');
 
-exports.placeholder = function(req, res) {
+module.exports = function () {
+    composerSteps.call(this);
+};
 
+if (cucumber.defineSupportCode) {
+    cucumber.defineSupportCode((context) => {
+        module.exports.call(context);
+    });
 }

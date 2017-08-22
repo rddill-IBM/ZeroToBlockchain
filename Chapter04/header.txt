@@ -11,13 +11,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-var extend = require('extend');
-var watson = require('watson-developer-cloud');
-var vcapServices = require('vcap_services');
-
-var config = require('../../env.json');
-
-exports.placeholder = function(req, res) {
-
-}
