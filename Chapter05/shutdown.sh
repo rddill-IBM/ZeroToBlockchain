@@ -30,11 +30,10 @@ function showStep ()
         echo -e "${RESET}-----> $*" | indent
         echo -e "${YELLOW}=====================================================${RESET}" | indent
     }
-
 showStep "using execs from previous installation, stored in ${HLF_INSTALL_PATH}"
 cd "${HLF_INSTALL_PATH}"
-showStep "starting fabric"
-~/fabric-tools/startFabric.sh
-showStep "creating new composer profile (required with each restart)"
-~/fabric-tools/createComposerProfile.sh
-showStep "start up complete"
+showStep "stopping fabric"
+./stopFabric.sh
+showStep "tear down"
+./teardownFabric.sh
+showStep "shut down complete"

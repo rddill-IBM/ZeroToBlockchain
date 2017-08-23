@@ -15,8 +15,8 @@
 /**
   * A library of standard reusable types
   */
-namespace composer.events
+namespace composer.base
 
-abstract event BasicEvent {
+abstract participant Member {
+  o String companyName
 }
-

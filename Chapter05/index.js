@@ -11,12 +11,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
-  * A library of standard reusable types
-  */
-namespace composer.events
-
-abstract event BasicEvent {
-}
-

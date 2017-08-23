@@ -34,7 +34,7 @@ function showStep ()
 showStep "using execs from previous installation, stored in ${HLF_INSTALL_PATH}"
 cd "${HLF_INSTALL_PATH}"
 showStep "starting fabric"
-~/fabric-tools/startFabric.sh
+./startFabric.sh
 showStep "creating new composer profile (required with each restart)"
-~/fabric-tools/createComposerProfile.sh
+./createComposerProfile.sh
 showStep "start up complete"

@@ -47,7 +47,7 @@ function printHelp ()
 function printHeader ()
 {
     echo ""
-    echo -e "${YELLOW}archive creation script for the Zero To Blockchain Series" | indent
+    echo -e "${YELLOW}network deploy script for the Zero To Blockchain Series" | indent
     echo -e "${RED}This is for Mac OSX ONLY" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
@@ -75,7 +75,6 @@ printHeader
 echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
-showStep "creating archive"
-cd network
-composer archive create --sourceType dir --sourceName . -a ./dist/$NETWORK_NAME.bna
-cd ../
+showStep "deploying network"
+cd network/dist
+composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString

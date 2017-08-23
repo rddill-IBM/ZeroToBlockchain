@@ -12,11 +12,17 @@
  * limitations under the License.
  */
 
-/**
-  * A library of standard reusable types
-  */
-namespace composer.events
+'use strict';
 
-abstract event BasicEvent {
+const composerSteps = require('composer-cucumber-steps');
+const cucumber = require('cucumber');
+
+module.exports = function () {
+    composerSteps.call(this);
+};
+
+if (cucumber.defineSupportCode) {
+    cucumber.defineSupportCode((context) => {
+        module.exports.call(context);
+    });
 }
-

@@ -76,6 +76,4 @@ echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "creating archive"
-cd network
-composer archive create --sourceType dir --sourceName . -a ./dist/$NETWORK_NAME.bna
-cd ../
+composer archive create --sourceType dir --sourceName . -a ./network/dist/$NETWORK_NAME.bna
