@@ -193,39 +193,6 @@ function install_docker ()
 	fi
 }
 
-# create a folder for the hyperledger fabric images and get them from the server
-function install_hlf ()
-    {
-        if [[ $HLF_INSTALL == "true" ]]; then
-            if [ ! -d "$HLF_INSTALL_PATH" ]; then
-                showStep "creating hlf tools folder $HLF_INSTALL_PATH "
-                mkdir -p "$HLF_INSTALL_PATH"
-            fi
-            cd "$HLF_INSTALL_PATH"
-            pwd
-            showStep "retrieving image scripts from git"
-            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.zip
-            showStep "unzipping images"
-            unzip -o fabric-dev-servers.zip
-            showStep "making scripts executable"
-            dos2unix `ls *.sh`
-            cd fabric-scripts/hlfv1
-            dos2unix `ls *.sh`
-            showStep "getting docker images for HyperLedger Fabric V1"
-            export FABRIC_VERSION=hlfv1
-            echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
-            cd $HLF_INSTALL_PATH
-            ./downloadFabric.sh
-            showStep "installing platform specific binaries for Ubuntu"
-            curl -sSL https://goo.gl/eYdRbX | bash
-            export PATH=$HLF_INSTALL_PATH/bin:$PATH
-            export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
-            echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
-            echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
-        else   
-            showStep "${RED}skipping HyperLedger Fabric install"
-        fi
-    }
 function printHelp ()
 {
     printHeader
@@ -236,9 +203,6 @@ function printHelp ()
     echo -e "${GREEN}-n ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-n false ${RESET}if you do not want to have node installation checked" | indent
     echo -e "${GREEN}-s ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-s false ${RESET}if you do not want to have node SDK installation checked" | indent
     echo -e "${GREEN}-d ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have docker installed" | indent
-    echo -e "${GREEN}-f ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have hypleledger fabric images verified" | indent
-    echo -e "${GREEN}-p ${RESET}defaults to ${GREEN}${HOME}/fabric-tools${RESET}. use ${YELLOW}-p ${HOME}/your/preferred/path/fabric-tools/your/path/here ${RESET}if you want to install hyperledger fabric tools elsewhere." | indent
-    echo -e "\t\tonly valid with -d true, ignored otherwise" | indent
     echo ""
     echo ""
 }
@@ -256,7 +220,7 @@ function printHeader ()
     echo -e "${YELLOW}The exec will proceed with checking to ensure you are at Node V6" | indent
     echo -e "${YELLOW}which is required for working with HyperLedger Composer" | indent
     echo -e "${YELLOW}The script will then install the nodejs SDK for hyperledger and composer" | indent
-    echo -e "${YELLOW}The script will finish by downloading the docker images for hyperledger${RESET}" | indent
+    echo -e "${YELLOW}The script will finish by requesting that you reboot your system${RESET}" | indent
     echo ""
 }
 # get the command line options
@@ -264,11 +228,9 @@ function printHeader ()
 GITHUB_INSTALL="true"
 NODE_INSTALL="true"
 SDK_INSTALL="true"
-HLF_INSTALL="true"
-HLF_INSTALL_PATH="${HOME}/fabric-tools"
 DOCKER_INSTALL="true"
 
- while getopts "h:g:n:d:p:s:f:" opt; 
+ while getopts "h:g:n:d:s:" opt; 
 do
     case "$opt" in
         h|\?)
@@ -295,16 +257,6 @@ do
                 DOCKER_INSTALL=$OPTARG 
             fi
         ;;
-        f)  showStep "option passed for hyperledger fabric install is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                HLF_INSTALL=$OPTARG 
-            fi
-        ;;
-        p)  showStep "option passed for fabric tools path is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                HLF_INSTALL_PATH=$OPTARG 
-            fi
-        ;;
     esac
  done
 
@@ -314,9 +266,6 @@ do
     echo -e "Install nodejs? ${GREEN} $NODE_INSTALL ${RESET}" | indent
     echo -e "Install nodejs SDK? ${GREEN} $SDK_INSTALL ${RESET}" | indent
     echo -e "Install Docker? ${GREEN} $DOCKER_INSTALL ${RESET}" | indent
-    echo -e "Install HyperLedger Fabric? ${GREEN} $HLF_INSTALL ${RESET}" | indent
-    echo -e "Hyperledger fabric tools install path? ${GREEN} $HLF_INSTALL_PATH ${RESET}" | indent
-
 
     getCurrent
     showStep "checking apt-get status"
@@ -329,6 +278,5 @@ do
     installNodeDev
     showStep "Installing docker for Ubuntu"
     install_docker
-    showStep "installing hyperledger docker images"
-    install_hlf
-    showStep "installation complete"
+     showStep "installation Part 1 complete"
+     showStep "${RED} Reboot is required prior to executing step 2"
