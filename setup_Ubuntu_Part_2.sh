@@ -32,7 +32,7 @@ function indent() {
   esac
 }
 
-# Grab the current directory
+# Grab the current directorybash_
 function getCurrent() 
     {
         showStep "getting current directory"
@@ -80,15 +80,15 @@ function install_hlf ()
             dos2unix `ls *.sh`
             showStep "getting docker images for HyperLedger Fabric V1"
             export FABRIC_VERSION=hlfv1
-            echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
+            echo 'FABRIC_VERSION="hlfv1"' >> ~/.bashrc
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for Ubuntu"
             curl -sSL https://goo.gl/eYdRbX | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
-            echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
-            echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
+            echo 'PATH="'"${HLF_INSTALL_PATH}/bin:$PATH"'"' >>~/.profile
+            echo 'HLF_INSTALL_PATH="'"${HLF_INSTALL_PATH}"'"'  >>~/.bashrc
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
