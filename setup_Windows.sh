@@ -42,6 +42,8 @@ function install_hlf ()
             fi
             cd "$HLF_INSTALL_PATH"
             pwd
+            git config --global core.autocrlf false
+            git config --global core.longpaths true
             showStep "retrieving image scripts from git"
             curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.zip
             showStep "unzipping images"

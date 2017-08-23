@@ -39,6 +39,17 @@ function getCurrent()
         DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
         THIS_SCRIPT=`basename "$0"`
         showStep "Running '${THIS_SCRIPT}'"
+        UBUNTU_ARCH=`uname -m`
+        UBUNTU_VERSION=`lsb_release -c | grep "Codename:"  | awk '{print $2}'`
+        showStep "found Ubuntu ${UBUNTU_VERSION} as an ${UBUNTU_ARCH} system"
+        if [[ $UBUNTU_ARCH != "x86_64" ]]; then
+            showStep "Install Failed, need a 64 bit system. This is ${UBUNTU_ARCH}"
+            exit 1
+        fi
+        if [[ ${UBUNTU_VERSION} != "xenial" ]]; then
+            showStep "Install Failed, need a Ubuntu 16 LTS. This is ${UBUNTU_VERSIO}"
+            exit 1
+        fi
     }
 
 # displays where we are, uses the indent function (above) to indent each line
@@ -149,7 +160,7 @@ function installNodeDev ()
 # Install docker
 function install_docker ()
 {
-       if [[ $HLF_INSTALL == "true" ]]; then
+       if [[ $DOCKER_INSTALL == "true" ]]; then
 	 	showStep "Ensure that CA certificates are installed"
 		sudo apt-get -y install apt-transport-https ca-certificates
 
@@ -205,7 +216,7 @@ function install_hlf ()
             echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
-            showStep "installing platform specific binaries for OSX"
+            showStep "installing platform specific binaries for Ubuntu"
             curl -sSL https://goo.gl/eYdRbX | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
@@ -224,7 +235,8 @@ function printHelp ()
     echo -e "${GREEN}-g ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-g false ${RESET}if you do not want to have git installation checked"  | indent
     echo -e "${GREEN}-n ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-n false ${RESET}if you do not want to have node installation checked" | indent
     echo -e "${GREEN}-s ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-s false ${RESET}if you do not want to have node SDK installation checked" | indent
-    echo -e "${GREEN}-d ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have hypleledger node images verified" | indent
+    echo -e "${GREEN}-d ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have docker installed" | indent
+    echo -e "${GREEN}-f ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have hypleledger fabric images verified" | indent
     echo -e "${GREEN}-p ${RESET}defaults to ${GREEN}${HOME}/fabric-tools${RESET}. use ${YELLOW}-p ${HOME}/your/preferred/path/fabric-tools/your/path/here ${RESET}if you want to install hyperledger fabric tools elsewhere." | indent
     echo -e "\t\tonly valid with -d true, ignored otherwise" | indent
     echo ""
@@ -254,8 +266,9 @@ NODE_INSTALL="true"
 SDK_INSTALL="true"
 HLF_INSTALL="true"
 HLF_INSTALL_PATH="${HOME}/fabric-tools"
+DOCKER_INSTALL="true"
 
- while getopts "h:g:n:d:p:s:" opt; 
+ while getopts "h:g:n:d:p:s:f:" opt; 
 do
     case "$opt" in
         h|\?)
@@ -277,7 +290,12 @@ do
                 SDK_INSTALL=$OPTARG 
             fi
         ;;
-        d)  showStep "option passed for hyperledger docker install is: '$OPTARG'" 
+        d)  showStep "option passed for docker install is: '$OPTARG'" 
+            if [[ $OPTARG != "" ]]; then 
+                DOCKER_INSTALL=$OPTARG 
+            fi
+        ;;
+        f)  showStep "option passed for hyperledger fabric install is: '$OPTARG'" 
             if [[ $OPTARG != "" ]]; then 
                 HLF_INSTALL=$OPTARG 
             fi
@@ -295,6 +313,7 @@ do
     echo -e "Install github? ${GREEN}$GITHUB_INSTALL${RESET}" | indent
     echo -e "Install nodejs? ${GREEN} $NODE_INSTALL ${RESET}" | indent
     echo -e "Install nodejs SDK? ${GREEN} $SDK_INSTALL ${RESET}" | indent
+    echo -e "Install Docker? ${GREEN} $DOCKER_INSTALL ${RESET}" | indent
     echo -e "Install HyperLedger Fabric? ${GREEN} $HLF_INSTALL ${RESET}" | indent
     echo -e "Hyperledger fabric tools install path? ${GREEN} $HLF_INSTALL_PATH ${RESET}" | indent
 
@@ -308,8 +327,8 @@ do
     check4node
     showStep "installing nodejs SDK for hyperledger composer"
     installNodeDev
-	showStep "Installing docker for Ubuntu"
-	install_docker
+    showStep "Installing docker for Ubuntu"
+    install_docker
     showStep "installing hyperledger docker images"
     install_hlf
     showStep "installation complete"
