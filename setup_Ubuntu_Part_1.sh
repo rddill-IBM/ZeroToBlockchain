@@ -77,11 +77,13 @@ function check4node ()
         if [[ $NODE_INSTALL == "true" ]]; then 
             which node
             if [ "$?" -ne 0 ]; then
-		nodeV6Install
+		        nodeV6Install
             else            
-                if [[ `apt-get search /node@6/` != "node@6" ]]; then
-                showStep "${RED}found node $? installed, but not V6. installing Node V6"
-                nodeV6Install
+                NODE_VERSION=`node --version | grep "v6"`  
+                showStep "Node Version is  ${NODE_VERSION}"       
+                if [[ ${NODE_VERSION} == "" ]]; then
+                    showStep "${RED}found node $? installed, but not V6. installing Node V6"
+                    nodeV6Install
                 else
                     showStep "${GREEN}Node V6 already installed"
                 fi
