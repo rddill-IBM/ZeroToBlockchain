@@ -45,3 +45,14 @@ package-lock.json
 *.key
 *.ppt
 *.pptx
+composer-logs
+*.bna
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# JSDoc
+out
+
+*.swp
