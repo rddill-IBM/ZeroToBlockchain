@@ -89,6 +89,8 @@ function install_hlf ()
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             echo 'PATH="'"${HLF_INSTALL_PATH}/bin:$PATH"'"' >>~/.profile
             echo 'HLF_INSTALL_PATH="'"${HLF_INSTALL_PATH}"'"'  >>~/.bashrc
+            echo 'export HLF_INSTALL_PATH'  >>~/.bashrc
+            echo 'export FABRIC_VERSION'  >>~/.bashrc
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
