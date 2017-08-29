@@ -5,3 +5,5 @@ lib
 node_modules
 out
 HTML/js/utils
+network/features
+network/test
