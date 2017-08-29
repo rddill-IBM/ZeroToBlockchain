@@ -199,7 +199,25 @@ function install_docker ()
 		showStep "${RED} docker installation skipped"
 	fi
 }
-
+function install_vscode
+{
+         if [[ $VSCODE_INSTALL == "true" ]]; then
+            which code
+            if [ "$?" -ne 0 ]; then
+                showStep "${RED}vscode not installed. installing vscode"
+                curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+                sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+                sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+                sudo apt-get update
+                sudo apt-get install code
+            else
+                showStep "${GREEN}vscode already installed"
+            fi
+        else   
+            showStep "${RED}skipping vscode install"
+        fi
+   
+}
 function printHelp ()
 {
     printHeader
@@ -208,6 +226,7 @@ function printHelp ()
     echo -e "${GREEN}-h ${RESET}Print this help information" | indent
     echo -e "${GREEN}-g ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-g false ${RESET}if you do not want to have git installation checked"  | indent
     echo -e "${GREEN}-n ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-n false ${RESET}if you do not want to have node installation checked" | indent
+    echo -e "${GREEN}-v ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-v false ${RESET}if you do not want to have vscode installed" | indent
     echo -e "${GREEN}-s ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-s false ${RESET}if you do not want to have node SDK installation checked" | indent
     echo -e "${GREEN}-d ${RESET}defaults to ${GREEN}true${RESET}. use ${YELLOW}-d false ${RESET}if you do not want to have docker installed" | indent
     echo ""
@@ -236,6 +255,7 @@ GITHUB_INSTALL="true"
 NODE_INSTALL="true"
 SDK_INSTALL="true"
 DOCKER_INSTALL="true"
+VSCODE_INSTALL="true"
 
  while getopts "h:g:n:d:s:" opt; 
 do
@@ -264,6 +284,11 @@ do
                 DOCKER_INSTALL=$OPTARG 
             fi
         ;;
+        v)  showStep "option passed for vscode install is: '$OPTARG'" 
+            if [[ $OPTARG != "" ]]; then 
+                VSCODE_INSTALL=$OPTARG 
+            fi
+        ;;
     esac
  done
 
@@ -285,5 +310,7 @@ do
     installNodeDev
     showStep "Installing docker for Ubuntu"
     install_docker
-     showStep "installation Part 1 complete"
-     showStep "${RED} Reboot is required prior to executing step 2"
+    showStep "Installing vscode"
+    install_vscode
+    showStep "installation Part 1 complete"
+    showStep "${RED} Reboot is required prior to executing step 2"
