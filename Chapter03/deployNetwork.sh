@@ -48,7 +48,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}network deploy script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${RED}This has been successfully tested on OSX Sierra and Ubuntu 16.04" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
 }
@@ -76,5 +76,5 @@ echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "deploying network"
-cd network/dist
+cd network/dist 
 composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString

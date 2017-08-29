@@ -5,10 +5,7 @@
     },
     "source": {
         "include": [
-            "./network/lib", 
-            "./controller/restapi",
-            "./controller/restapi/features",
-            "./HTML/js"
+            "./network/lib"
         ],
         "includePattern": ".+\\.js(doc|x)?$"
     },

@@ -27,9 +27,9 @@ then    showStep '%s\n' "CHECKING INSTALLATION"
         while IFS= read file
         do
         test -e  "/${file}"         &&
-        showStep "/${file}${GREEN} … OK${RESET}" ||
+        showStep "${GREEN}OK${RESET} … /${file}" ||
         { 
-            showStep "/${RED}${file} … MISSING${RESET}"; 
+            showStep "/${RED}MISSING${RESET} … ${file}"; 
             ((count++)); 
         }
         done

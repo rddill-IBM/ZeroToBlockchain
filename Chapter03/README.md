@@ -1,6 +1,6 @@
 # bd test Business Network
 
-> test network for bd for hyplerledger compose.
+> Zero To Blockchain Chapter04 for hyplerledger compose.
 
 This business network defines:
 

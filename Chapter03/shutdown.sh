@@ -36,4 +36,5 @@ showStep "stopping fabric"
 ./stopFabric.sh
 showStep "tear down"
 ./teardownFabric.sh
-showStep "shut down complete"
+showStep "shut down complete"#!/bin/bash
+ 

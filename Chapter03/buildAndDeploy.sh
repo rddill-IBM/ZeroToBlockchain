@@ -48,7 +48,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}network archive, start and deploy script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${RED}This has been successfully tested on OSX Sierra and Ubuntu 16.04" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
 }
@@ -81,3 +81,6 @@ showStep "starting network"
 ./startup.sh
 showStep "deploying network"
 ./deployNetwork.sh -n $NETWORK_NAME
+showStep "testing rest server \n when this completes, \n  go to your favorite browser \n and enter localhost:3000/explorer "
+composer-rest-server -p hlfv1 -n $NETWORK_NAME -i admin -s adminpw
+showStep ""

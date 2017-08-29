@@ -48,7 +48,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}archive creation script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${RED}This has been successfully tested on OSX Sierra and Ubuntu 16.04" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
 }
@@ -76,4 +76,6 @@ echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "creating archive"
-composer archive create --sourceType dir --sourceName . -a ./network/dist/$NETWORK_NAME.bna
+cd network
+composer archive create --sourceType dir --sourceName . -a ./dist/$NETWORK_NAME.bna
+cd ../
