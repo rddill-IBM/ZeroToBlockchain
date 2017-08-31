@@ -80,6 +80,8 @@ function install_hlf ()
             dos2unix `ls *.sh`
             showStep "getting docker images for HyperLedger Fabric V1"
             export FABRIC_VERSION=hlfv1
+            # the following line is here to ensure that the subsequent echos start on a new line. 
+            echo ' ' >> ~/.bashrc
             echo 'FABRIC_VERSION="hlfv1"' >> ~/.bashrc
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh

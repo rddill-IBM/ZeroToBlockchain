@@ -136,14 +136,17 @@ function install_hlf ()
             dos2unix `ls *.sh`
             showStep "getting docker images for HyperLedger Fabric V1"
             export FABRIC_VERSION=hlfv1
-            echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for OSX"
             curl -sSL https://goo.gl/eYdRbX | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
-            echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
+            showStep "updating .bash_profile with new paths"
+            # ensure that the following lines start with a new line
+            echo "  "  >>~/.bash_profile
+            echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
+            echo "PATH=${HLF_INSTALL_PATH}/bin:/usr/local/opt/node@6/bin:"'$PATH' >>~/.bash_profile
             echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
