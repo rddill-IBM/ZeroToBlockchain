@@ -58,6 +58,9 @@ do
     pwd
 # generate docs
     showStep "Generating Documentation"
+    if [ ! -e "jsdoc.json" ]; then
+        cp jsdoc.conf jsdoc.json
+    fi
     jsdoc --pedantic --recurse -c jsdoc.json
     cd ../../
 done
