@@ -91,6 +91,8 @@ function check4node ()
         else   
             showStep "${RED}skipping NODE install"
         fi
+        showStep "installing jsdoc globally"
+        npm install -g jsdoc
     }
 
 # install Node V6

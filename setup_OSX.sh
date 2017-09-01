@@ -72,6 +72,8 @@ function check4node ()
         else   
             showStep "${RED}skipping NODE install"
         fi
+        showStep "installing jsdoc globally"
+        npm install -g jsdoc
     }
 
 # check to see if git is installed. install it if it's not already there. 
