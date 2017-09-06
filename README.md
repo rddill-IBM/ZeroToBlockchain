@@ -5,28 +5,28 @@ Please note that this is not yet ready for public consumption. Comments are welc
 
 Base concept is: 
 
-Chapter 1 What is Blockchain? Concept and Architecture overview
+Chapter 1 		What is Blockchain? Concept and Architecture overview
 
-Chapter 2 What's the story we'll implement
+Chapter 2 		What's the story we'll implement
 
-Chapter 2.1 Architecture for the Story
+Chapter 2.1 	Architecture for the Story
 
-Chapter 3 Defining the network
+Chapter 3:		Set up local HyperLedger V1 development environment
 
-Chapter 3.1 Shadow Blockchain: Architecture and rationale
+Chapter 4: 		Build and test the network
 
-Chapter 4 The Data Model
+Chapter 5:		Administration User Experience
 
-Chapter 5 Smart Contracts
+Chapter 6:		Buyer Support and User Experience
 
-Chapter 6 Partner View
+Chapter 7:		Seller Support and User Experience
 
-Chapter 7 Supplier View
+Chapter 8:		Shipper Support and User Experience
 
-Chapter 8 Financing Company View
+Chapter 9:		Provider Support and User Experience
 
-Chapter 9 Putting it all together
+Chapter 10:		Finance Company Support and User Experience
 
-Chapter 10 What's next after creating the shadow blockchain
+Chapter 11:		Combining for Demonstration
 
-Chapter 11 Dispassionate comparison of IBM Blockchain to alternates
+Chapter 12:		Events and Automating for Demonstration
