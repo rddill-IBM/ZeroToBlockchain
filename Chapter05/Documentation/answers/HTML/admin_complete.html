@@ -1,0 +1,24 @@
+
+<div><h2>Zero To Blockchain Chapter 05</h2>
+  <div class="showFocus, scrollingPaneLeft">
+      <h3>Network Profile Management</h3>
+      <table id="profileManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="displayProfileForm()">create Profile</td><td>profile object</td></tr>
+        <tr><td onclick="listProfiles(0)">delete profile</td><td>profile name</td></tr>
+        <tr><td onclick="listProfiles(1)">get all connection profiles</td><td>(none)</td></tr>
+        <tr><td onclick="listProfiles(1)">get a specific network connection profile</td><td>profile name</td></tr>
+      </table>
+      <h3>Business Network Management</h3>
+      <table id="businessNetworkManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="networkDeploy()">deploy a network</td><td>network archive file, options</td></tr>
+        <tr><td onclick="adminList()">list the deployed business networks</td><td>(none)</td></tr>
+        <tr><td onclick="ping()">touch a network, check compatibility</td><td>business network name</td></tr>
+        <tr><td onclick="networkUndeploy()">take a business network off line</td><td>business network name</td></tr>
+        <tr><td onclick="networkUpdate()">update an existing business network</td><td>business network name, archive file</td></tr>
+      </table>
+      </div>
+  <div class="showFocus, scrollingPaneRight">
+    <h3>Result</h3>
+    <div id="admin-forms" ></div>
+  </div>
+</div>

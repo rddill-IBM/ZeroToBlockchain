@@ -20,73 +20,74 @@
  * All utilities are accessed as z2c.functionName()
 * @namespace - z2c
  */
- var z2c = {
+languages = {}, // getSupportedLanguages
+selectedLanguage = {},
+language = "",
+textLocations = {}, // getTextLocations
+textPrompts = {}, // getSelectedPromots
 
-  // Private variables to this name space
-  "languages": {}, // getSupportedLanguages
-  "selectedLanguage": {},
-  "language": "",
-  "textLocations": {}, // getTextLocations
-  "textPrompts": {}, // getSelectedPromots
-
-  /**
-  * get the value associated with a cookie named in the input
-  * Refer to this by {@link z2c.getCookieValue}.
-  * @param {String} _name  - the name of the cookie to find
-  * @namespace z2c.getCookieValue
-  */
-  "getCookieValue": function (_name)
- {
+/**
+* get the value associated with a cookie named in the input
+* Refer to this by {@link getCookieValue}.
+* @param {String} _name  - the name of the cookie to find
+* @namespace 
+*/
+function getCookieValue(_name)
+{
   var name = _name+"=";
-   var cookie_array= document.cookie.split(";");
-   for (each in cookie_array)
-     { var c = cookie_array[each].trim();
-       if(c.indexOf(name) == 0) return(c.substring(name.length, c.length));
-     }
-     return("");
- },
+    var cookie_array= document.cookie.split(";");
+    for (each in cookie_array)
+      { var c = cookie_array[each].trim();
+        if(c.indexOf(name) == 0) return(c.substring(name.length, c.length));
+      }
+      return("");
+}
 
- /**
- * trims a string by removing all leading and trailing spaces
- * trims the final period, if it exists, from a string.
- * @param {String} _string String to be trimmed and stripped of trailing period
-  * @namespace z2c.trimStrip
- */
-"trimStrip": function (_string)
+/**
+* trims a string by removing all leading and trailing spaces
+* trims the final period, if it exists, from a string.
+* Refer to this by {@link trimStrip}.
+* @param {String} _string String to be trimmed and stripped of trailing period
+* @namespace 
+*/
+function trimStrip(_string)
 {
   var str = _string.trim();
   var len = str.length;
   if(str.endsWith(".")) {str=str.substring(0,len-1);}
   return(str);
-},
+}
 
 /**
- * replaces text on an html page based on the anchors and text provided in a JSON textPrompts object
- * @param {String} _page - a string representing the name of the html page to be updated
-  * @namespace z2c.updatePage
- */
-"updatePage": function (_page)
+* replaces text on an html page based on the anchors and text provided in a JSON textPrompts object
+* Refer to this by {@link updatePage}.
+* @param {String} _page - a string representing the name of the html page to be updated
+* @namespace 
+*/
+function updatePage(_page)
 {
   for (each in textPrompts[_page]){(function(_idx, _array)
     {$("#"+_idx).empty();$("#"+_idx).append(getDisplaytext(_page, _idx));})(each, textPrompts[_page])}
-},
+}
 
 /**
- * gets text from the JSON object textPrompts for the requested page and item
- * @param {String} _page - string representing the name of the html page to be updated
- * @param {String} _item - string representing the html named item to be updated
-  * @namespace z2c.getDisplaytext
- */
-"getDisplaytext": function (_page, _item)
-{return (textPrompts[_page][_item]);},
+* gets text from the JSON object textPrompts for the requested page and item
+* Refer to this by {@link getDisplaytext}.
+* @param {String} _page - string representing the name of the html page to be updated
+* @param {String} _item - string representing the html named item to be updated
+* @namespace 
+*/
+function getDisplaytext(_page, _item)
+{return (textPrompts[_page][_item]);}
 
 /**
- * used to change displayed language and text
- * @param {String} _language - language to be used in this session
- * @param {String} _page - string representing html page to be updated in the selected language
-  * @namespace z2c.goMultiLingual
- */
-"goMultiLingual": function (_language, _page)
+* used to change displayed language and text
+* Refer to this by {@link goMultiLingual}.
+* @param {String} _language - language to be used in this session
+* @param {String} _page - string representing html page to be updated in the selected language
+* @namespace 
+*/
+function goMultiLingual(_language, _page)
 { language = _language;
   $.when($.get("/api/getSupportedLanguages")).done(function(_res)
   {languages = _res; 
@@ -106,13 +107,14 @@
       })(each, _res)}
     _choices.append(_str);
   });
-},
+}
 
 /**
- * get SupportedLanguages returns an html menu object with available languages
-  * @namespace z2c.getSupportedLanguages
- */
-"getSupportedLanguages": function ()
+* get SupportedLanguages returns an html menu object with available languages
+* Refer to this by {@link getSupportedLanguages}.
+* @namespace 
+*/
+function getSupportedLanguages()
 {
   $.when($.get("/api/getSupportedLanguages")).done(function(_res)
   {
@@ -125,64 +127,66 @@
       })(each, _res)}
     _choices.append(_str);
   });
-},
+}
 
 /**
- * returns a JSON object with the pages and objects which support text replacement
-  * @namespace z2c.getTextLocations
- */
-"getTextLocations": function ()
-{$.when($.get('/api/getTextLocations')).done(function(_res){textLocations = _res; console.log(_res); });},
+* returns a JSON object with the pages and objects which support text replacement
+* Refer to this by {@link getTextLocations}.
+* @namespace 
+*/
+function getTextLocationsfunction ()
+{$.when($.get('/api/getTextLocations')).done(function(_res){textLocations = _res; console.log(_res); });}
 
 /**
- * returns a JSON object with the text to be used to update identified pages and objects
- * @param {String} _inbound 
-  * @namespace z2c.getSelectedPrompts
- */
-"getSelectedPrompts": function (_inbound)
+* returns a JSON object with the text to be used to update identified pages and objects
+* Refer to this by {@link getSelectedPrompts}.
+* @param {String} _inbound 
+* @namespace 
+*/
+function getSelectedPrompts(_inbound)
 {  selectedLanguage=languages[_inbound];
   var options = {}; options.language = _inbound;
   $.when($.post('/api/selectedPrompts', options)).done(function(_res){textPrompts = _res; console.log(_res); });
-},
+}
 
 /**
- * retrieves the prompts for the requested language from the server
- * @param {String} _inbound - string representing the requested language
-  * @namespace z2c.qOnSelectedPrompts
- */
-"qOnSelectedPrompts": function (_inbound)
+* retrieves the prompts for the requested language from the server
+* Refer to this by {@link qOnSelectedPrompts}.
+* @param {String} _inbound - string representing the requested language
+* @namespace 
+*/
+function qOnSelectedPrompts(_inbound)
 {
   var d_prompts = $.Deferred();
   var options = {}; options.language = _inbound;
   $.when($.post('/api/selectedPrompts', options)).done(function (p) {d_prompts.resolve(p);}).fail(d_prompts.reject);
   return d_prompts.promise();
-},
+}
 
 /**
- * function to display the properties of an object using console.log
- * @param {Object} _obj - the object whose properties are to be displayed
-  * @namespace z2c.displayObjectProperties
- */
-"displayObjectProperties": function (_obj)
+* function to display the properties of an object using console.log
+* Refer to this by {@link displayObjectProperties}.
+* @param {Object} _obj - the object whose properties are to be displayed
+* @namespace 
+*/
+function displayObjectProperties(_obj)
 {
   for(var propt in _obj){ console.log("object property: "+propt ); }
-},
+}
 
 /**
- * function to display the values of every property in an object. If the type of a property is object or function, then the word 'object' or 'function' is displayed
- * @param {String} _string - an arbitrary string to preface the printing of the object property name and value. often used to display the name of the object being printed
- * @param {Object} _object - the object to be introspected
-  * @namespace z2c.displayObjectValues
- */
-"displayObjectValues": function  (_string, _object)
+* function to display the values of every property in an object. If the type of a property is object or function, then the word 'object' or 'function' is displayed
+* Refer to this by {@link displayObjectValues}.
+* @param {String} _string - an arbitrary string to preface the printing of the object property name and value. often used to display the name of the object being printed
+* @param {Object} _object - the object to be introspected
+* @namespace 
+*/
+function  displayObjectValues(_string, _object)
 {
   for (prop in _object){
       console.log(_string+prop+": "+(((typeof(_object[prop]) == 'object') || (typeof(_object[prop]) == 'function'))  ? typeof(_object[prop]) : _object[prop]));
     }
 }
-
- }
-
 
 /**
  * get the value associated with a cookie named in the input
@@ -190,10 +194,11 @@
  * Augment String.prototype to allow for easier formatting.  This implementation
  * doesn't completely destroy any existing String.prototype.format functions,
  * and will stringify objects/arrays.
+ * Refer to this by {@link <string>.format}.
  * @param {String} this  - the string to be formatted
  * @param {String} arg - comma delimited set of strings or ints to be inserted into this
-  * string.format
- */
+* string.format
+*/
 
 String.prototype.format = function(i, safe, arg) {
 
@@ -221,8 +226,9 @@ String.prototype.format = function(i, safe, arg) {
 
 /**
  * display the hyperledger apis as currently understood
+ * Refer to this by {@link showAPIDocs}.
   * 
- */
+  */
 function showAPIDocs()
 {
   $.when($.get('/resources/getDocs'),$.get('hfcAPI.html')).done(function(_res, _page)
@@ -230,14 +236,15 @@ function showAPIDocs()
     var _target = $("#body");
     _target.empty(); _target.append(_page[0]);
     displayAPI(_res[0]);
- });
+  });
 }
 
 /**
  * 
  * @param {JSON} _api 
+ * Refer to this by {@link displayAPI}.
   * 
- */
+  */
 function displayAPI(_api)
 {
   var _exports = _api.hfcExports;

@@ -173,13 +173,13 @@ function BackOrder(purchase) {
             return assetRegistry.update(purchase.order);
         });
 }
-   /**
+
+/**
  * display using console.log the properties of each property in the inbound object
  * @param {displayObjectProperties} _string - string name of object
  * @param {displayObjectProperties}  _object - the object to be parsed
  * @utility
  */
-
 function displayObjectValues (_string, _object)
 {
     for (var prop in _object){

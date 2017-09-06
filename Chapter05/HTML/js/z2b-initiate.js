@@ -15,10 +15,10 @@
 // z2c-initiate.js
 
 /**
- * standard routine used to start tutorial pages
- */
-function initPage ()
+* standard home page initialization routine
+* Refer to this by {@link initPage()}.
+*/
+  function initPage ()
 {
   goMultiLingual("US_English", "index");
-  loadAPIList();
 }
