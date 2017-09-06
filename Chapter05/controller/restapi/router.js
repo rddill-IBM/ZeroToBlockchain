@@ -21,7 +21,6 @@ var multi_lingual = require('./features/multi_lingual');
 var resources = require('./features/resources');
 var getCreds = require('./features/getCredentials');
 var hlcAdmin = require('./features/composer/hlcAdmin');
-var hlcClient = require('./features/composer/hlcClient');
 
 module.exports = router;
 var count = 0;
