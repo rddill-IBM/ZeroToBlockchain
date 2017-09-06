@@ -8,7 +8,6 @@
   "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
   "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
   "scripts": {
-    "prepublish": "mkdirp ./network/dist && composer archive create --sourceType dir --sourceName . -a ./network/dist/zerotoblockchain-network.bna",
     "pretest": "npm run lint",
     "lint": "eslint ./network",
     "postlint": "npm run licchk",
