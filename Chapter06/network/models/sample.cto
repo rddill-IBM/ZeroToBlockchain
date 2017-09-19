@@ -100,6 +100,11 @@ asset Order identified by orderNumber {
     --> Seller seller
     --> FinanceCo financeCo
 }
+  transaction AuthorizePayment {
+    --> Order order
+    --> Seller seller
+    --> FinanceCo financeCo
+}
   transaction Pay {
     --> Order order
     --> Seller seller

@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var orderStatus = {
     Created: {code: 1, text: 'Order Created'},
     Bought: {code: 2, text: 'Order Purchased'},
@@ -24,7 +23,7 @@ var orderStatus = {
     Dispute: {code: 8, text: 'Order Disputed'},
     Resolve: {code: 9, text: 'Order Dispute Resolved'},
     PayRequest: {code: 10, text: 'Payment Requested'},
-    Pay: {code: 11, text: 'Payment Apporoved'},
+    Authorize: {code: 11, text: 'Payment Apporoved'},
     Paid: {code: 14, text: 'Payment Processed'},
     Refund: {code: 12, text: 'Order Refund Requested'},
     Refunded: {code: 13, text: 'Order Refunded'}
@@ -137,12 +136,27 @@ function RequestPayment(purchase) {
 }
  /**
  * Record a payment to the seller
+ * @param {org.acme.Z2BTestNetwork.AuthorizePayment} purchase - the order to be processed
+ * @transaction
+ */
+function AuthorizePayment(purchase) {
+    if (JSON.parse(purchase.order.status).text == orderStatus.PayRequest.text )
+        {purchase.order.status = JSON.stringify(orderStatus.Authorize);
+        purchase.order.paid = new Date().toISOString();
+        }
+    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+        .then(function (assetRegistry) {
+            return assetRegistry.update(purchase.order);
+        });
+}
+ /**
+ * Record a payment to the seller
  * @param {org.acme.Z2BTestNetwork.Pay} purchase - the order to be processed
  * @transaction
  */
 function Pay(purchase) {
-    if (JSON.parse(purchase.order.status).text == JSON.parse(orderStatus.PayRequest) )
-        {purchase.order.status = JSON.stringify(orderStatus.Pay);
+    if (JSON.parse(purchase.order.status).text == orderStatus.Authorize.text )
+        {purchase.order.status = JSON.stringify(orderStatus.Paid);
         purchase.order.paid = new Date().toISOString();
         }
     return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
@@ -156,7 +170,7 @@ function Pay(purchase) {
  * @transaction
  */
 function Dispute(purchase) {
-        purchase.order.status = JSON.stringify(orderStatus.Disputed);
+        purchase.order.status = JSON.stringify(orderStatus.Dispute);
         purchase.order.dispute = purchase.dispute;
         purchase.order.disputeOpened = new Date().toISOString();
     return getAssetRegistry('org.acme.Z2BTestNetwork.Order')

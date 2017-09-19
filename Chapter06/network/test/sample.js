@@ -49,7 +49,7 @@ let orderStatus = {
     'Dispute': {'code': 8, 'text': 'Order Disputed'},
     'Resolve': {'code': 9, 'text': 'Order Dispute Resolved'},
     'PayRequest': {'code': 10, 'text': 'Payment Requested'},
-    'Pay': {'code': 11, 'text': 'Payment Apporoved'},
+    'Authorize': {'code': 11, 'text': 'Payment Apporoved'},
     'Paid': {'code': 14, 'text': 'Payment Processed'},
     'Refund': {'code': 12, 'text': 'Order Refund Requested'},
     'Refunded': {'code': 13, 'text': 'Order Refunded'}
@@ -66,8 +66,9 @@ function createOrderTemplate (_inbound)
     _inbound.orderNumber = '';
     _inbound.amount = 0;
     _inbound.items = [];
-    _inbound.status = JSON.parse(orderStatus.Created);
+    _inbound.status = JSON.stringify(orderStatus.Created);
     _inbound.created = new Date().toISOString();
+    _inbound.cancelled = '';
     _inbound.ordered = '';
     _inbound.bought = '';
     _inbound.dateBackordered = '';
@@ -292,7 +293,7 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('supplier', newOrder.vendors);
                             vendor.should.equal(providerID);
-                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Bought.text);
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Ordered.text);
                         });
 
                 });
@@ -437,9 +438,49 @@ describe('Finance Network', () => {
         });
     });
 
-    describe('#issuePayment', () => {
+    describe('#authorizePayment', () => {
 
-        it('should be able to record a product payment', () => {
+        it('should be able to record a approval for order payment', () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // create the Deliver transaction
+            const orderNow = factory.newTransaction(NS, 'AuthorizePayment');
+
+            return businessNetworkConnection.getAssetRegistry(NS + '.Order')
+                .then((assetRegistry) => {
+                    // re-get the commodity
+                    return assetRegistry.get(orderNo);
+                })
+                .then((newOrder) => {
+                    newOrder.buyer.$identifier.should.equal(buyerID);
+                    newOrder.$identifier.should.equal(orderNo);
+
+                    orderNow.order = factory.newRelationship(NS, 'Order', newOrder.$identifier);
+                    orderNow.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                    orderNow.seller = factory.newRelationship(NS, 'Seller', newOrder.seller.$identifier);
+                    // submit the transaction
+                    return businessNetworkConnection.submitTransaction(orderNow)
+                        .then(() => {
+                            return businessNetworkConnection.getAssetRegistry(NS + '.Order');
+                        })
+                        .then((assetRegistry) => {
+                            // re-get the commodity
+                            return assetRegistry.get(orderNo);
+                        })
+                        .then((newOrder) => {
+                            // the owner of the commodity should be buyer
+                            let vendor = getVendor('financeCo', newOrder.vendors);
+                            vendor.should.equal(financeCoID);
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Authorize.text);
+                        });
+
+                });
+        });
+    });
+
+    describe('#Pay', () => {
+
+        it('should be able to record an order payment', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
             // create the Deliver transaction
@@ -592,6 +633,43 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             newOrder.backorder.should.equal(backorder);
                             JSON.parse(newOrder.status).text.should.equal(orderStatus.Backordered.text);
+                        });
+
+                });
+        });
+    });
+    describe('#issueCancel', () => {
+
+        it('should be able to record a order cancellation', () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // create the Deliver transaction
+            const orderNow = factory.newTransaction(NS, 'OrderCancel');
+
+            return businessNetworkConnection.getAssetRegistry(NS + '.Order')
+                .then((assetRegistry) => {
+                    // re-get the commodity
+                    return assetRegistry.get(orderNo);
+                })
+                .then((newOrder) => {
+                    newOrder.buyer.$identifier.should.equal(buyerID);
+                    newOrder.$identifier.should.equal(orderNo);
+
+                    orderNow.order = factory.newRelationship(NS, 'Order', newOrder.$identifier);
+                    orderNow.seller = factory.newRelationship(NS, 'Seller', newOrder.seller.$identifier);
+                    orderNow.buyer = factory.newRelationship(NS, 'Buyer', newOrder.buyer.$identifier);
+                    // submit the transaction
+                    return businessNetworkConnection.submitTransaction(orderNow)
+                        .then(() => {
+                            return businessNetworkConnection.getAssetRegistry(NS + '.Order');
+                        })
+                        .then((assetRegistry) => {
+                            // re-get the commodity
+                            return assetRegistry.get(orderNo);
+                        })
+                        .then((newOrder) => {
+                            // the owner of the commodity should be buyer
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Cancelled.text);
                         });
 
                 });

@@ -38,7 +38,7 @@ var orderStatus = {
   Dispute: {code: 8, text: 'Order Disputed'},
   Resolve: {code: 9, text: 'Order Dispute Resolved'},
   PayRequest: {code: 10, text: 'Payment Requested'},
-  Pay: {code: 11, text: 'Payment Apporoved'},
+  Authorize: {code: 11, text: 'Payment Apporoved'},
   Paid: {code: 14, text: 'Payment Processed'},
   Refund: {code: 12, text: 'Order Refund Requested'},
   Refunded: {code: 13, text: 'Order Refunded'}
