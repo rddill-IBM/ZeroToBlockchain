@@ -26,6 +26,7 @@ asset Order identified by orderNumber {
     o String[] items
     o String status
     o Integer amount
+    o String cancelled
     o String created
     o String bought
     o String ordered
@@ -53,6 +54,11 @@ asset Order identified by orderNumber {
     --> Seller seller
 }
   transaction Buy {
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+  transaction OrderCancel {
     --> Order order
     --> Buyer buyer
     --> Seller seller
@@ -91,6 +97,11 @@ asset Order identified by orderNumber {
   transaction RequestPayment {
     --> Order order
     --> Buyer buyer
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction AuthorizePayment {
+    --> Order order
     --> Seller seller
     --> FinanceCo financeCo
 }

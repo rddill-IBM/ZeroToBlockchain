@@ -66,13 +66,13 @@ function displayProfileForm ()
 }
 
 /**
- * get the data from the network connection form. 
+ * get the data from the network connection form.
  */
 function getConnectForm ()
 {
   var fields = ["fabric_type", "orderers_url", "ca_url", "ca_name", "peers_eventURL", "peers_requestURL", "keyValStore", "channel", "mspID", "timeout"];
   var res = {}
-  
+
   res["profileName"] = $("#profileName").val();
   for (each in fields)
     {(function (_idx, _arr){
@@ -92,7 +92,7 @@ function getConnectForm ()
  * test creating a network connection
  */
 function createConnection (_form)
-{ 
+{
 console.log(_form);
 $.when($.post("/composer/admin/createProfile", _form)).done(function(_results)
 {
@@ -123,7 +123,7 @@ function getProfiles()
     _str += "</ul>";
     $("#admin-forms").empty();
     $("#admin-forms").append(_str);
-  
+
   });
 }
 
@@ -220,7 +220,7 @@ function deleteConnectionProfile(_name)
 {
   var options = {};
   options.profileName = _name;
-  if (confirm("Are you sure you want to delete the "+_name+" profile?") == true) 
+  if (confirm("Are you sure you want to delete the "+_name+" profile?") == true)
   {
     $.when($.post('/composer/admin/deleteProfile', options)).done(function(_results)
     {
@@ -231,7 +231,7 @@ function deleteConnectionProfile(_name)
       $("#admin-forms").empty();
       $("#admin-forms").append(_str);
     });
-  } else 
+  } else
   {
     $("#message").empty();
     $("#message").append("request cancelled");
@@ -262,10 +262,10 @@ function ping()
  */
 function networkUndeploy()
 {
-  
+
   var options = {};
   options.businessNetwork = businessNetwork;
-  if (confirm("Are you sure you want to undeploy the "+businessNetwork+" business network?") == true) 
+  if (confirm("Are you sure you want to undeploy the "+businessNetwork+" business network?") == true)
   {
     $.when($.post('/composer/admin/undeploy', options)).done(function(_results)
     {
@@ -276,7 +276,7 @@ function networkUndeploy()
       $("#admin-forms").empty();
       $("#admin-forms").append(_str);
     });
-  } else 
+  } else
   {
     $("#message").empty();
     $("#message").append("undeploy request cancelled");
@@ -308,7 +308,7 @@ function displayProfile(_profile, _name)
 {
   var _str = "";
   _str += "<h4>"+_name+"</h4>";
-   _str +="<table>"; 
+   _str +="<table>";
    for (item in _profile)
     {(function(_item, _obj){
       switch (_item)
@@ -356,7 +356,7 @@ function preLoad()
 }
 
 /*
-* get member registries 
+* get member registries
 */
 function listMemRegistries()
 {
@@ -380,7 +380,7 @@ function listMemRegistries()
   });
 }
 /*
-* get member in a registry 
+* get member in a registry
 */
 function listRegistry()
 {
@@ -402,7 +402,7 @@ function listRegistry()
   });
 }
 /*
-* get asset list 
+* get asset list
 */
 function listAssets()
 {
@@ -421,7 +421,7 @@ function listAssets()
           {(function(_idx, _arr){
             _str += "<tr><td>"+_arr[_idx].id+"</td><td>"+_arr[_idx].created+"</td><td>"+JSON.parse(_arr[_idx].status).text+"</td><td>"+_arr[_idx].buyer+"</td><td>$"+_arr[_idx].amount+".00</td></tr>";
           })(each, _results.orders)}
-        _str += "</ul>";    
+        _str += "</ul>";
       } else {_str += '<br/>'+results.error}
     $("#admin-forms").empty();
     $("#admin-forms").append(_str);
@@ -435,17 +435,17 @@ function addMember()
   var _fields = ['companyName', 'participant_id', 'member_type'];
 
   $.when($.get('createMember.html')).done(function (_page)
-  { 
+  {
    $('#admin-forms').empty();
    $('#admin-forms').append(_page);
    var _cancel = $("#cancel");
    var _submit = $("#submit");
-   $('#messages').empty();   
+   $('#messages').empty();
    $('#messages').append('<br/>Please fill in add member form.');
    _cancel.on('click', function (){$("#admin-forms").empty();});
   _submit.on('click', function(){
     $('#messages').append('<br/>starting add member request.');
-    
+
     var options = {}
     options.companyName = $('#companyName').val();
     options.id = $('#participant_id').val();
@@ -466,7 +466,7 @@ function removeMember()
   var member_list;
   options.registry = $("#registryName2").find(":selected").text();
   $("#admin-forms").empty();
-  $('#messages').empty();   
+  $('#messages').empty();
   $('#messages').append('<br/>Getting Member List for '+options.registry+'.');
   $.when($.post('/composer/admin/getMembers', options),$.get('removeMember.html')).done(function (_results, _page)
   { console.log(_results);
@@ -478,8 +478,8 @@ function removeMember()
         $("#member_list").append('<option value="'+_arr[_idx].id+'">' +_arr[_idx].id+'</option>');
       })(each, _results[0].members)
     }
-    var first = $("#member_list").find(":first").text();  
-    displayMember(first, member_list);  
+    var first = $("#member_list").find(":first").text();
+    displayMember(first, member_list);
     var _cancel = $("#cancel");
     var _submit = $("#submit");
     _cancel.on('click', function (){$("#admin-forms").empty();});
@@ -509,7 +509,7 @@ function getSecret()
   var member_list;
   options.registry = $("#registryName3").find(":selected").text();
   $("#admin-forms").empty();
-  $('#messages').empty();   
+  $('#messages').empty();
   $('#messages').append('<br/>Getting Member List for '+options.registry+'.');
   $.when($.post('/composer/admin/getMembers', options),$.get('getMemberSecret.html')).done(function (_results, _page)
   { console.log(_results);
@@ -521,8 +521,8 @@ function getSecret()
         $("#member_list").append('<option value="'+_arr[_idx].id+'">' +_arr[_idx].id+'</option>');
       })(each, _results[0].members)
     }
-    var first = $("#member_list").find(":first").text();  
-    displayMember(first, member_list);  
+    var first = $("#member_list").find(":first").text();
+    displayMember(first, member_list);
     var _cancel = $("#cancel");
     var _submit = $("#submit");
     _cancel.on('click', function (){$("#admin-forms").empty();});
@@ -570,7 +570,7 @@ function findMember(_id, _list)
   _mem = {"id": _id, "companyName": "not found"};
   for (each in _list){(function(_idx, _arr)
   {
-    if (_arr[_idx].id == _id) 
+    if (_arr[_idx].id == _id)
     {_mem = _arr[_idx]; }
   })(each, _list)}
   return(_mem);

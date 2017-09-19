@@ -640,7 +640,7 @@ describe('Finance Network', () => {
     });
     describe('#issueCancel', () => {
 
-        it('should be able to record a order cancellation', () => {
+        it('should be able to record an order cancellation', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
             // create the Deliver transaction

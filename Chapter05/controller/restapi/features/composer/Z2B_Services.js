@@ -101,7 +101,7 @@ var  Z2Blockchain  = {
 /**
  * supplemental routine to resubmit orders when MVCC_READ_CONFLICT encountered
  * @param {transaction} _item - transaction to process
- * @param {order object} _id - order id
+ * @param {order_object} _id - order id
  * @param {bnc} businessNetworkConnection - already created business network connection
  */
     loadTransaction: function ( _item, _id, businessNetworkConnection)
@@ -118,7 +118,7 @@ var  Z2Blockchain  = {
     },
 /**
  * add an order to a registry. This adds an Asset and does not execute a transaction
- * @param {order object} _order - order object to process
+ * @param {order_object} _order - order_object to process
  * @param {assetRegistry} _registry - registry into which asset (order) should be placed
  * @param {networkTransaction} _createNew - transaction to be processed after order successfully added
  * @param {businessNetworkConnection} _bnc - business network connection to use */
@@ -222,11 +222,11 @@ var  Z2Blockchain  = {
         Dispute: {code: 8, text: 'Order Disputed'},
         Resolve: {code: 9, text: 'Order Dispute Resolved'},
         PayRequest: {code: 10, text: 'Payment Requested'},
-        Pay: {code: 11, text: 'Payment Apporoved'},
+        Authorize: {code: 11, text: 'Payment Apporoved'},
         Paid: {code: 14, text: 'Payment Processed'},
         Refund: {code: 12, text: 'Order Refund Requested'},
         Refunded: {code: 13, text: 'Order Refunded'}
-        }
+            }
 }
 
 module.exports = Z2Blockchain;

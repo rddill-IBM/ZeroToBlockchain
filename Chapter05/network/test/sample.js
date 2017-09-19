@@ -37,6 +37,23 @@ const dispute = 'ordered products received but defective';
 const resolve = 'defective products will be refunded';
 const backorder = 'order received, products on backorder. Will be shipped in 2 weeks.';
 let orderAmount = 0;
+let orderStatus = {
+    'Created': {'code': 1, 'text': 'Order Created'},
+    'Bought': {'code': 2, 'text': 'Order Purchased'},
+    'Cancelled': {'code': 3, 'text': 'Order Cancelled'},
+    'Ordered': {'code': 4, 'text': 'Order Submitted to Provider'},
+    'ShipRequest': {'code': 5, 'text': 'Shipping Requested'},
+    'Delivered': {'code': 6, 'text': 'Order Delivered'},
+    'Delivering': {'code': 15, 'text': 'Order being Delivered'},
+    'Backordered': {'code': 7, 'text': 'Order Backordered'},
+    'Dispute': {'code': 8, 'text': 'Order Disputed'},
+    'Resolve': {'code': 9, 'text': 'Order Dispute Resolved'},
+    'PayRequest': {'code': 10, 'text': 'Payment Requested'},
+    'Authorize': {'code': 11, 'text': 'Payment Apporoved'},
+    'Paid': {'code': 14, 'text': 'Payment Processed'},
+    'Refund': {'code': 12, 'text': 'Order Refund Requested'},
+    'Refunded': {'code': 13, 'text': 'Order Refunded'}
+};
 
 /**
  * create an empty order
@@ -49,8 +66,9 @@ function createOrderTemplate (_inbound)
     _inbound.orderNumber = '';
     _inbound.amount = 0;
     _inbound.items = [];
-    _inbound.status = 'Order Created';
+    _inbound.status = JSON.stringify(orderStatus.Created);
     _inbound.created = new Date().toISOString();
+    _inbound.cancelled = '';
     _inbound.ordered = '';
     _inbound.bought = '';
     _inbound.dateBackordered = '';
@@ -132,7 +150,6 @@ describe('Finance Network', () => {
 
         it('should be able to create an order', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-
             // create the buyer
             const buyer = factory.newResource(NS, 'Buyer', buyerID);
             buyer.companyName = 'billybob computing';
@@ -158,7 +175,7 @@ describe('Finance Network', () => {
             createNew.amount = order.amount;
             // the buyer should of the commodity should be buyer
             //order.buyer.$identifier.should.equal(buyer.$identifier);
-            order.status.should.equal('Order Created');
+            JSON.parse(order.status).text.should.equal(orderStatus.Created.text);
             order.amount.should.equal(orderAmount);
             createNew.amount.should.equal(orderAmount);
             createNew.order.$identifier.should.equal(orderNo);
@@ -226,7 +243,7 @@ describe('Finance Network', () => {
                         .then((newOrder) => {
                             // the owner of the commodity should be buyer
                             newOrder.buyer.$identifier.should.equal(buyerID);
-                            newOrder.status.should.equal('Purchased');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Bought.text);
                         });
 
                 });
@@ -276,7 +293,7 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('supplier', newOrder.vendors);
                             vendor.should.equal(providerID);
-                            newOrder.status.should.equal('Ordered From Supplier');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Ordered.text);
                         });
 
                 });
@@ -325,7 +342,7 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('shipper', newOrder.vendors);
                             vendor.should.equal(shipperID);
-                            newOrder.status.should.equal('Shipment Requested');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.ShipRequest.text);
                         });
 
                 });
@@ -363,7 +380,7 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('shipper', newOrder.vendors);
                             vendor.should.equal(shipperID);
-                            newOrder.status.should.equal('Delivered');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Delivered.text);
                         });
 
                 });
@@ -415,15 +432,55 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('financeCo', newOrder.vendors);
                             vendor.should.equal(financeCoID);
-                            newOrder.status.should.equal('Payment Requested');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.PayRequest.text);
                         });
                 });
         });
     });
 
-    describe('#issuePayment', () => {
+    describe('#authorizePayment', () => {
 
-        it('should be able to record a product payment', () => {
+        it('should be able to record a approval for order payment', () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // create the Deliver transaction
+            const orderNow = factory.newTransaction(NS, 'AuthorizePayment');
+
+            return businessNetworkConnection.getAssetRegistry(NS + '.Order')
+                .then((assetRegistry) => {
+                    // re-get the commodity
+                    return assetRegistry.get(orderNo);
+                })
+                .then((newOrder) => {
+                    newOrder.buyer.$identifier.should.equal(buyerID);
+                    newOrder.$identifier.should.equal(orderNo);
+
+                    orderNow.order = factory.newRelationship(NS, 'Order', newOrder.$identifier);
+                    orderNow.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                    orderNow.seller = factory.newRelationship(NS, 'Seller', newOrder.seller.$identifier);
+                    // submit the transaction
+                    return businessNetworkConnection.submitTransaction(orderNow)
+                        .then(() => {
+                            return businessNetworkConnection.getAssetRegistry(NS + '.Order');
+                        })
+                        .then((assetRegistry) => {
+                            // re-get the commodity
+                            return assetRegistry.get(orderNo);
+                        })
+                        .then((newOrder) => {
+                            // the owner of the commodity should be buyer
+                            let vendor = getVendor('financeCo', newOrder.vendors);
+                            vendor.should.equal(financeCoID);
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Authorize.text);
+                        });
+
+                });
+        });
+    });
+
+    describe('#Pay', () => {
+
+        it('should be able to record an order payment', () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
             // create the Deliver transaction
@@ -454,7 +511,7 @@ describe('Finance Network', () => {
                             // the owner of the commodity should be buyer
                             let vendor = getVendor('financeCo', newOrder.vendors);
                             vendor.should.equal(financeCoID);
-                            newOrder.status.should.equal('Paid');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Paid.text);
                         });
 
                 });
@@ -495,7 +552,7 @@ describe('Finance Network', () => {
                         .then((newOrder) => {
                             // the owner of the commodity should be buyer
                             newOrder.dispute.should.equal(dispute);
-                            newOrder.status.should.equal('In Dispute');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Dispute.text);
                         });
 
                 });
@@ -536,7 +593,7 @@ describe('Finance Network', () => {
                         .then((newOrder) => {
                             // the owner of the commodity should be buyer
                             newOrder.resolve.should.equal(resolve);
-                            newOrder.status.should.equal('Resolved');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Resolve.text);
                         });
 
                 });
@@ -575,7 +632,44 @@ describe('Finance Network', () => {
                         .then((newOrder) => {
                             // the owner of the commodity should be buyer
                             newOrder.backorder.should.equal(backorder);
-                            newOrder.status.should.equal('Backordered');
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Backordered.text);
+                        });
+
+                });
+        });
+    });
+    describe('#issueCancel', () => {
+
+        it('should be able to record an order cancellation', () => {
+            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // create the Deliver transaction
+            const orderNow = factory.newTransaction(NS, 'OrderCancel');
+
+            return businessNetworkConnection.getAssetRegistry(NS + '.Order')
+                .then((assetRegistry) => {
+                    // re-get the commodity
+                    return assetRegistry.get(orderNo);
+                })
+                .then((newOrder) => {
+                    newOrder.buyer.$identifier.should.equal(buyerID);
+                    newOrder.$identifier.should.equal(orderNo);
+
+                    orderNow.order = factory.newRelationship(NS, 'Order', newOrder.$identifier);
+                    orderNow.seller = factory.newRelationship(NS, 'Seller', newOrder.seller.$identifier);
+                    orderNow.buyer = factory.newRelationship(NS, 'Buyer', newOrder.buyer.$identifier);
+                    // submit the transaction
+                    return businessNetworkConnection.submitTransaction(orderNow)
+                        .then(() => {
+                            return businessNetworkConnection.getAssetRegistry(NS + '.Order');
+                        })
+                        .then((assetRegistry) => {
+                            // re-get the commodity
+                            return assetRegistry.get(orderNo);
+                        })
+                        .then((newOrder) => {
+                            // the owner of the commodity should be buyer
+                            JSON.parse(newOrder.status).text.should.equal(orderStatus.Cancelled.text);
                         });
 
                 });
