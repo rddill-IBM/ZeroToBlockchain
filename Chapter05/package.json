@@ -3,7 +3,7 @@
     "composer": ""
   },
   "name": "zerotoblockchain-network",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Zero to Blockchain tutorial network",
   "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
   "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
@@ -54,7 +54,9 @@
     "composer-admin": "",
     "composer-cli": "",
     "composer-client": "",
+    "composer-common": "",
     "composer-connector-embedded": "",
+    "composer-connector-hlf": "",
     "composer-cucumber-steps": "",
     "cucumber": "^2.2.0",
     "eslint": "^3.6.1",
@@ -100,6 +102,7 @@
   },
   "dependencies": {
     "express": "^4.15.4",
-    "http": "0.0.0"
+    "http": "0.0.0",
+    "sleep": "^5.1.1"
   }
 }

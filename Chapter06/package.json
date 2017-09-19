@@ -54,6 +54,7 @@
     "composer-admin": "",
     "composer-cli": "",
     "composer-client": "",
+    "composer-common": "",
     "composer-connector-embedded": "",
     "composer-connector-hlf": "",
     "composer-cucumber-steps": "",
