@@ -37,7 +37,7 @@ function loadAdminUX ()
  */
 function adminList()
 {
-
+  });
 }
 
 /**
@@ -45,22 +45,20 @@ function adminList()
  */
 function displayProfileForm ()
 {
-
 }
 
 /**
- * get the data from the network connection form.
+ * get the data from the network connection form. 
  */
 function getConnectForm ()
 {
-
 }
 
 /**
  * test creating a network connection
  */
 function createConnection (_form)
-{
+{ 
 
 }
 
@@ -69,7 +67,6 @@ function createConnection (_form)
  */
 function getProfiles()
 {
-
 }
 
 /**
@@ -77,7 +74,6 @@ function getProfiles()
  */
 function listProfiles(_state)
 {
-
 }
 
 /**
@@ -85,7 +81,6 @@ function listProfiles(_state)
  */
 function networkDeploy()
 {
-
 }
 
 /**
@@ -94,7 +89,6 @@ function networkDeploy()
  */
 function deleteConnectionProfile(_name)
 {
-
 }
 
 /**
@@ -102,7 +96,6 @@ function deleteConnectionProfile(_name)
  */
 function ping()
 {
-
 }
 
 /**
@@ -118,7 +111,6 @@ function networkUndeploy()
  */
 function networkUpdate()
 {
-
 }
 
 /*
@@ -126,40 +118,4 @@ function networkUpdate()
 */
 function displayProfile(_profile, _name)
 {
-  var _str = "";
-  _str += "<h4>"+_name+"</h4>";
-   _str +="<table>";
-   for (item in _profile)
-    {(function(_item, _obj){
-      switch (_item)
-      {
-        case 'orderers':
-          for (subItem in _obj[_item])
-            {(function(_subItem, __obj)
-              {_str+="<tr><td>"+_item+"</td><td>url</td><td>"+__obj[_subItem].url+"</td></tr>";
-              })(subItem, _obj[_item]);
-            }
-        break;
-        case 'peers':
-          for (subItem in _obj[_item])
-            {(function(_subItem, __obj)
-              {_str+="<tr><td>"+_item+"</td><td>eventURL</td><td>"+__obj[_subItem].eventURL+"</td></tr>";
-              _str+="<tr><td>"+_item+"</td><td>requestURL</td><td>"+__obj[_subItem].requestURL+"</td></tr>";
-            })(subItem, _obj[_item]);
-            }
-        break;
-        case 'ca':
-          for (subItem in _obj[_item])
-            {(function(_subItem, __obj)
-              {_str+="<tr><td>"+_item+"</td><td>"+_subItem+"</td><td>"+__obj[_subItem]+"</td></tr>";
-            })(subItem, _obj[_item]);
-            }
-        break;
-        default:
-        _str+="<tr><td>"+_item+"</td><td>"+_obj[_item]+"</td></tr>";
-      }
-    })(item, _profile)
-  }
-   _str +="</table>";
-   return _str;
 }

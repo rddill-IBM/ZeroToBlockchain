@@ -1,13 +1,14 @@
 {
   "engines": {
-    "composer": "^0.10.0"
+    "composer": ""
   },
   "name": "zerotoblockchain-network",
-  "version": "0.1.6",
+  "version": "0.1.5",
   "description": "Zero to Blockchain tutorial network",
   "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
   "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
   "scripts": {
+    "prepublish": "mkdirp ./network/dist && composer archive create --sourceType dir --sourceName . -a ./network/dist/zerotoblockchain-network.bna",
     "pretest": "npm run lint",
     "lint": "eslint ./network",
     "postlint": "npm run licchk",
