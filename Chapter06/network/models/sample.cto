@@ -33,18 +33,22 @@ asset Order identified by orderNumber {
     o String dateBackordered
     o String requestShipment
     o String delivered
+    o String delivering
     o String disputeOpened
     o String disputeResolved
     o String paymentRequested
     o String orderRefunded
+    o String approved
     o String paid
-    o String[] vendors
     o String dispute
     o String resolve
     o String backorder
     o String refund
+    --> Provider provider
+    --> Shipper shipper
     --> Buyer buyer
     --> Seller seller 
+    --> FinanceCo financeCo 
 
 }
   transaction CreateOrder {
@@ -66,10 +70,12 @@ asset Order identified by orderNumber {
   transaction OrderFromSupplier {
     --> Order order
     --> Provider provider
+    --> Seller seller
 }
   transaction RequestShipping {
     --> Order order
     --> Shipper shipper
+    --> Provider provider
 }
   transaction Deliver {
     --> Order order
@@ -96,13 +102,12 @@ asset Order identified by orderNumber {
 }
   transaction RequestPayment {
     --> Order order
-    --> Buyer buyer
     --> Seller seller
     --> FinanceCo financeCo
 }
   transaction AuthorizePayment {
     --> Order order
-    --> Seller seller
+    --> Buyer buyer
     --> FinanceCo financeCo
 }
   transaction Pay {
@@ -113,7 +118,6 @@ asset Order identified by orderNumber {
   transaction Refund {
     o String refund
     --> Order order
-    --> Buyer buyer
     --> Seller seller
     --> FinanceCo financeCo
 }

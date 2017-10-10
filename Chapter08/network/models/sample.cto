@@ -33,10 +33,12 @@ asset Order identified by orderNumber {
     o String dateBackordered
     o String requestShipment
     o String delivered
+    o String delivering
     o String disputeOpened
     o String disputeResolved
     o String paymentRequested
     o String orderRefunded
+    o String approved
     o String paid
     o String dispute
     o String resolve
