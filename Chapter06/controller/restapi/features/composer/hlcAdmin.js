@@ -722,3 +722,46 @@ exports.removeMember = function(req, res, next) {
         })
         .catch((error) => {console.log('error with adminConnection', error); res.send(error.message);});
 }
+
+/**
+ * get Historian Records
+ * @param {express.req} req - the inbound request object from the client
+ *  req.body.registry: _string - type of registry to search; e.g. 'Buyer', 'Seller', etc.
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ * returns an array of members
+ * @function
+ */
+exports.getHistory = function(req, res, next) {
+    let allHistory = new Array();
+    let businessNetworkConnection;
+    let factory;
+    let adminConnection = new AdminConnection();
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            console.log('adminConnection succeeded')
+            businessNetworkConnection = new BusinessNetworkConnection();
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                .then(() => {
+                    console.log('businessNetworkConnection succeeded')
+                    return businessNetworkConnection.getRegistry('org.hyperledger.composer.system.HistorianRecord')
+                    .then(function(registry){
+                        return registry.getAll()
+                        .then ((history) => {
+                            for (let each in history)
+                                { (function (_idx, _arr)
+                                    { let _jsn = _arr[_idx];
+                                    _jsn.type = 'HistorianRecord';
+                                    allHistory.push(_jsn); })(each, history)
+                                }
+                            console.log(allHistory[0]);
+                            res.send({'result': 'success', 'history': allHistory});
+                        })
+                        .catch((error) => {console.log('error with getAll History', error)});
+                    })
+                    .catch((error) => {console.log('error with getRegistry', error)});
+                    })
+                .catch((error) => {console.log('error with business network Connect', error)});
+        })
+        .catch((error) => {console.log('error with admin network Connect', error)});
+}

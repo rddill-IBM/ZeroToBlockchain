@@ -21,7 +21,15 @@ var multi_lingual = require('./features/multi_lingual');
 var resources = require('./features/resources');
 var getCreds = require('./features/getCredentials');
 var hlcAdmin = require('./features/composer/hlcAdmin');
+var hlcClient = require('./features/composer/hlcClient');
 var setup = require('./features/composer/autoLoad');
+var hlcFabric = require('./features/composer/queryBlockchain');
+router.post('/setup/autoLoad*', setup.autoLoad);
+router.get('/setup/getPort*', setup.getPort);
+
+router.get('/fabric/getChainInfo', hlcFabric.getChainInfo);
+router.get('/fabric/getChainEvents', hlcFabric.getChainEvents);
+router.get('/fabric/getHistory', hlcAdmin.getHistory);
 
 module.exports = router;
 var count = 0;
@@ -62,5 +70,3 @@ router.post('/composer/admin/getAssets*', hlcAdmin.getAssets);
 router.post('/composer/admin/addMember*', hlcAdmin.addMember);
 router.post('/composer/admin/removeMember*', hlcAdmin.removeMember);
 router.post('/composer/admin/getSecret*', setup.getMemberSecret);
-
-router.post('/setup/autoLoad*', setup.autoLoad);

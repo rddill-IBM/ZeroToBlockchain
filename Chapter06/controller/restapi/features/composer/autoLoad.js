@@ -29,6 +29,8 @@ const composerClient = require('composer-client');
 const composerCommon = require('composer-common');
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
+const financeCoID = 'easymoney@easymoneyinc.com';
+
 
 const svc = require('./Z2B_Services');
 const util = require('./Z2B_Utilities');
@@ -36,7 +38,23 @@ const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
 let itemTable = new Array();
 let memberTable = new Array();
-var orderStatus = svc.orderStatus;
+let orderStatus = svc.orderStatus;
+
+let connection; let socketAddr;
+
+
+/**
+ * get the connection port
+ * @param {express.req} req - the inbound request object from the client
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ * 
+ * @function
+ */
+exports.getPort = function(req, res, next) {
+    let _conn = svc.createMessageSocket();
+    res.send({'port': _conn.socket});
+} 
 
 /**
  * load up the network based on the data in the startup folder
@@ -52,7 +70,10 @@ exports.autoLoad = function(req, res, next) {
     let startupFile = JSON.parse(fs.readFileSync(newFile));
     // connect to the network
     let businessNetworkConnection;
-    let factory;
+    let factory; let participant;
+    svc.createMessageSocket();
+    connection = svc.m_connection; 
+    socketAddr = svc.m_socketAddr;
     let adminConnection = new AdminConnection();
         adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
         .then(() => {
@@ -66,13 +87,20 @@ exports.autoLoad = function(req, res, next) {
                             return businessNetworkConnection.getParticipantRegistry(NS+'.'+_arr[_idx].type)
                             .then(function(participantRegistry){
                                 return participantRegistry.get(_arr[_idx].id)
-                                .then((_res) => {console.log('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type)})
+                                .then((_res) => {
+                                    console.log('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
+                                    svc.m_connection.sendUTF('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
+                                })
                                 .catch((error) => {
-                                    let participant = factory.newResource(NS, _arr[_idx].type, _arr[_idx].id);
+                                    console.log('member does not exist');
+                                    participant = factory.newResource(NS, _arr[_idx].type, _arr[_idx].id);
+                                    console.log('new resource created for '+_arr[_idx].id+' of type: '+_arr[_idx].type);
                                     participant.companyName = _arr[_idx].companyName;
+                                    console.log('added company name to participant');
                                     participantRegistry.add(participant)
                                     .then(() => {
                                         console.log('['+_idx+'] '+_arr[_idx].companyName+" successfully added");
+                                        svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].companyName+" successfully added");
                                     })
                                     .then(() => {
                                         return businessNetworkConnection.issueIdentity(NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
@@ -87,10 +115,10 @@ exports.autoLoad = function(req, res, next) {
                                                 console.error('create id for '+_arr[_idx].id+'failed.',error.message);
                                             });
                                         })
-                                    .catch((error) => {console.log(_arr[_idx].companyName+" add failed",error);});
+                                    .catch((error) => {console.log(_arr[_idx].companyName+" add failed",error.message);});
                                     });
                                 })
-                            .catch((error) => {console.log('error with getParticipantRegistry', error)});
+                            .catch((error) => {console.log('error with getParticipantRegistry', error.message)});
                         })(each, startupFile.members)
                     }
                     for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items)}
@@ -101,7 +129,10 @@ exports.autoLoad = function(req, res, next) {
                                 return businessNetworkConnection.getAssetRegistry(NS+'.'+_arr[_idx].type)
                                 .then((assetRegistry) => {
                                     return assetRegistry.get(_arr[_idx].id)
-                                    .then((_res) => {console.log('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type)})
+                                    .then((_res) => {
+                                        console.log('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
+                                        svc.m_connection.sendUTF('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
+                                    })
                                     .catch((error) => {
                                         let order = factory.newResource(NS, _arr[_idx].type, _arr[_idx].id);
                                         order = svc.createOrderTemplate(order);
@@ -113,6 +144,9 @@ exports.autoLoad = function(req, res, next) {
                                         const createNew = factory.newTransaction(NS, 'CreateOrder');
                                         order.buyer = factory.newRelationship(NS, 'Buyer', _arr[_idx].buyer);
                                         order.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
+                                        order.provider = factory.newRelationship(NS, 'Provider', 'noop@dummy');
+                                        order.shipper = factory.newRelationship(NS, 'Shipper', 'noop@dummy');
+                                        order.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
                                         createNew.order = factory.newRelationship(NS, 'Order', order.$identifier);
                                         createNew.buyer = factory.newRelationship(NS, 'Buyer', _arr[_idx].buyer);
                                         createNew.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
@@ -120,26 +154,26 @@ exports.autoLoad = function(req, res, next) {
                                         // add the order to the asset registry.
                                         return assetRegistry.add(order)
                                         .then(() => {
-                                            svc.loadTransaction(createNew, order.orderNumber, businessNetworkConnection);
+                                            svc.loadTransaction(svc.m_connection, createNew, order.orderNumber, businessNetworkConnection);
                                         })
                                         .catch((error) => {
                                         console.log(_arr[_idx].id+" assetRegistry.add failed: text",error.message);
                                         if (error.message.search('MVCC_READ_CONFLICT') != -1)
                                             {console.log(_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
-                                            svc.addOrder(order, assetRegistry, createNew, businessNetworkConnection);
+                                            svc.addOrder(svc.m_connection, order, assetRegistry, createNew, businessNetworkConnection);
                                             }
-                                            else {console.log('error with assetRegistry.add', error)}
+                                            else {console.log('error with assetRegistry.add', error.message)}
                                         });
                                      });
                                     })
-                                .catch((error) => {console.log('error with getParticipantRegistry', error)});
+                                .catch((error) => {console.log('error with getParticipantRegistry', error.message)});
                             })(each, startupFile.assets)
                         }
                     })
-                .catch((error) => {console.log('error with business network Connect', error)});
+                .catch((error) => {console.log('error with business network Connect', error.message)});
         })
-        .catch((error) => {console.log('error with adminConnect', error)});
-        res.send("autoload in process");
+        .catch((error) => {console.log('error with adminConnect', error.message)});
+        res.send({'port': socketAddr});
 }
 
 /**

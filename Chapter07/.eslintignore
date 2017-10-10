@@ -1,0 +1,7 @@
+coverage
+dist
+go
+lib
+node_modules
+out
+HTML/js/utils

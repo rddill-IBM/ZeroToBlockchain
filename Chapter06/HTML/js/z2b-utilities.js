@@ -274,3 +274,17 @@ function displayAPI(_api)
   }
   _cTarget.append(_str);
 }
+
+/**
+ * format messages for display
+ */
+function formatMessage(_msg) {return '<p class="message">'+_msg+'</p>';}
+
+/**
+ * get the web socket port
+ */
+function getPort ()
+{
+  if (msgPort == null)
+  { $.when($.get('/setup/getPort')).done(function (port){console.log('port is: '+port.port); msgPort = port.port;});}
+}

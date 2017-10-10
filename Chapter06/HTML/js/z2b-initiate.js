@@ -21,4 +21,5 @@
   function initPage ()
 {
   goMultiLingual("US_English", "index");
+  getChainEvents();
 }

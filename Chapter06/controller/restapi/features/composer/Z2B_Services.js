@@ -17,6 +17,16 @@ var fs = require('fs');
 var path = require('path');
 const sleep = require('sleep');
 
+const ws = require('websocket');
+const http = require('http');
+const express = require('express');
+const app = express();
+const cfenv = require('cfenv');
+const appEnv = cfenv.getAppEnv();
+app.set('port', appEnv.port);
+
+
+
 /**
  * This class creates an administration connection to a Hyperledger Composer runtime. The
  * connection can then be used to:
@@ -48,16 +58,20 @@ var  Z2Blockchain  = {
         _inbound.dateBackordered = '';
         _inbound.requestShipment = '';
         _inbound.delivered = '';
+        _inbound.delivering = '';
         _inbound.disputeOpened = '';
         _inbound.disputeResolved = '';
         _inbound.orderRefunded = '';
         _inbound.paymentRequested = '';
         _inbound.paid = '';
+        _inbound.approved = '';
         _inbound.dispute = '';
         _inbound.resolve = '';
         _inbound.backorder = '';
         _inbound.refund = '';
-        _inbound.vendors = [];
+        _inbound.provider = '';
+        _inbound.shipper = '';
+        _inbound.financeCo = '';
         return(_inbound);
     },
 /**
@@ -104,15 +118,18 @@ var  Z2Blockchain  = {
  * @param {order_object} _id - order id
  * @param {bnc} businessNetworkConnection - already created business network connection
  */
-    loadTransaction: function ( _item, _id, businessNetworkConnection)
+    loadTransaction: function (_con, _item, _id, businessNetworkConnection)
     {
         return businessNetworkConnection.submitTransaction(_item)
-        .then(() => {console.log('loadTransaction: order '+_id+" successfully added");})
+        .then(() => {
+            console.log('loadTransaction: order '+_id+' successfully added'); 
+            _con.sendUTF('loadTransaction: order '+_id+' successfully added');
+        })
         .catch((error) => {
             if (error.message.search('MVCC_READ_CONFLICT') != -1)
                 {sleep.sleep(5);
                     console.log(_id+" loadTransaction retrying submit transaction for: "+_id);
-                    this.loadTransaction(_item, _id, businessNetworkConnection);
+                    this.loadTransaction(_con,_item, _id, businessNetworkConnection);
                 }
             });
     },
@@ -122,16 +139,16 @@ var  Z2Blockchain  = {
  * @param {assetRegistry} _registry - registry into which asset (order) should be placed
  * @param {networkTransaction} _createNew - transaction to be processed after order successfully added
  * @param {businessNetworkConnection} _bnc - business network connection to use */
-    addOrder: function (_order, _registry, _createNew, _bnc)
+    addOrder: function (_con, _order, _registry, _createNew, _bnc)
     {
         return _registry.add(_order)
         .then(() => {
-            this.loadTransaction(_createNew, _order.orderNumber, _bnc);
+            this.loadTransaction(_con,_createNew, _order.orderNumber, _bnc);
         })
         .catch((error) => {
         if (error.message.search('MVCC_READ_CONFLICT') != -1)
             {console.log(_order.orderNumber+" addOrder retrying assetRegistry.add for: "+_order.orderNumber);
-            this.addOrder(_order, _registry, _createNew, _bnc);
+            this.addOrder(_con,_order, _registry, _createNew, _bnc);
             }
             else {console.log('error with assetRegistry.add', error)}
         });
@@ -198,12 +215,16 @@ var  Z2Blockchain  = {
  */
     getOrderData: function (_order)
     {
-        let orderElements = ['items', 'status', 'amount', 'created', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'disputeOpened', 'disputeResolved', 'paymentRequested', 'orderRefunded', 'paid', 'vendors', 'dispute', 'resolve', 'backorder', 'refund'];
+        let orderElements = ['items', 'status', 'amount', 'created', 'cancelled', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'delivering', 'approved',
+        'disputeOpened', 'disputeResolved', 'paymentRequested', 'orderRefunded', 'paid', 'dispute', 'resolve', 'backorder', 'refund'];
         var _obj = {};
         for (let each in orderElements){(function(_idx, _arr)
         { _obj[_arr[_idx]] = _order[_arr[_idx]]; })(each, orderElements)}
         _obj.buyer = _order.buyer.$identifier;
         _obj.seller = _order.seller.$identifier;
+        _obj.provider = _order.seller.$provider;
+        _obj.shipper = _order.seller.$shipper;
+        _obj.financeCo = _order.seller.$financeCo;
         return (_obj);
     },
 
@@ -222,11 +243,64 @@ var  Z2Blockchain  = {
         Dispute: {code: 8, text: 'Order Disputed'},
         Resolve: {code: 9, text: 'Order Dispute Resolved'},
         PayRequest: {code: 10, text: 'Payment Requested'},
-        Authorize: {code: 11, text: 'Payment Apporoved'},
+        Authorize: {code: 11, text: 'Payment Approved'},
         Paid: {code: 14, text: 'Payment Processed'},
         Refund: {code: 12, text: 'Order Refund Requested'},
         Refunded: {code: 13, text: 'Order Refunded'}
+    },
+/**
+ * 
+ */
+    m_connection: null,
+    m_socketAddr: null,
+    m_socket: null,
+    createMessageSocket: function (_port)
+    {
+        var port = (typeof(_port) == 'undefined' || _port == null) ? app.get('port')+1 : _port
+        if (this.m_socket == null)
+        {
+            this.m_socketAddr = port;
+            this.m_socket= new ws.server({httpServer: http.createServer().listen(this.m_socketAddr)});
+            var _this = this;            
+            this.m_socket.on('request', function(request) 
+            {
+                _this.m_connection = request.accept(null, request.origin);
+                _this.m_connection.on('message', function(message)
+                {
+                    console.log(message.utf8Data);
+                    _this.m_connection.sendUTF('connected');
+                    _this.m_connection.on('close', function(m_connection) {console.log('m_connection closed'); });
+                });
+            });
         }
+        return {conn: this.m_connection, socket: this.m_socketAddr};
+    },
+
+    cs_connection: null,
+    cs_socketAddr: null,
+    cs_socket: null,
+    createChainSocket: function ()
+    {
+        var port =  app.get('port')+2;
+        if (this.cs_socket == null)
+        {
+            this.cs_socketAddr = port;
+            this.cs_socket= new ws.server({httpServer: http.createServer().listen(this.cs_socketAddr)});
+            var _this = this;            
+            this.cs_socket.on('request', function(request) 
+            {
+                _this.cs_connection = request.accept(null, request.origin);
+                _this.cs_connection.on('message', function(message)
+                {
+                    console.log(message.utf8Data);
+                    _this.cs_connection.sendUTF('connected');
+                    _this.cs_connection.on('close', function(cs_connection) {console.log('cs_connection closed'); });
+                });
+            });
+        }
+        return {conn: this.cs_connection, socket: this.cs_socketAddr};
+    }
+
 }
 
 module.exports = Z2Blockchain;

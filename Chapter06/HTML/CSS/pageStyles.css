@@ -6,10 +6,10 @@ body {height: 100%}
 
 @media screen and ( max-height: 799px ) {
 	.scrollingPane{
-		height: calc(75vh - 3.5em);
+		height: calc(65vh - 5em);
 		margin-left: 0px;
 		width: 100%;
-		overflow: scroll;
+		overflow: auto;
 	}
 	.button-wide {
 		width: 30%;
@@ -20,10 +20,10 @@ body {height: 100%}
 }
 @media screen and ( min-height: 800px ) {	
 	.scrollingPane{
-		height: calc(80vh - 3.5em);
+		height: calc(70vh - 5em);
 		margin-left: 0px;
 		width: 100%;
-		overflow: scroll;
+		overflow: auto;
 	}
 	.button-wide {
 		width: 30%;
@@ -32,27 +32,88 @@ body {height: 100%}
 		text-align: center;
 	}	
 }
-
+@media screen and ( min-width: 800px ) {	
+	.wide{
+		margin-left: 2.5%;
+		margin-right: 2.5%;
+		width: 95%;
+		overflow: auto;
+	}
+}
+@media screen and ( max-width: 799px ) {	
+	.wide{
+		margin-left: .125em;
+		margin-right: .125em;
+		overflow: auto;
+	}
+}	
+.buyer { background-color: #CBCFD0; }
+.seller { background-color: #5DC15D;}
+.provider { background-color: #8A99D3;}
+.shipper { background-color: #9CF2C5;}
+.finance { background-color: #95DAEE;}
+.messagePane{
+	height: 3.5em;
+	margin-left: 0px;
+	width: 100%;
+	overflow: auto;
+}
+p.message{
+	color: #824301;
+	font-size: 1.125em;
+	margin: .125em;
+	padding: 0px;
+	text-align: left;
+}
+.spacer{
+	height: 1em;
+	width: 100%;
+	background-color: #DCE8CB
+}
 .scrollingPaneLeft{
 	position: fixed;
 	height: 85%;
 	margin-left: 1%;
 	width: 45%;
-	overflow: scroll;
+	overflow: auto;
 }
 .scrollingPaneRight{
 	position: fixed;
 	height: 85%;
 	margin-left: 50%;
 	width: 45%;
-	overflow: scroll;
+	overflow: auto;
+}
+.blockchain {
+	background-color: black;
+	position: fixed;
+	height: 9%;
+	margin-left: 1%;
+	width: 95%;
+	top: 90%;
+	padding: 4px;
+	overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;}
+.block {
+	background-color: blue;
+	color: white;
+	display: inline-block;
+	padding: 2px;
+	margin: 5px;
+	height: 90%;
+    vertical-align: middle;
+	text-overflow: 	wrap;
+	width: 290px;
+	word-wrap: break-word;
+	white-space: normal;
 }
 .bottom-hold{
 	position: fixed;
 	height: 10%;
 	margin-left: 1%;
 	width: 90%;
-	top: 95%;
+	top: 85%;
 }
 .container{
 	width: 100%;
@@ -60,7 +121,9 @@ body {height: 100%}
 table {border: 1px solid #0000ff;}
  th {text-align: center; font-style: bold; font-size: 1em; padding: .25em;}
  td { border: 1px solid #0000ff; padding-left: .25em; padding-right: .25em}
-
+ th.right {text-align: right; font-style: bold; font-size: 1em; padding: .25em;}
+ th.left {text-align: left; font-style: bold; font-size: 1em; padding: .25em;}
+ 
 .imageLabel {
 	color: black; text-align: center; font-style: bold; font-size: 1.5em; padding: .5em;}
 

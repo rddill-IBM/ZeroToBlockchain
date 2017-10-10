@@ -1,0 +1,146 @@
+/**
+*
+rule AllAccess {
+  description: "AllAccess - grant everything to everybody"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+*/
+
+
+/**
+*
+**/
+rule BuyerACLCreate {
+    description: "Enable Buyers to execute all actions on an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.CreateOrder"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLBuy {
+    description: "Enable a Buyer to update an Order from Create to Buy"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Buy"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLCancel {
+    description: "Enable a Buyer to CANCEL an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE, DELETE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.OrderCancel"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLDispute {
+    description: "Enable a Buyer to raise a DISPUTE on an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Dispute"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLResolve {
+    description: "Enable a Buyer to RESOLVE a DISPUTEd Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLAuthorizePayment {
+    description: "Enable a Buyer to AuthorizePayment for an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.AuthorizePayment"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACL {
+    description: "Allow Buyer full access to any order where they are listed as Buyer"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE, DELETE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessBuyer {
+  description: "Allow Buyers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+/**
+*
+**/
+rule SellerACL {
+    description: "Allow seller full access to order where they are listed as seller"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule FinanceCoACL {
+    description: "Allow FinanceCo full access to all Orders"
+    participant: "org.acme.Z2BTestNetwork.FinanceCo"
+    operation: ALL
+    resource: "org.acme.Z2BTestNetwork.*"
+    action: ALLOW
+}
+/**
+*
+*/
+rule netAccessParticipant {
+  description: "Allow participants access to the network"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: READ, UPDATE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}

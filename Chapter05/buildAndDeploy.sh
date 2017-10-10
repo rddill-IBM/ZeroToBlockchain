@@ -81,6 +81,4 @@ showStep "starting network"
 ./startup.sh
 showStep "deploying network"
 ./deployNetwork.sh -n $NETWORK_NAME
-showStep "testing rest server \n when this completes, \n  go to your favorite browser \n and enter localhost:3000/explorer "
-composer-rest-server -p hlfv1 -n $NETWORK_NAME -i admin -s adminpw
-showStep ""
+showStep "deploy complete"

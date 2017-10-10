@@ -79,6 +79,8 @@ exports.adminConnect = function(req, res, next) {
  * @function
  */
 exports.createProfile = function(req, res, next) {
+    let fields = ['fabric_type', 'orderers_url', 'ca_url', 'ca_name', 'peers_eventURL', 'peers_requestURL',
+        'keyValStore', 'channel', 'mspID', 'timeout'];
 
     let adminOptions = {
         type: req.body.type,
@@ -90,7 +92,12 @@ exports.createProfile = function(req, res, next) {
         ca: {url: req.body.ca.url, name: req.body.ca.name},
         peers: [{eventURL: req.body.peers.eventURL, requestURL: req.body.peers.requestRUL}]
     };
-
+    console.log(adminOptions);
+    let adminConnection = new composerAdmin.AdminConnection();
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            
+        });
 };
 /**
  * Deletes the specified connection profile from the profile store being used by this AdminConnection.
@@ -103,7 +110,10 @@ exports.createProfile = function(req, res, next) {
  */
 exports.deleteProfile = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            
+        });
 };
 /**
  * Deploys a new BusinessNetworkDefinition to the Hyperledger Fabric. The connection must be connected for this method to succeed.
@@ -116,14 +126,17 @@ exports.deleteProfile = function(req, res, next) {
  * @function
  */
 exports.deploy = function(req, res, next) {
-
-    let newFile = path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive);
-    let archiveFile = fs.readFileSync(newFile);
-
-    let adminConnection = new composerAdmin.AdminConnection();
-
-
-};
+    
+        let newFile = path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive);
+        let archiveFile = fs.readFileSync(newFile);
+    
+        let adminConnection = new composerAdmin.AdminConnection();
+    
+        return BusinessNetworkDefinition.fromArchive(archiveFile)
+            .then(function(archive) {
+                
+            });
+        };
 /**
  * Installs a new BusinessNetworkDefinition to the Hyperledger Fabric. The connection must be connected for this method to succeed.
  * @param {express.req} req - the inbound request object from the client
@@ -140,8 +153,19 @@ exports.networkInstall = function(req, res, next) {
     let archiveFile = fs.readFileSync(newFile);
 
     let adminConnection = new composerAdmin.AdminConnection();
-
-}
+    return BusinessNetworkDefinition.fromArchive(archiveFile)
+    .then((businessNetworkDefinition) => {
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            
+        })
+                .catch((error) => {console.log('error with adminConnection.connect', error.message)
+                res.send({install: error.message});
+                });
+            })
+        .catch((error) => {console.log('error with fromArchive', error.message)});
+        res.send({install: error.message});
+    }
 
 /**
  * Starts a new BusinessNetworkDefinition to the Hyperledger Fabric. The connection must be connected for this method to succeed.
@@ -157,7 +181,11 @@ exports.networkStart = function(req, res, next) {
     
     let adminConnection = new composerAdmin.AdminConnection();
 
-};
+    return BusinessNetworkDefinition.fromArchive(archiveFile)
+        .then(function(archive) {
+            
+        });
+    };
 
 /**
  * disconnects this connection
@@ -169,7 +197,18 @@ exports.networkStart = function(req, res, next) {
  */
 exports.disconnect = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            adminConnection.disconnect()
+                .then(function(result){
+                    console.log('network disconnect successful: ');
+                    res.send({disconnect: 'succeeded'});
+                })
+                .catch(function(error){
+                    console.log('network disconnect failed: ',error);
+                    res.send(error);
+                });
+        });
 };
 /**
  * Retrieve all connection profiles from the profile store being used by this AdminConnection.
@@ -181,7 +220,10 @@ exports.disconnect = function(req, res, next) {
  */
 exports.getAllProfiles = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            
+        });
 };
 /**
  * Retrieve the specified connection profile from the profile store being used by this AdminConnection.
@@ -194,7 +236,10 @@ exports.getAllProfiles = function(req, res, next) {
  */
 exports.getProfile = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            
+        });
 };
 /**
  * List all of the deployed business networks. The connection must be connected for this method to succeed.
@@ -206,7 +251,11 @@ exports.getProfile = function(req, res, next) {
  */
 exports.listAsAdmin = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    util.displayObjectValuesRecursive(adminConnection);
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(function(){
+            
+        });
 };
 /**
  * List all of the deployed business networks. The connection must be connected for this method to succeed.
@@ -218,7 +267,22 @@ exports.listAsAdmin = function(req, res, next) {
  */
 exports.listAsPeerAdmin = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.peerAdmin, config.composer.secret)
+        .then(function(){
+            adminConnection.list()
+                .then((businessNetworks) => {
+                    // Connection has been tested
+                    businessNetworks.forEach((businessNetwork) => {
+                        console.log('Deployed business network', businessNetwork);
+                    });
+                    res.send(businessNetworks);
+                })
+                .catch(function(_error){
+                    let error = _error;
+                    console.log('get business networks failed: ',error);
+                    res.send(error);
+                });
+        });
 };
 /**
  * Test the connection to the runtime and verify that the version of the runtime is compatible with this level of the node.js module.
@@ -230,7 +294,19 @@ exports.listAsPeerAdmin = function(req, res, next) {
  */
 exports.ping = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, req.body.businessNetwork)
+        .then(function(){
+            adminConnection.ping()
+                .then(function(result){
+                    console.log('network ping successful: ',result);
+                    res.send({ping: result});
+                })
+                .catch(function(error){
+                    let _error = error;
+                    console.log('network ping failed: '+_error);
+                    res.send({ping: _error.toString()});
+                });
+        });
 };
 /**
  * Undeploys a BusinessNetworkDefinition from the Hyperledger Fabric. The business network will no longer be able to process transactions.
@@ -243,7 +319,19 @@ exports.ping = function(req, res, next) {
  */
 exports.undeploy = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-
+    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, req.body.businessNetwork)
+        .then(function(){
+            adminConnection.undeploy(req.body.businessNetwork)
+            .then(function(result){
+                    console.log(req.body.businessNetwork+' network undeploy successful ');
+                    res.send({undeploy: req.body.businessNetwork+' network undeploy successful '});
+                })
+                .catch(function(error){
+                    let _error = error;
+                    console.log(req.body.businessNetwork+' network undeploy failed: '+_error);
+                    res.send({undeploy: _error.toString()});
+            });
+        });
 };
 /**
  * Updates an existing BusinessNetworkDefinition on the Hyperledger Fabric. The BusinessNetworkDefinition must have been previously deployed.
@@ -262,6 +350,22 @@ exports.update = function(req, res, next) {
 
     let adminConnection = new composerAdmin.AdminConnection();
 
+    return BusinessNetworkDefinition.fromArchive(archiveFile)
+        .then(function(archive) {
+            adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, netName)
+            .then(function(){
+                adminConnection.update(archive)
+                    .then(function(){
+                        console.log(netName+' network update successful: ');
+                        res.send({update: req.body.myArchive+' network update successful '});
+                    })
+                    .catch(function(error){
+                        let _error = error;
+                        console.log(req.body.myArchive+' network update failed: '+_error);
+                        res.send({update: _error.toString()});
+                        });
+            });
+        });
 };
 
 /**
@@ -280,7 +384,27 @@ exports.getRegistries = function(req, res, next)
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
-
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            console.log('adminConnection succeeded')
+            businessNetworkConnection = new BusinessNetworkConnection();
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                .then(() => {
+                    console.log('businessNetworkConnection succeeded')
+                    return businessNetworkConnection.getAllParticipantRegistries()
+                    .then(function(participantRegistries){
+                        for (let each in participantRegistries)
+                            { (function (_idx, _arr)
+                                { let r_type = _arr[_idx].name.split('.');
+                                    allRegistries.push([r_type[r_type.length-1]]); 
+                            })(each, participantRegistries)
+                            }
+                        res.send({'result': 'success', 'registries': allRegistries});})
+                    .catch((error) => {console.log('error with getAllRegistries', error)});
+                    })
+                .catch((error) => {console.log('error with business network Connect', error)});
+        })
+        .catch((error) => {console.log('error with admin network Connect', error)});
 }
 
 /**
@@ -298,6 +422,53 @@ exports.getMembers = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            console.log('adminConnection succeeded')
+            businessNetworkConnection = new BusinessNetworkConnection();
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                .then(() => {
+                    console.log('businessNetworkConnection succeeded')
+                    return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
+                    .then(function(registry){
+                        return registry.getAll()
+                        .then ((members) => {
+                            for (let each in members)
+                                { (function (_idx, _arr)
+                                    { let _jsn = {};
+                                    _jsn.type = req.body.registry;
+                                    _jsn.companyName = _arr[_idx].companyName;
+                                    switch (req.body.registry)
+                                        {
+                                            case 'Buyer':
+                                            _jsn.id = _arr[_idx].buyerID;
+                                            break;
+                                            case 'Seller':
+                                            _jsn.id = _arr[_idx].sellerID;                                            
+                                            break;
+                                            case 'Provider':
+                                            _jsn.id = _arr[_idx].providerID;
+                                            break;
+                                            case 'Shipper':
+                                            _jsn.id = _arr[_idx].shipperID;                                            
+                                            break;
+                                            case 'FinanceCo':
+                                            _jsn.id = _arr[_idx].financeCoID;                                            
+                                            break;
+                                            default:
+                                            _jsn.id = _arr[_idx].id;                                            
+                                        }
+                                        allMembers.push(_jsn); })(each, members)
+                                }
+                            res.send({'result': 'success', 'members': allMembers});
+                        })
+                        .catch((error) => {console.log('error with getAllMembers', error)});
+                    })
+                    .catch((error) => {console.log('error with getRegistry', error)});
+                    })
+                .catch((error) => {console.log('error with business network Connect', error)});
+        })
+        .catch((error) => {console.log('error with admin network Connect', error)});
    
 }
 
@@ -320,6 +491,76 @@ exports.getAssets = function(req, res, next) {
         let factory;
         let serializer;
         let adminConnection = new AdminConnection();
+            adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+            .then(() => {
+                console.log('adminConnection succeeded')
+                businessNetworkConnection = new BusinessNetworkConnection();
+                return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                    .then(() => {
+//                        let bnd = new BusinessNetworkDefinition(config.composer.network+'@0.1.6', config.composer.description, packageJSON);
+// retry this with fromArchive when time allows
+//                        serializer = bnd.getSerializer();
+                        return businessNetworkConnection.getAssetRegistry(NS+'.'+req.body.registry)
+                        .then(function(registry){
+                            return registry.getAll()
+                            .then ((members) => {
+                                console.log('there are '+members.length+' entries in the '+req.body.registry+' Registry with id: '+members[0].$namespace);
+                                for (let each in members)
+                                    { (function (_idx, _arr)
+                                        { 
+                                            switch(req.body.type)
+                                            {
+                                                case 'Buyer':
+                                                if (req.body.id == _arr[_idx].buyer.$identifier)
+                                                    {
+                                                        let _jsn = svc.getOrderData(_arr[_idx]);
+                                                        _jsn.type = req.body.registry;
+                                                        switch (req.body.registry)
+                                                        {
+                                                            case 'Order':
+                                                            _jsn.id = _arr[_idx].orderNumber;
+                                                            break;
+                                                            default:
+                                                            _jsn.id = _arr[_idx].id;                                            
+                                                        }
+                                                        allOrders.push(_jsn);
+                                                    }
+                                                break;
+                                                case 'admin':
+                                                let _jsn = svc.getOrderData(_arr[_idx]);
+                                                _jsn.type = req.body.registry;
+                                                switch (req.body.registry)
+                                                {
+                                                    case 'Order':
+                                                    _jsn.id = _arr[_idx].orderNumber;
+                                                    break;
+                                                    default:
+                                                    _jsn.id = _arr[_idx].id;                                            
+                                                }
+                                                allOrders.push(_jsn);
+                                                break;
+                                                default:
+                                                break;
+                                            }
+                                        })(each, members)
+                                    }
+                                res.send({'result': 'success', 'orders': allOrders});
+                                })
+                                .catch((error) => {console.log('error with getAllOrders', error)
+                                res.send({'result': 'failed', 'error': 'getAllOrders: '+error.message});
+                                });
+                            })
+                            .catch((error) => {console.log('error with getRegistry', error)
+                            res.send({'result': 'failed', 'error': 'getRegistry: '+error.message});
+                            });
+                        })
+                    .catch((error) => {console.log('error with business network Connect', error)
+                    res.send({'result': 'failed', 'error': 'business network Connect: '+error.message});
+                    });
+                })
+                .catch((error) => {console.log('error with admin network Connect', error)
+                res.send({'result': 'failed', 'error': 'admin network Connect: '+error.message});
+                });
 }
 
 /**
@@ -337,6 +578,11 @@ exports.addMember = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            
+        })
+            .catch((error) => {console.log('error with adminConnection', error); res.send(error);});
 }
 
 /**
@@ -353,5 +599,53 @@ exports.removeMember = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
+    console.log(req.body.id, req.body.registry);
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            
+        })
+        .catch((error) => {console.log('error with adminConnection', error); res.send(error.message);});
+}
 
+/**
+ * get Historian Records
+ * @param {express.req} req - the inbound request object from the client
+ *  req.body.registry: _string - type of registry to search; e.g. 'Buyer', 'Seller', etc.
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ * returns an array of members
+ * @function
+ */
+exports.getHistory = function(req, res, next) {
+    let allHistory = new Array();
+    let businessNetworkConnection;
+    let factory;
+    let adminConnection = new AdminConnection();
+        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        .then(() => {
+            console.log('adminConnection succeeded')
+            businessNetworkConnection = new BusinessNetworkConnection();
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                .then(() => {
+                    console.log('businessNetworkConnection succeeded')
+                    return businessNetworkConnection.getRegistry('org.hyperledger.composer.system.HistorianRecord')
+                    .then(function(registry){
+                        return registry.getAll()
+                        .then ((history) => {
+                            for (let each in history)
+                                { (function (_idx, _arr)
+                                    { let _jsn = _arr[_idx];
+                                    _jsn.type = 'HistorianRecord';
+                                    allHistory.push(_jsn); })(each, history)
+                                }
+                            console.log(allHistory[0]);
+                            res.send({'result': 'success', 'history': allHistory});
+                        })
+                        .catch((error) => {console.log('error with getAll History', error)});
+                    })
+                    .catch((error) => {console.log('error with getRegistry', error)});
+                    })
+                .catch((error) => {console.log('error with business network Connect', error)});
+        })
+        .catch((error) => {console.log('error with admin network Connect', error)});
 }

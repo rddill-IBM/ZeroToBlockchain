@@ -12,14 +12,15 @@
  * limitations under the License.
  */
 
-// z2b-buyer.js
+// z2c-admin.js
 
 var creds;
 var connection;
 var connectionProfileName = "z2b-test-profile";
 var networkFile = "zerotoblockchain-network.bna"
 var businessNetwork = "zerotoblockchain-network";
-var members;
+var buyers;
+var sellers;
 var orderDiv = "orderDiv";
 var itemTable = {};
 var sellerTable = {};
@@ -38,7 +39,7 @@ var orderStatus = {
   Dispute: {code: 8, text: 'Order Disputed'},
   Resolve: {code: 9, text: 'Order Dispute Resolved'},
   PayRequest: {code: 10, text: 'Payment Requested'},
-  Authorize: {code: 11, text: 'Payment Apporoved'},
+  Authorize: {code: 11, text: 'Payment Approved'},
   Paid: {code: 14, text: 'Payment Processed'},
   Refund: {code: 12, text: 'Order Refund Requested'},
   Refunded: {code: 13, text: 'Order Refunded'}
@@ -51,26 +52,8 @@ function loadBuyerUX ()
 {
   toLoad = "buyer.html";
   $.when($.get(toLoad)).done(function (page)
-    {$("#body").empty();
-    $("#body").append(page);
-    var _create = $("#newOrder");
-    var _list = $("#orderStatus");
-    var _orderDiv = $("#"+orderDiv);
-    _create.on('click', function(){displayOrderForm();});
-    _list.on('click', function(){listOrders()});
-    var options = {};
-    options.registry = 'Buyer';
-    $.when($.post('/composer/admin/getMembers', options)).done(function (_results)
-      { console.log(_results);
-        members = _results.members;
-        $("#buyer").empty();
-        for (each in members)
-          {(function(_idx, _arr){
-            $("#buyer").append('<option value="'+_arr[_idx].id+'">' +_arr[_idx].id+'</option>');;
-          })(each, members)}
-        $("#company")[0].innerText = members[0].companyName;
-        $("#buyer").on('change', function() { $("#company")[0].innerText = findMember($("#buyer").find(":selected").text(),members).companyName; });
-      });
+    {
+      
     });
 }
 /**
@@ -82,13 +65,8 @@ function displayOrderForm()
 totalAmount = 0;
 newItems = [];
 $.when($.get(toLoad), $.get('/composer/client/getItemTable'), $.post('/composer/admin/getMembers', options)).done(function (page, _items, _sellers)
-  {  sellerTable = _sellers[0].members;
-    itemTable = _items[0].items;
-    let _orderDiv = $("#"+orderDiv);
-    _orderDiv.empty();
-    _orderDiv.append(page[0]);
-    let _str = "";
-
+  {
+    
   });
 }
 /**
@@ -100,7 +78,7 @@ function listOrders()
   options.id = $("#buyer").find(":selected").text();
   $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
   {
-
+    
   });
 }
 /**
@@ -112,12 +90,20 @@ function listOrders()
  */
 function formatOrders(_target, _orders)
 {
+  let p_string;
   _target.empty();
-  _str = '<table><tr><th>Order #</th><th>Items</th><th>Total</th></tr>';
+  let _str = ""; let _date = "";
+  for (let each in _orders)
+  {(function(_idx, _arr)
+    {
+      
+    })(each, _orders)
+  }
+  _target.append(_str);
   for (let each in _orders)
     {(function(_idx, _arr)
-      { 
-
+      {
+        
       })(each, _orders)
-    }
+  }
 }

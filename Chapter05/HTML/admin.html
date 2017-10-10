@@ -1,19 +1,24 @@
 
-<div><h2>Zero To Blockchain Chapter 06</h2>
+<div><h2>Zero To Blockchain Chapter 05</h2>
   <div class="showfocus scrollingPaneLeft">
       <h3>Network Profile Management</h3>
       <table id="profileManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="displayProfileForm()" class="showfocus">create Profile</td><td>profile object</td></tr>
       </table>
       <h3>Business Network Management</h3>
       <table id="businessNetworkManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="networkDeploy()" class="showfocus">deploy a network</td><td>network archive file, options</td></tr>
+
       </table>
       <h3>Resource Management</h3>
       <table id="resourceManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
-      </table>
-  </div>
+        <tr><td onclick="listRegistry()" class="showfocus">list members of a registry</td><td><select id="registryName" width="25%"></td></tr>
+
+        </table>
+       </div>
   <div class="scrollingPaneRight">
     <h3>Result</h3>
     <div class="showfocus" id="admin-forms" ></div>
-    <div id="messages"></div>    
+    <div id="messages"></div> 
   </div>
 </div>

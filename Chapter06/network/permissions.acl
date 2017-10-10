@@ -15,21 +15,14 @@ rule AllAccess {
 **/
 rule BuyerACL {
     description: "Allow buyer full access to order"
-    participant(m): "org.acme.Z2BTestNetwork.Buyer"
-    operation: READ, CREATE, UPDATE, DELETE
-    resource(v): "org.acme.Z2BTestNetwork.**"
-    condition: (v.buyer.buyerID == m.getIdentifier())
-    action: ALLOW
+
 }
 /**
 *
 */
 rule netAccessBuyer {
   description: "Allow participants access to the network"
-  participant: "org.acme.Z2BTestNetwork.Buyer"
-  operation: READ, CREATE, UPDATE, DELETE
-  resource: "org.hyperledger.composer.system.**"
-  action: ALLOW
+
 }
 
 /**
