@@ -24,7 +24,7 @@ var hlcAdmin = require('./features/composer/hlcAdmin');
 var hlcClient = require('./features/composer/hlcClient');
 var setup = require('./features/composer/autoLoad');
 
-var hlcFabric = require('./features/composer/queryBlockchain');
+var hlcFabric = require('./features/composer/queryBlockChain');
 router.post('/setup/autoLoad*', setup.autoLoad);
 router.get('/setup/getPort*', setup.getPort);
 
