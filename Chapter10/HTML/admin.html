@@ -1,0 +1,41 @@
+
+<div><h2>Zero To Blockchain Chapter 10</h2>
+  <div class="showfocus scrollingPaneLeft">
+      <h3>Network Profile Management</h3>
+      <table id="profileManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="displayProfileForm()" class="showfocus">create Profile</td><td>profile object</td></tr>
+        <tr><td onclick="listProfiles(0)" class="showfocus">delete profile</td><td>profile name</td></tr>
+        <tr><td onclick="listProfiles(1)" class="showfocus">get all connection profiles</td><td>(none)</td></tr>
+        <tr><td onclick="listProfiles(1)" class="showfocus">get a specific network connection profile</td><td>profile name</td></tr>
+      </table>
+      <h3>Business Network Management</h3>
+      <table id="businessNetworkManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="networkDeploy()" class="showfocus">deploy a network</td><td>network archive file, options</td></tr>
+        <tr><td onclick="networkInstall()" class="showfocus">install new a network</td><td>network archive file, options</td></tr>
+        <tr><td onclick="networkStart()">start an installed network</td><td>network name, options</td></tr>
+        <tr><td onclick="adminList()" class="showfocus">list the deployed business networks</td><td>(none)</td></tr>
+        <tr><td onclick="ping()" class="showfocus">touch a network, check compatibility</td><td>business network name</td></tr>
+        <tr><td onclick="networkUndeploy()" class="showfocus">take a business network off line</td><td>business network name</td></tr>
+        <tr><td onclick="networkUpdate()" class="showfocus">update an existing business network</td><td>business network name, archive file</td></tr>
+      </table>
+      <h3>Resource Management</h3>
+      <table id="resourceManagement" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+        <tr><td onclick="listRegistry()" class="showfocus">list members of a registry</td><td><select id="registryName" width="25%"></td></tr>
+        <tr><td onclick="listAssets()" class="showfocus">List Assets in the registry</td><td>(none)</td></tr>
+        <tr><td onclick="addMember()" class="showfocus">Add Member</td><td>Co Name, id, Type</td></tr>
+        <tr><td onclick="removeMember()" class="showfocus">Remove Member</td><td><select id="registryName2" width="25%"></td></tr>
+        <tr><td onclick="getSecret()" class="showfocus">getMemberSecret</td><td><select id="registryName3" width="25%"></td></tr>
+        </table>
+        <h3>BlockChain </h3>
+        <table id="blockchain" width="98%"><tr><th>API</th><th>Parameters</th></tr>
+          <tr><td onclick="getChainInfo()" class="showfocus">initiate connection to blockchain</td><td>(none)</td></tr>
+          <tr><td onclick="getChainEvents()" class="showfocus">register for blockchain events</td><td>(none)</td></tr>
+          <tr><td onclick="getHistorian()" class="showfocus">get Historian</td><td>(none)</td></tr>
+        </table>
+       </div>
+  <div class="scrollingPaneRight">
+    <h3>Result</h3>
+    <div class="showfocus" id="admin-forms" ></div>
+    <div id="messages"></div> 
+  </div>
+</div>
