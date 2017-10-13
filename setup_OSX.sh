@@ -1,6 +1,39 @@
 #!/bin/bash
 
-. ./common_OSX.sh
+ #!/bin/bash
+ 
+ YELLOW='\033[1;33m'
+ RED='\033[1;31m'
+ GREEN='\033[1;32m'
+ RESET='\033[0m'
+
+# indent text on echo
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+# displays where we are, uses the indent function (above) to indent each line
+function showStep ()
+    {
+        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${RESET}-----> $*" | indent
+        echo -e "${YELLOW}=====================================================${RESET}" | indent
+    }
+
+# Grab the current directory
+function getCurrent() 
+    {
+        showStep "getting current directory"
+        DIR="$( pwd )"
+        echo "DIR in getCurrent is: ${DIR}"
+        THIS_SCRIPT=`basename "$0"`
+        showStep "Running '${THIS_SCRIPT}'"
+    }
+
 # check to see if Brew is installed. Install it if it's not already present
 # then update and upgrade
 function check4Brew ()
@@ -76,11 +109,11 @@ function installNodeDev ()
     {
         if [[ $SDK_INSTALL == "true" ]]; then
             showStep "The composer-cli contains all the command line operations for developing business networks."
-            npm install -g composer-cli
+            npm install -g composer-cli@0.13.2
             showStep "The generator-hyperledger-composer is a Yeoman plugin that creates bespoke applications for your business network."
-            npm install -g generator-hyperledger-composer
+            npm install -g generator-hyperledger-composer@0.13.2
             showStep "The composer-rest-server uses the Hyperledger Composer LoopBack Connector to connect to a business network, extract the models and then present a page containing the REST APIs that have been generated for the model."
-            npm install -g composer-rest-server
+            npm install -g composer-rest-server@0.13.2
             showStep "Yeoman is a tool for generating applications. When combined with the generator-hyperledger-composer component, it can interpret business networks and generate applications based on them."
             npm install -g yo
         else   
@@ -99,7 +132,7 @@ function install_hlf ()
             cd "$HLF_INSTALL_PATH"
             pwd
             showStep "retrieving image scripts from git"
-            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.zip
+            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/v0.2.2/packages/fabric-dev-servers/fabric-dev-servers.zip
             showStep "unzipping images"
             unzip -o fabric-dev-servers.zip
             showStep "making scripts executable"
@@ -111,7 +144,7 @@ function install_hlf ()
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for OSX"
-            curl -sSL https://goo.gl/eYdRbX | bash
+            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/v1.0.3/scripts/bootstrap-1.0.1.sh | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             showStep "updating .bash_profile with new paths"
@@ -148,12 +181,12 @@ function printHeader ()
     echo -e "${YELLOW}installation script for the Zero To Blockchain Series" | indent
     echo -e "${RED}This is for Mac OSX ONLY" | indent
     echo -e "${YELLOW}This script will check to see if HomeBrew is installed" | indent
-    echo -e "${YELLOW}and install it if it's not already present. " | indent
+    echo -e "${YELLOW}   and install it if it's not already present. " | indent
     echo -e "${YELLOW}It will then execute a brew update and brew upgrade to ensure" | indent
-    echo -e "${YELLOW}that you are at the latest release of your brew installed packages" | indent
+    echo -e "${YELLOW}   that you are at the latest release of your brew installed packages" | indent
     echo -e "${YELLOW}dos2unix is installed by brew to correct scripts from hyperledger and composer" | indent
     echo -e "${YELLOW}The exec will proceed with checking to ensure you are at Node V6" | indent
-    echo -e "${YELLOW}which is required for working with HyperLedger Composer" | indent
+    echo -e "${YELLOW}   which is required for working with HyperLedger Composer" | indent
     echo -e "${YELLOW}The script will then install the nodejs SDK for hyperledger and composer" | indent
     echo -e "${YELLOW}The script will finish by downloading the docker images for hyperledger${RESET}" | indent
     echo ""
@@ -228,4 +261,6 @@ do
     installNodeDev
     showStep "installing hyperledger docker images"
     install_hlf
+    showStep "copying peeradmin key to .hfc-key-store"
+    cp -Rv "${HLF_INSTALL_PATH}/fabric-scripts/hlfv1/composer/creds/" "${HOME}/.hfc-key-store"
     showStep "installation complete"
