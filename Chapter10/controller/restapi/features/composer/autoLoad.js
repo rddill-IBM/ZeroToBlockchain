@@ -15,10 +15,7 @@
 
 'use strict';
 const BrowserFS = require('browserfs/dist/node/index');
-
 const network = 'zerotoblockchain-network';
-const adminID = 'admin';
-const adminPW = 'adminpw';
 
 var fs = require('fs');
 var path = require('path');
@@ -75,10 +72,10 @@ exports.autoLoad = function(req, res, next) {
     connection = svc.m_connection; 
     socketAddr = svc.m_socketAddr;
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, network, adminID, adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, network, config.composer.adminID, config.composer.adminPW)
             .then(() => {
                 factory = businessNetworkConnection.getBusinessNetwork().getFactory();
                 for (let each in startupFile.members)
@@ -156,7 +153,7 @@ exports.autoLoad = function(req, res, next) {
                                         })
                                         .catch((error) => {
                                         if (error.message.search('MVCC_READ_CONFLICT') != -1)
-                                            {console.log(_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
+                                            {console.log("AL: "+_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
                                             svc.addOrder(svc.m_connection, order, assetRegistry, createNew, businessNetworkConnection);
                                             }
                                             else {console.log('error with assetRegistry.add', error.message)}

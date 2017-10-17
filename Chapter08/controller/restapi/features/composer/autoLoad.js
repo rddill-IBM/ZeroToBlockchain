@@ -15,10 +15,7 @@
 
 'use strict';
 const BrowserFS = require('browserfs/dist/node/index');
-
 const network = 'zerotoblockchain-network';
-const adminID = 'admin';
-const adminPW = 'adminpw';
 
 var fs = require('fs');
 var path = require('path');
@@ -75,10 +72,10 @@ exports.autoLoad = function(req, res, next) {
     connection = svc.m_connection; 
     socketAddr = svc.m_socketAddr;
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, network, adminID, adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, network, config.composer.adminID, config.composer.adminPW)
             .then(() => {
                 factory = businessNetworkConnection.getBusinessNetwork().getFactory();
                 for (let each in startupFile.members)
@@ -92,11 +89,8 @@ exports.autoLoad = function(req, res, next) {
                                     svc.m_connection.sendUTF('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
                                 })
                                 .catch((error) => {
-                                    console.log('member does not exist');
                                     participant = factory.newResource(NS, _arr[_idx].type, _arr[_idx].id);
-                                    console.log('new resource created for '+_arr[_idx].id+' of type: '+_arr[_idx].type);
                                     participant.companyName = _arr[_idx].companyName;
-                                    console.log('added company name to participant');
                                     participantRegistry.add(participant)
                                     .then(() => {
                                         console.log('['+_idx+'] '+_arr[_idx].companyName+" successfully added");
@@ -147,6 +141,7 @@ exports.autoLoad = function(req, res, next) {
                                         order.provider = factory.newRelationship(NS, 'Provider', 'noop@dummy');
                                         order.shipper = factory.newRelationship(NS, 'Shipper', 'noop@dummy');
                                         order.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                                        createNew.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
                                         createNew.order = factory.newRelationship(NS, 'Order', order.$identifier);
                                         createNew.buyer = factory.newRelationship(NS, 'Buyer', _arr[_idx].buyer);
                                         createNew.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
@@ -157,9 +152,8 @@ exports.autoLoad = function(req, res, next) {
                                             svc.loadTransaction(svc.m_connection, createNew, order.orderNumber, businessNetworkConnection);
                                         })
                                         .catch((error) => {
-                                        console.log(_arr[_idx].id+" assetRegistry.add failed: text",error.message);
                                         if (error.message.search('MVCC_READ_CONFLICT') != -1)
-                                            {console.log(_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
+                                            {console.log("AL: "+_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
                                             svc.addOrder(svc.m_connection, order, assetRegistry, createNew, businessNetworkConnection);
                                             }
                                             else {console.log('error with assetRegistry.add', error.message)}

@@ -58,7 +58,7 @@ exports.getChainInfo = function(req, res, next) {
         return hfc.newDefaultKeyValueStore({ path: wallet_path })
         .then((wallet) => {
             client.setStateStore(wallet);
-            return client.getUserContext(config.composer.adminID, true);})
+            return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
                 if (user === null || user === undefined || user.isEnrolled() === false) 
                     {console.error("User not defined, or not enrolled - error");}
@@ -103,7 +103,7 @@ exports.getChainEvents = function(req, res, next) {
             return hfc.newDefaultKeyValueStore({ path: wallet_path })
             .then((wallet) => {
                 client.setStateStore(wallet);
-                return client.getUserContext(config.composer.adminID, true);})
+                return client.getUserContext(config.composer.PeerAdmin, true);})
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
                         {console.error("User not defined, or not enrolled - error");}

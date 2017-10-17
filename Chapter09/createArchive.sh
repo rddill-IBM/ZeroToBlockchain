@@ -48,7 +48,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}archive creation script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${GREEN}This has been tested on Mac OSX thru High Sierra and Ubuntu V16 LTS" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
 }

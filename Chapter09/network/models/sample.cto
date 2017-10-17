@@ -56,6 +56,7 @@ asset Order identified by orderNumber {
     --> Order order
     --> Buyer buyer
     --> Seller seller
+    --> FinanceCo financeCo
 }
   transaction OrderCancel {
     --> Order order

@@ -1,7 +1,7 @@
 <html><head>
    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Chapter 7, Zero To Blockchain">
+    <meta name="description" content="Chapter 10, Zero To Blockchain">
     <meta name="author" content="Bob Dill, IBM Distinguished Engineer">
 
     <title id="title"></title>
@@ -28,19 +28,17 @@
             				      </ul>
                         </li>
                         <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret" ></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="idx_admin"></span><b class="caret" ></b></a>
                                 <ul class="dropdown-menu" id="Z2B_resources">
-                                    <li><a onclick="loadAdminUX()">load Admin User Experience</a></li>
-                                    <li><a onclick="preLoad()">Preload Network</a></li>
+                                    <li><a onclick="loadAdminUX()"><span id="idx_adminUX"></span></a></li>
+                                    <li><a onclick="preLoad()"><span id="idx_preload"></span></a></li>
                                 </ul>
                               </li>
                               <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Roles<b class="caret" ></b></a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="idx_roles"><b class="caret" ></b></a>
                                     <ul class="dropdown-menu" id="Z2B_Role">
-                                        <li><a onclick="loadBuyerUX()">load Buyer User Experience</a></li>
-                                        <li><a onclick="loadSellerUX()">load Seller User Experience</a></li>
-                                        <li><a onclick="loadProviderUX()">load Provider User Experience</a></li>
-                                        <li><a onclick="loadShipperUX()">load Shipper User Experience</a></li>
+                                        <li><a onclick="loadBuyerUX()"><span id="idx_buyer"></span></a></li>
+                                        <li><a onclick="loadSellerUX()"><span id="idx_seller"></span></a></li>
                                     </ul>
                                   </li>
                                </ul>
@@ -54,7 +52,7 @@
                 </div>
             </div>
             <div class="container", id="top" height="100%">
-              <div class="container" id="body"  height="90%">
+              <div class="container" id="body"  height="100%">
                 <div class="row">
                     <div class="col-md-12 text-center" style="color: #008571; ">
                         <h1 id="header"></h1>
@@ -62,7 +60,7 @@
                     </div>
                 </div>
                 </div>
-<div class="blockchain" id="blockchain"></div>
+                <div class="blockchain" id="blockchain"></div>            
             </div>
 
           </div>
@@ -76,6 +74,7 @@
     <script src="js/z2b-admin.js"></script>
     <script src="js/z2b-buyer.js"></script>
     <script src="js/z2b-seller.js"></script>
+    <script src="js/z2b-events.js"></script>
     <link href="CSS/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="CSS/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="CSS/pageStyles.css" rel="stylesheet" type="text/css">

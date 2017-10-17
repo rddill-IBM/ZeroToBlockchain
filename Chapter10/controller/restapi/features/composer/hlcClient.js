@@ -144,9 +144,7 @@ exports.orderAction = function (req, res, next) {
                     {
                         case 'Pay':
                         console.log('Pay entered');
-                        updateOrder = factory.newTransaction(NS, 'Pay');                        
-                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+
                         break;
                         case 'Dispute':
                         console.log('Dispute entered');

@@ -17,6 +17,7 @@
 var fs = require('fs');
 var path = require('path');
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
+const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
 const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
 let itemTable = null;
@@ -37,38 +38,46 @@ const financeCoID = 'easymoney@easymoneyinc.com';
  */
 exports.getMyOrders = function (req, res, next) {
     // connect to the network
-    let newFile = path.join(path.dirname(require.main.filename),'network','package.json');
-    let packageJSON = JSON.parse(fs.readFileSync(newFile));
+    let packageJSON = JSON.parse(fs.readFileSync(path.join(path.dirname(require.main.filename),'network','package.json')));
     let allOrders = new Array();
     let businessNetworkConnection;
     let factory;
-    let serializer;
     if (svc.m_connection == null) {svc.createMessageSocket();}
+    let ser;
+    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
     businessNetworkConnection = new BusinessNetworkConnection();
-    console.log('getMyOrders for user: '+req.body.userID+' with secret: '+req.body.secret);
-    return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, req.body.userID, req.body.secret)
-        .then(() => {    
-            return businessNetworkConnection.query('selectOrders')
-            .then((orders) => {
-                console.log('there are '+orders.length+' orders for '+req.body.userID);
-                    let jsn;
-                    let allOrders = new Array();
-                    for (let each in orders)
-                        { (function (_idx, _arr)
-                            {
-                                let _jsn = svc.getOrderData(_arr[_idx]);
-                                _jsn.id = _arr[_idx].orderNumber;
-                                allOrders.push(_jsn);                                
-                            })(each, orders)
-                        }
-                    res.send({'result': 'success', 'orders': allOrders});
+    return BusinessNetworkDefinition.fromArchive(archiveFile)
+    .then((bnd) => {
+        ser = bnd.getSerializer();
+        return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, req.body.userID, req.body.secret)
+            .then(() => {    
+                return businessNetworkConnection.query('selectOrders')
+                .then((orders) => {
+                        let jsn;
+                        let allOrders = new Array();
+                        for (let each in orders)
+                            { (function (_idx, _arr)
+                                {
+                                    let _jsn = ser.toJSON(_arr[_idx]);
+                                    _jsn.id = _arr[_idx].orderNumber;
+                                    allOrders.push(_jsn);                                
+                                })(each, orders)
+                            }
+                        res.send({'result': 'success', 'orders': allOrders});
+                        })
+                        .catch((error) => {console.log('selectOrders failed ', error);
+                        res.send({'result': 'failed', 'error': 'selectOrders: '+error.message});
+                    });
                     })
-                    .catch((error) => {console.log('selectOrders failed ', error); })
-                    res.send({'result': 'failed', 'error': 'selectOrders: '+error.message});;
-                })
-            .catch((error) => {console.log('businessNetwork connect failed ', error); })
-            res.send({'result': 'failed', 'error': 'businessNetwork: '+error.message});;
-            }
+                .catch((error) => {console.log('businessNetwork connect failed ', error);
+                res.send({'result': 'failed', 'error': 'businessNetwork: '+error.message});
+            });
+        })
+        .catch((error) => {console.log('create bnd from archive failed ', error);
+        res.send({'result': 'failed', 'error': 'create bnd from archive: '+error.message});
+    });
+}
+
 
 /**
  * return a json object built from the item table created by the autoload function
@@ -113,7 +122,6 @@ exports.orderAction = function (req, res, next) {
         res.send({'result': 'failed', 'error': 'no reason provided for dispute'});
     }
     if (svc.m_connection == null) {svc.createMessageSocket();}
-    console.log('req.body.orderNo is: ', req.body.orderNo);
     let businessNetworkConnection;
     let newFile = path.join(path.dirname(require.main.filename),'startup','memberList.txt');
     let _table = JSON.parse(fs.readFileSync(newFile));
@@ -136,9 +144,7 @@ exports.orderAction = function (req, res, next) {
                     {
                         case 'Pay':
                         console.log('Pay entered');
-                        updateOrder = factory.newTransaction(NS, 'Pay');                        
-                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+
                         break;
                         case 'Dispute':
                         console.log('Dispute entered');
@@ -175,7 +181,6 @@ exports.orderAction = function (req, res, next) {
                         break;
                         case 'Resolve':
                         console.log('Resolve entered');
-                        console.log('participants: buyer: '+order.buyer.$identifier+' seller: '+order.seller.$identifier+' provider: '+order.provider.$identifier+' shipper: '+order.shipper.$identifier)
                         updateOrder = factory.newTransaction(NS, 'Resolve');                        
                         updateOrder.buyer = factory.newRelationship(NS, 'Buyer', order.buyer.$identifier);                        
                         updateOrder.shipper = factory.newRelationship(NS, 'Shipper', order.shipper.$identifier);                        
@@ -192,14 +197,11 @@ exports.orderAction = function (req, res, next) {
                         break;
                         case 'Update Delivery Status':
                         console.log('Update Delivery Status');
-                        updateOrder = factory.newTransaction(NS, 'Delivering');                        
-                        updateOrder.shipper = factory.newRelationship(NS, 'Shipper', req.body.participant);                        
-                        updateOrder.deliveryStatus = req.body.delivery;
+
                         break;
                         case 'Delivered':
                         console.log('Delivered entered');
-                        updateOrder = factory.newTransaction(NS, 'Deliver');                        
-                        updateOrder.shipper = factory.newRelationship(NS, 'Shipper', req.body.participant);                        
+
                         break;
                         case 'BackOrder':
                         console.log('BackOrder entered');
@@ -231,11 +233,12 @@ exports.orderAction = function (req, res, next) {
                         res.send({'result': ' order '+req.body.orderNo+" successfully updated to "+req.body.action});
                     })
                     .catch((error) => {
-                        console.log(req.body.orderNo+" submitTransaction to update status to "+req.body.action+" failed with text: ",error.message);
                         if (error.message.search('MVCC_READ_CONFLICT') != -1)
                             {console.log(" retrying assetRegistry.update for: "+req.body.orderNo);
                             svc.loadTransaction(svc.m_connection, updateOrder, req.body.orderNo, businessNetworkConnection);
                         }
+                        else
+                        {console.log(req.body.orderNo+" submitTransaction to update status to "+req.body.action+" failed with text: ",error.message);}
                         });
 
                 })
@@ -273,7 +276,6 @@ exports.addOrder = function (req, res, next) {
     let ts = Date.now();
     let orderNo = req.body.buyer.replace(/@/, '').replace(/\./, '')+ts; 
     if (svc.m_connection == null) {svc.createMessageSocket();}
-    console.log(orderNo);
     
     for (let each in _table.members)
         { if (_table.members[each].id == req.body.buyer) {_secret = _table.members[each].secret; _userID=_table.members[each].userID; bFound = true;}}
@@ -304,6 +306,7 @@ exports.addOrder = function (req, res, next) {
                 createNew.order = factory.newRelationship(NS, 'Order', order.$identifier);
                 createNew.buyer = factory.newRelationship(NS, 'Buyer', req.body.buyer);
                 createNew.seller = factory.newRelationship(NS, 'Seller', req.body.seller);
+                createNew.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
                 createNew.amount = order.amount;
                 // add the order to the asset registry.
                 return businessNetworkConnection.getAssetRegistry(NS+'.Order')
@@ -315,19 +318,21 @@ exports.addOrder = function (req, res, next) {
                             res.send({'result': ' order '+orderNo+' successfully added'});
                             })
                             .catch((error) => {
-                                console.log(orderNo+" submitTransaction failed with text: ",error.message);
                                 if (error.message.search('MVCC_READ_CONFLICT') != -1)
                                     {console.log(orderNo+" retrying assetRegistry.add for: "+orderNo);
                                     svc.loadTransaction(createNew, orderNo, businessNetworkConnection);
                                     }
+                                    else
+                                    {console.log(orderNo+" submitTransaction failed with text: ",error.message);}
                                 });
                             })
                             .catch((error) => {
-                            console.log(orderNo+" assetRegistry.add failed: ",error.message);
                             if (error.message.search('MVCC_READ_CONFLICT') != -1)
                                 {console.log(orderNo+" retrying assetRegistry.add for: "+orderNo);
                                 svc.loadTransaction(createNew, orderNo, businessNetworkConnection);
                             }
+                            else
+                            {console.log(orderNo+" assetRegistry.add failed: ",error.message);}
                             });                                        
                         })
                         .catch((error) => {

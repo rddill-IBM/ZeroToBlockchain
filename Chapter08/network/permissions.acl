@@ -190,7 +190,6 @@ rule netAccessSeller {
 *
 **/
 rule ProviderRequestShipping {
-    description: "Enable a Provider to initiate a shipping request for an order"
 
 }
 
@@ -198,7 +197,6 @@ rule ProviderRequestShipping {
 *
 **/
 rule ProviderBackorder {
-    description: "Enable a Provider to issue a backorder status for an order"
 
 }
 
@@ -206,7 +204,6 @@ rule ProviderBackorder {
 *
 **/
 rule ProviderPayRequest {
-    description: "Enable a Provider to issue a request for payment"
 
 }
 
@@ -214,7 +211,6 @@ rule ProviderPayRequest {
 *
 **/
 rule ProviderResolve {
-    description: "Enable a Provider to resolve a disputed order"
 
 }
 
@@ -222,7 +218,6 @@ rule ProviderResolve {
 *
 **/
 rule ProviderRefund {
-    description: "Enable a Provider to refund payment for a disputed order"
 
 }
 
@@ -230,7 +225,6 @@ rule ProviderRefund {
 *
 **/
 rule ProviderACL {
-    description: "Allow Provider read and update access to order where they are listed as seller and the order has been submitted to them to provide (Seller issues OrderFromSupplier transaction"
 
 }
 

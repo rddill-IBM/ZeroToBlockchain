@@ -57,11 +57,9 @@ exports.getChainInfo = function(req, res, next) {
         client = new hfc();
         return hfc.newDefaultKeyValueStore({ path: wallet_path })
         .then((wallet) => {
-            console.log("Set wallet path, and associate user ", config.composer.adminID, " with application");
             client.setStateStore(wallet);
-            return client.getUserContext(config.composer.adminID, true);})
+            return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
-                console.log("Check user is enrolled, and set a query URL in the network");
                 if (user === null || user === undefined || user.isEnrolled() === false) 
                     {console.error("User not defined, or not enrolled - error");}
                     channel = client.newChannel(config.fabric.channelName);
@@ -71,9 +69,7 @@ exports.getChainInfo = function(req, res, next) {
                 .then(() => {
                     return channel.queryInfo()
                     .then((blockchainInfo) => {
-                        console.log("queryInfo succeeded with blockchainInfo = ", blockchainInfo);
                         if (blockchainInfo) {
-                            console.log(blockchainInfo.currentBlockHash);
                             res.send({"result": "success", "currentHash": blockchainInfo.currentBlockHash.toString("hex"), blockchain: blockchainInfo});
                         } else {
                             console.log('response_payload is null');
@@ -102,13 +98,12 @@ exports.getChainEvents = function(req, res, next) {
         var channel = {};
         var client = null;
         var wallet_path = path.join(__dirname, 'creds');
-        console.log(wallet_path);
         Promise.resolve().then(() => {
             client = new hfc();
             return hfc.newDefaultKeyValueStore({ path: wallet_path })
             .then((wallet) => {
                 client.setStateStore(wallet);
-                return client.getUserContext(config.composer.adminID, true);})
+                return client.getUserContext(config.composer.PeerAdmin, true);})
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
                         {console.error("User not defined, or not enrolled - error");}
@@ -121,7 +116,7 @@ exports.getChainEvents = function(req, res, next) {
                         bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
                         bcEvents.connect();
                         svc.createChainSocket();
-                        bcEvents.registerBlockEvent(function(event) {console.log(event); svc.cs_connection.sendUTF(JSON.stringify(event));});
+                        bcEvents.registerBlockEvent(function(event) {svc.cs_connection.sendUTF(JSON.stringify(event));});
                         chainEvents = true;
                         res.send({'port': svc.cs_socketAddr});                    
                     })

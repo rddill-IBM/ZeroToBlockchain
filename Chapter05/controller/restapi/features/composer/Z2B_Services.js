@@ -131,6 +131,7 @@ var  Z2Blockchain  = {
                     console.log(_id+" loadTransaction retrying submit transaction for: "+_id);
                     this.loadTransaction(_con,_item, _id, businessNetworkConnection);
                 }
+                else {console.log('ZS: '+_id+' load transaction failed: '+error.message);}
             });
     },
 /**
@@ -147,7 +148,7 @@ var  Z2Blockchain  = {
         })
         .catch((error) => {
         if (error.message.search('MVCC_READ_CONFLICT') != -1)
-            {console.log(_order.orderNumber+" addOrder retrying assetRegistry.add for: "+_order.orderNumber);
+            {console.log("ZS: "+_order.orderNumber+" addOrder retrying assetRegistry.add for: "+_order.orderNumber);
             this.addOrder(_con,_order, _registry, _createNew, _bnc);
             }
             else {console.log('error with assetRegistry.add', error)}
@@ -215,16 +216,16 @@ var  Z2Blockchain  = {
  */
     getOrderData: function (_order)
     {
-        let orderElements = ['items', 'status', 'amount', 'created', 'cancelled', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'delivering', 'approved',
+        let orderElements = ['items', 'status', 'amount', 'created', 'cancelled', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'deliveryStatus', 'delivering', 'approved',
         'disputeOpened', 'disputeResolved', 'paymentRequested', 'orderRefunded', 'paid', 'dispute', 'resolve', 'backorder', 'refund'];
         var _obj = {};
         for (let each in orderElements){(function(_idx, _arr)
         { _obj[_arr[_idx]] = _order[_arr[_idx]]; })(each, orderElements)}
         _obj.buyer = _order.buyer.$identifier;
         _obj.seller = _order.seller.$identifier;
-        _obj.provider = _order.seller.$provider;
-        _obj.shipper = _order.seller.$shipper;
-        _obj.financeCo = _order.seller.$financeCo;
+        _obj.provider = _order.provider.$identifier;
+        _obj.shipper = _order.shipper.$identifier;
+        _obj.financeCo = _order.financeCo.$identifier;
         return (_obj);
     },
 
@@ -249,12 +250,19 @@ var  Z2Blockchain  = {
         Refunded: {code: 13, text: 'Order Refunded'}
     },
 /**
- * 
+ * TODO: this will have to be updated for Bluemix
+ * data elements used for message socket
  */
     m_connection: null,
     m_socketAddr: null,
     m_socket: null,
-    createMessageSocket: function (_port)
+/**
+ * create a web socket for sending messages back to the browser based on asynchronous processing on the server. 
+ * This allows nodejs to return gracefully from a request and have the browser deliver messages based on 
+ * subsequent async processing on the server
+ * @param {integer} - _port to use for this web socket interface
+ */
+createMessageSocket: function (_port)
     {
         var port = (typeof(_port) == 'undefined' || _port == null) ? app.get('port')+1 : _port
         if (this.m_socket == null)
@@ -267,7 +275,6 @@ var  Z2Blockchain  = {
                 _this.m_connection = request.accept(null, request.origin);
                 _this.m_connection.on('message', function(message)
                 {
-                    console.log(message.utf8Data);
                     _this.m_connection.sendUTF('connected');
                     _this.m_connection.on('close', function(m_connection) {console.log('m_connection closed'); });
                 });
@@ -275,11 +282,21 @@ var  Z2Blockchain  = {
         }
         return {conn: this.m_connection, socket: this.m_socketAddr};
     },
+/**
+ * TODO: this will have to be updated for Bluemix
+ * data elements used for blockchain event message socket
+ */
 
     cs_connection: null,
     cs_socketAddr: null,
     cs_socket: null,
-    createChainSocket: function ()
+/**
+ * create a web socket for sending blockchain block creation events back to the browser based on asynchronous processing on the server. 
+ * This allows the browser to display block creation in real time, irrespective of what else the browser is doing at that time. 
+ * The messaging port is based on the base port for the app plus 2
+ * that is, if nodejs is communicating on port 6040, then the chain socket port will be 6040 + 2, or 6042
+ */
+createChainSocket: function ()
     {
         var port =  app.get('port')+2;
         if (this.cs_socket == null)
@@ -292,7 +309,6 @@ var  Z2Blockchain  = {
                 _this.cs_connection = request.accept(null, request.origin);
                 _this.cs_connection.on('message', function(message)
                 {
-                    console.log(message.utf8Data);
                     _this.cs_connection.sendUTF('connected');
                     _this.cs_connection.on('close', function(cs_connection) {console.log('cs_connection closed'); });
                 });

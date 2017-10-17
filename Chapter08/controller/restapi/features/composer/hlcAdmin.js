@@ -29,6 +29,7 @@ const svc = require('./Z2B_Services');
 const util = require('./Z2B_Utilities');
 var orderStatus = svc.orderStatus;
 
+
 /**
  * display the admin and network info
  * @constructor
@@ -55,10 +56,7 @@ exports.adminNew = function() {
  */
 exports.adminConnect = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    console.log('connection profile: ', config.composer.connectionProfile);
-    console.log('admin user id: ', config.composer.adminID);
-    console.log('admin password: ', config.composer.adminPW);
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
     .then(function(){
         console.log('create connection successful ');
         res.send({connection: 'succeeded'});
@@ -92,9 +90,8 @@ exports.createProfile = function(req, res, next) {
         ca: {url: req.body.ca.url, name: req.body.ca.name},
         peers: [{eventURL: req.body.peers.eventURL, requestURL: req.body.peers.requestRUL}]
     };
-    console.log(adminOptions);
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.createProfile(req.body.profileName, adminOptions)
                 .then(function(result){
@@ -118,7 +115,7 @@ exports.createProfile = function(req, res, next) {
  */
 exports.deleteProfile = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.deleteProfile(req.body.profileName)
                 .then(function(result){
@@ -143,14 +140,13 @@ exports.deleteProfile = function(req, res, next) {
  */
 exports.deploy = function(req, res, next) {
     
-        let newFile = path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive);
-        let archiveFile = fs.readFileSync(newFile);
+        let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive));
     
         let adminConnection = new composerAdmin.AdminConnection();
     
         return BusinessNetworkDefinition.fromArchive(archiveFile)
             .then(function(archive) {
-                adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+                adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
                 .then(function(){
                     adminConnection.deploy(archive)
                         .then(function(){
@@ -176,15 +172,13 @@ exports.deploy = function(req, res, next) {
  */
 exports.networkInstall = function(req, res, next) {
     
-    let newFile = path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive);
-    let archiveFile = fs.readFileSync(newFile);
+    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive));
 
     let adminConnection = new composerAdmin.AdminConnection();
     return BusinessNetworkDefinition.fromArchive(archiveFile)
     .then((businessNetworkDefinition) => {
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
-            console.log('businessNetworkDefinition.getName()', businessNetworkDefinition.getName());
             return adminConnection.install(businessNetworkDefinition.getName())
                 .then(() => {
                     console.log('business network '+req.body.myArchive+' installed successful: ');
@@ -219,7 +213,7 @@ exports.networkStart = function(req, res, next) {
 
     return BusinessNetworkDefinition.fromArchive(archiveFile)
         .then(function(archive) {
-            adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+            adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
             .then(function(){
                 adminConnection.start(archive)
                     .then(function(){
@@ -244,7 +238,7 @@ exports.networkStart = function(req, res, next) {
  */
 exports.disconnect = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.disconnect()
                 .then(function(result){
@@ -267,14 +261,10 @@ exports.disconnect = function(req, res, next) {
  */
 exports.getAllProfiles = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.getAllProfiles()
                 .then((profiles) => {
-                // Retrieved profiles
-                    for (let profile in profiles) {
-                        console.log(profile, profiles[profile]);
-                    }
                     res.send(profiles);
                 })
                 .catch(function(error){
@@ -294,7 +284,7 @@ exports.getAllProfiles = function(req, res, next) {
  */
 exports.getProfile = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.getProfile(req.body.connectionProfile)
                 .then((profile) => {
@@ -318,7 +308,7 @@ exports.getProfile = function(req, res, next) {
 exports.listAsAdmin = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
     util.displayObjectValuesRecursive(adminConnection);
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.list()
                 .then((businessNetworks) => {
@@ -372,7 +362,7 @@ exports.listAsPeerAdmin = function(req, res, next) {
  */
 exports.ping = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, req.body.businessNetwork)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW, req.body.businessNetwork)
         .then(function(){
             adminConnection.ping()
                 .then(function(result){
@@ -397,7 +387,7 @@ exports.ping = function(req, res, next) {
  */
 exports.undeploy = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, req.body.businessNetwork)
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW, req.body.businessNetwork)
         .then(function(){
             adminConnection.undeploy(req.body.businessNetwork)
             .then(function(result){
@@ -422,15 +412,14 @@ exports.undeploy = function(req, res, next) {
  */
 exports.update = function(req, res, next) {
 
-    let newFile = path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive);
     let netName = req.body.myArchive.split('.')[0];
-    let archiveFile = fs.readFileSync(newFile);
+    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive));
 
     let adminConnection = new composerAdmin.AdminConnection();
 
     return BusinessNetworkDefinition.fromArchive(archiveFile)
         .then(function(archive) {
-            adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW, netName)
+            adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW, netName)
             .then(function(){
                 adminConnection.update(archive)
                     .then(function(){
@@ -462,13 +451,11 @@ exports.getRegistries = function(req, res, next)
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
-            console.log('adminConnection succeeded')
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
                 .then(() => {
-                    console.log('businessNetworkConnection succeeded')
                     return businessNetworkConnection.getAllParticipantRegistries()
                     .then(function(participantRegistries){
                         for (let each in participantRegistries)
@@ -477,7 +464,8 @@ exports.getRegistries = function(req, res, next)
                                     allRegistries.push([r_type[r_type.length-1]]); 
                             })(each, participantRegistries)
                             }
-                        res.send({'result': 'success', 'registries': allRegistries});})
+                        res.send({'result': 'success', 'registries': allRegistries});
+                    })
                     .catch((error) => {console.log('error with getAllRegistries', error)});
                     })
                 .catch((error) => {console.log('error with business network Connect', error)});
@@ -500,13 +488,11 @@ exports.getMembers = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
-            console.log('adminConnection succeeded')
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
                 .then(() => {
-                    console.log('businessNetworkConnection succeeded')
                     return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
                     .then(function(registry){
                         return registry.getAll()
@@ -562,18 +548,16 @@ exports.getMembers = function(req, res, next) {
  */
 exports.getAssets = function(req, res, next) {
         // connect to the network
-        let newFile = path.join(path.dirname(require.main.filename),'network','package.json');
-        let packageJSON = JSON.parse(fs.readFileSync(newFile));
+        let packageJSON = JSON.parse(fs.readFileSync(path.join(path.dirname(require.main.filename),'network','package.json')));
         let allOrders = new Array();
         let businessNetworkConnection;
         let factory;
         let serializer;
         let adminConnection = new AdminConnection();
-            adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+            adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
             .then(() => {
-                console.log('adminConnection succeeded')
                 businessNetworkConnection = new BusinessNetworkConnection();
-                return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+                return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
                     .then(() => {
 //                        let bnd = new BusinessNetworkDefinition(config.composer.network+'@0.1.6', config.composer.description, packageJSON);
 // retry this with fromArchive when time allows
@@ -656,10 +640,10 @@ exports.addMember = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
             .then(() => {
                 factory = businessNetworkConnection.getBusinessNetwork().getFactory();
                 return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.type)
@@ -696,11 +680,10 @@ exports.removeMember = function(req, res, next) {
     let businessNetworkConnection;
     let factory;
     let adminConnection = new AdminConnection();
-    console.log(req.body.id, req.body.registry);
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
             .then(() => {
                 factory = businessNetworkConnection.getBusinessNetwork().getFactory();
                 return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
@@ -736,14 +719,17 @@ exports.getHistory = function(req, res, next) {
     let allHistory = new Array();
     let businessNetworkConnection;
     let factory;
+    let ser;
+    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
     let adminConnection = new AdminConnection();
-        adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    return BusinessNetworkDefinition.fromArchive(archiveFile)
+    .then((bnd) => {
+        ser = bnd.getSerializer();
+        adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
-            console.log('adminConnection succeeded')
             businessNetworkConnection = new BusinessNetworkConnection();
-            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.PeerAdmin, config.composer.PeerPW)
                 .then(() => {
-                    console.log('businessNetworkConnection succeeded')
                     return businessNetworkConnection.getRegistry('org.hyperledger.composer.system.HistorianRecord')
                     .then(function(registry){
                         return registry.getAll()
@@ -751,10 +737,9 @@ exports.getHistory = function(req, res, next) {
                             for (let each in history)
                                 { (function (_idx, _arr)
                                     { let _jsn = _arr[_idx];
-                                    _jsn.type = 'HistorianRecord';
-                                    allHistory.push(_jsn); })(each, history)
+                                    allHistory.push(ser.toJSON(_jsn)); 
+                                    })(each, history)
                                 }
-                            console.log(allHistory[0]);
                             res.send({'result': 'success', 'history': allHistory});
                         })
                         .catch((error) => {console.log('error with getAll History', error)});
@@ -764,4 +749,6 @@ exports.getHistory = function(req, res, next) {
                 .catch((error) => {console.log('error with business network Connect', error)});
         })
         .catch((error) => {console.log('error with admin network Connect', error)});
+    })
+    .catch((error) => {console.log('error with business network definition', error)});
 }
