@@ -28,7 +28,7 @@ var Z2B_Utility = {
 
 /**
 * function to recursively display, up to 5 levels, the values of every property in an object. If the type of a property is object or function, then the word 'object' or 'function' is displayed
-* Refer to this by {@link displayObjectValues}.
+* Refer to this by {@link displayObjectValuesRecursive}.
 * @param {String} _string - an arbitrary string to preface the printing of the object property name and value. often used to display the name of the object being printed
 * @param {Object} _object - the object to be introspected
 * @param {Object} _iter - limits number of iterations. max is 5, value is null to 4. # of iterations is 5-_iter

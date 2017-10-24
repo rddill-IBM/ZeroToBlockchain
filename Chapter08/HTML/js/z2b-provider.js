@@ -17,7 +17,7 @@
 var providerOrderDiv = "providerOrderDiv";
 
 /**
- * load the administration User Experience
+ * load the Provider User Experience
  */
 function loadProviderUX ()
 {
@@ -38,7 +38,6 @@ function setupProvider(page, port)
   $("#body").empty();
   $("#body").append(page);
   updatePage("provider");
-  console.log('port is: '+port.port);
   msgPort = port.port;
   wsDisplay('provider_messages', msgPort);
   var _clear = $("#provider_clear");
@@ -49,14 +48,14 @@ function setupProvider(page, port)
   $("#provider").empty();
   $("#provider").append(p_string);
   $("#providerCompany").empty();
-  $("#providerCompany").append(providers[0].companyName);
+  $("#providerCompany").append("something");
   $("#provider").on('change', function() { 
     $("#providerCompany").empty(); _orderDiv.empty(); $("#provider_messages").empty();
     $("#providerCompany").append(findMember($("#provider").find(":selected").val(),providers).companyName);
   });
 }
 /**
- * lists all orders for the selected seller
+ * lists all orders for the selected Provider
  */
 function listProviderOrders()
 {
@@ -77,7 +76,7 @@ function listProviderOrders()
 }
 /**
  * used by the listOrders() function
- * formats the orders for a buyer. Orders to be formatted are provided in the _orders array
+ * formats the orders for a Provider. Orders to be formatted are provided in the _orders array
  * output replaces the current contents of the html element identified by _target
  * @param _target - string with div id prefaced by #
  * @param _orders - array with order objects
@@ -90,46 +89,47 @@ function formatProviderOrders(_target, _orders)
   {(function(_idx, _arr)
     { _action = '<th><select id=p_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
     b_string = '';
-      switch (JSON.parse(_arr[_idx].status).code)
+//
+// each order can have different states and the action that a Provider can take is directly dependent on the state of the order. 
+// this switch/case table displays selected order information based on its current status and displays selected actions, which
+// are limited by the sate of the order.
+//
+// Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
+// These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
+// associated with the language selected by the web user.
+//
+switch (JSON.parse(_arr[_idx].status).code)
       {
         case orderStatus.Ordered.code:
-          _date = _arr[_idx].ordered;
-          _action += '<option value="'+textPrompts.orderProcess.RequestShipping.select+'">'+textPrompts.orderProcess.RequestShipping.message+'</option>';
-          _action += '<option value="'+textPrompts.orderProcess.BackOrder.select+'">'+textPrompts.orderProcess.BackOrder.message+'</option>';
-          b_string = '<br/>'+textPrompts.orderProcess.BackOrder.prompt+'<input id="p_reason'+_idx+'" type="text"></input>';
-          break;
+
+        break;
         case orderStatus.Cancelled.code:
-          _date = _arr[_idx].cancelled;
-          break;
+
+        break;
         case orderStatus.ShipRequest.code:
-          _date = _arr[_idx].requestShipment;
-          break;
+
+        break;
         case orderStatus.Backordered.code:
-          _date = _arr[_idx].dateBackordered + '<br/>'+_arr[_idx].backorder;
-          _action += '<option value="'+textPrompts.orderProcess.RequestShipping.select+'">'+textPrompts.orderProcess.RequestShipping.message+'</option>';
-          break;
+
+        break;
         case orderStatus.Delivered.code:
-          _date = _arr[_idx].delivered;
-          _action += '<option value="'+textPrompts.orderProcess.PayRequest.select+'">'+textPrompts.orderProcess.PayRequest.message+'</option>';
-          break;
+
+        break;
         case orderStatus.Delivering.code:
-          _date = _arr[_idx].delivering;
-          break;
+
+        break;
         case orderStatus.Resolve.code:
-          _date = _arr[_idx].disputeResolved + '<br/>'+_arr[_idx].resolve;
-          break;
+
+        break;
         case orderStatus.Dispute.code:
-          _date = _arr[_idx].disputeOpened + '<br/>'+_arr[_idx].dispute;
-          _action += '<option value="'+textPrompts.orderProcess.Resolve.select+'">'+textPrompts.orderProcess.Resolve.message+'</option>';
-          _action += '<option value="'+textPrompts.orderProcess.Refund.select+'">'+textPrompts.orderProcess.Refund.message+'</option>';
-          b_string += '<br/>'+textPrompts.orderProcess.Refund.prompt+'<input id="p_reason'+_idx+'" type="text"></input>';
-          break;
+
+        break;
         case orderStatus.Cancelled.code:
-          _date = _arr[_idx].cancelled;
-          break;
+
+        break;
         case orderStatus.Paid.code:
-          _date = _arr[_idx].paid;
-          break;
+
+        break;
         default:
           break;
       }

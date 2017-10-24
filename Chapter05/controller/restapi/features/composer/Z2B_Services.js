@@ -40,7 +40,8 @@ app.set('port', appEnv.port);
 var  Z2Blockchain  = {
 
 /**
- * create an empty order
+ * create an empty order. This is used by any server side routine that needs to create an new
+ * empty order.
  * @param {createOrderTemplate} _inbound - Order created with factory.newResource(NS, 'Order',.orderNumber)
  * @returns {Order} - updated order item with all required fields except for relationships (buyer, seller)
  * @utility
@@ -75,7 +76,7 @@ var  Z2Blockchain  = {
         return(_inbound);
     },
 /**
- * find a vendor in an array
+ * find a vendor in an array. This routine is no longer used
  * @param {vendor_type} _string - type of vendor to find (e.g. 'supplier', 'shipper', etc.)
  * @param {vendor_array} _vendorArray - vendor array from order
  * @returns {$identifier} - returns the identifier if found else -1
@@ -89,7 +90,7 @@ var  Z2Blockchain  = {
         return(-1);
     },
 /**
- * find a item in an array
+ * find a item in an array. This is only used by the autoLoad process
  * @param {item_number} _itemNo - item number to find
  * @param {vendor_array} _itemArray - item array from order
  * @returns {JSON_object} - returns the item if found else error response
@@ -102,7 +103,7 @@ var  Z2Blockchain  = {
         return({'description':'Item '+_itemNo+ 'Not Found', 'unitPrice': 0, 'extendedPrice': 0});
     },
 /**
- * update item quantity
+ * update item quantity. used by the autoLoad process.
  * @param {item_number} _itemNo - item number to find
  * @param {vendor_array} _itemArray - item array from order
  * @param {item_number} _qty - quantity to change * @utility
@@ -131,7 +132,6 @@ var  Z2Blockchain  = {
                     console.log(_id+" loadTransaction retrying submit transaction for: "+_id);
                     this.loadTransaction(_con,_item, _id, businessNetworkConnection);
                 }
-                else {console.log('ZS: '+_id+' load transaction failed: '+error.message);}
             });
     },
 /**
@@ -148,7 +148,7 @@ var  Z2Blockchain  = {
         })
         .catch((error) => {
         if (error.message.search('MVCC_READ_CONFLICT') != -1)
-            {console.log("ZS: "+_order.orderNumber+" addOrder retrying assetRegistry.add for: "+_order.orderNumber);
+            {console.log(_order.orderNumber+" addOrder retrying assetRegistry.add for: "+_order.orderNumber);
             this.addOrder(_con,_order, _registry, _createNew, _bnc);
             }
             else {console.log('error with assetRegistry.add', error)}
@@ -209,28 +209,30 @@ var  Z2Blockchain  = {
         return ({'items': _items, 'amount': _amount});
     },
 /**
- * formats an Order into a reusable json object. work-around because serializer is not workin
+ * formats an Order into a reusable json object. work-around because serializer 
+ * was not initially working. This function is no longer in use.
  * @param {Order} _order - the inbound Order item retrieved from a registry
  * @return JSON object order elements
  * @function
  */
     getOrderData: function (_order)
     {
-        let orderElements = ['items', 'status', 'amount', 'created', 'cancelled', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'deliveryStatus', 'delivering', 'approved',
+        let orderElements = ['items', 'status', 'amount', 'created', 'cancelled', 'bought', 'ordered', 'dateBackordered', 'requestShipment', 'delivered', 'delivering', 'approved',
         'disputeOpened', 'disputeResolved', 'paymentRequested', 'orderRefunded', 'paid', 'dispute', 'resolve', 'backorder', 'refund'];
         var _obj = {};
         for (let each in orderElements){(function(_idx, _arr)
         { _obj[_arr[_idx]] = _order[_arr[_idx]]; })(each, orderElements)}
         _obj.buyer = _order.buyer.$identifier;
         _obj.seller = _order.seller.$identifier;
-        _obj.provider = _order.provider.$identifier;
-        _obj.shipper = _order.shipper.$identifier;
-        _obj.financeCo = _order.financeCo.$identifier;
+        _obj.provider = _order.seller.$provider;
+        _obj.shipper = _order.seller.$shipper;
+        _obj.financeCo = _order.seller.$financeCo;
         return (_obj);
     },
 
 /**
- * JSON object of available order status types and codes
+ * JSON object of available order status types and codes. This is used by nodejs 
+ * server side code to correctly update order status with identical codes and text.
  */
     orderStatus: {
         Created: {code: 1, text: 'Order Created'},
@@ -250,19 +252,16 @@ var  Z2Blockchain  = {
         Refunded: {code: 13, text: 'Order Refunded'}
     },
 /**
- * TODO: this will have to be updated for Bluemix
- * data elements used for message socket
+ * the user experience is enhanced if the browser can be notified of aysnchronous events. 
+ * the createMessateSockt function creates a web socket service to which the browser can
+ * attach. 
+ * @param {integer} _port - port number to use for this socket connection
+ * @returns {websocket} - web socket connection to be used on the server side.
  */
     m_connection: null,
     m_socketAddr: null,
     m_socket: null,
-/**
- * create a web socket for sending messages back to the browser based on asynchronous processing on the server. 
- * This allows nodejs to return gracefully from a request and have the browser deliver messages based on 
- * subsequent async processing on the server
- * @param {integer} - _port to use for this web socket interface
- */
-createMessageSocket: function (_port)
+    createMessageSocket: function (_port)
     {
         var port = (typeof(_port) == 'undefined' || _port == null) ? app.get('port')+1 : _port
         if (this.m_socket == null)
@@ -275,6 +274,7 @@ createMessageSocket: function (_port)
                 _this.m_connection = request.accept(null, request.origin);
                 _this.m_connection.on('message', function(message)
                 {
+                    console.log(message.utf8Data);
                     _this.m_connection.sendUTF('connected');
                     _this.m_connection.on('close', function(m_connection) {console.log('m_connection closed'); });
                 });
@@ -283,20 +283,15 @@ createMessageSocket: function (_port)
         return {conn: this.m_connection, socket: this.m_socketAddr};
     },
 /**
- * TODO: this will have to be updated for Bluemix
- * data elements used for blockchain event message socket
+ * the cs_connection is used to display blockchain information to the web browser over
+ * a sepaarate port from the user experience socket. 
+ * @returns {websocket} - web socket connection to be used on the server side.
  */
 
     cs_connection: null,
     cs_socketAddr: null,
     cs_socket: null,
-/**
- * create a web socket for sending blockchain block creation events back to the browser based on asynchronous processing on the server. 
- * This allows the browser to display block creation in real time, irrespective of what else the browser is doing at that time. 
- * The messaging port is based on the base port for the app plus 2
- * that is, if nodejs is communicating on port 6040, then the chain socket port will be 6040 + 2, or 6042
- */
-createChainSocket: function ()
+    createChainSocket: function ()
     {
         var port =  app.get('port')+2;
         if (this.cs_socket == null)
@@ -309,6 +304,7 @@ createChainSocket: function ()
                 _this.cs_connection = request.accept(null, request.origin);
                 _this.cs_connection.on('message', function(message)
                 {
+                    console.log(message.utf8Data);
                     _this.cs_connection.sendUTF('connected');
                     _this.cs_connection.on('close', function(cs_connection) {console.log('cs_connection closed'); });
                 });

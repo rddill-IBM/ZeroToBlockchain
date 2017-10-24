@@ -144,6 +144,9 @@ exports.orderAction = function (req, res, next) {
                     {
                         case 'Pay':
                         console.log('Pay entered');
+                        updateOrder = factory.newTransaction(NS, 'Pay');                        
+                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
                         break;
                         case 'Dispute':
                         console.log('Dispute entered');
@@ -161,22 +164,15 @@ exports.orderAction = function (req, res, next) {
                         break;
                         case 'Order From Supplier':
                         console.log('Order from Supplier entered for '+order.orderNumber+ ' inbound id: '+ _userID+' with order.seller as: '+order.seller.$identifier);
-                        updateOrder = factory.newTransaction(NS, 'OrderFromSupplier');                        
-                        updateOrder.provider = factory.newRelationship(NS, 'Provider', req.body.provider);                        
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+
                         break;
                         case 'Request Payment':
                         console.log('Request Payment entered');
-                        updateOrder = factory.newTransaction(NS, 'RequestPayment');                        
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
-                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+
                         break;
                         case 'Refund':
                         console.log('Refund Payment entered');
-                        updateOrder = factory.newTransaction(NS, 'Refund');                        
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
-                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
-                        updateOrder.refund = req.body.reason;
+
                         break;
                         case 'Resolve':
                         console.log('Resolve entered');
@@ -187,18 +183,6 @@ exports.orderAction = function (req, res, next) {
                         updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
                         updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
                         updateOrder.resolve = req.body.reason;
-                        break;
-                        case 'Request Shipping':
-                        console.log('Request Shipping entered');
-                        break;
-                        case 'Update Delivery Status':
-                        console.log('Update Delivery Status');
-                        break;
-                        case 'Delivered':
-                        console.log('Delivered entered');
-                        break;
-                        case 'BackOrder':
-                        console.log('BackOrder entered');
                         break;
                         case 'Authorize Payment':
                         console.log('Authorize Payment entered');

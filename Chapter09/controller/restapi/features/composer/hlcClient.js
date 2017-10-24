@@ -142,12 +142,7 @@ exports.orderAction = function (req, res, next) {
                     order.status = req.body.action;
                     switch (req.body.action)
                     {
-                        case 'Pay':
-                        console.log('Pay entered');
-                        updateOrder = factory.newTransaction(NS, 'Pay');                        
-                        updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
-                        updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
-                        break;
+
                         case 'Dispute':
                         console.log('Dispute entered');
                         updateOrder = factory.newTransaction(NS, 'Dispute');                        
@@ -199,14 +194,11 @@ exports.orderAction = function (req, res, next) {
                         break;
                         case 'Update Delivery Status':
                         console.log('Update Delivery Status');
-                        updateOrder = factory.newTransaction(NS, 'Delivering');                        
-                        updateOrder.shipper = factory.newRelationship(NS, 'Shipper', req.body.participant);                        
-                        updateOrder.deliveryStatus = req.body.delivery;
+
                         break;
                         case 'Delivered':
                         console.log('Delivered entered');
-                        updateOrder = factory.newTransaction(NS, 'Deliver');                        
-                        updateOrder.shipper = factory.newRelationship(NS, 'Shipper', req.body.participant);                        
+
                         break;
                         case 'BackOrder':
                         console.log('BackOrder entered');

@@ -278,7 +278,6 @@ rule netAccessProvider {
 *
 **/
 rule ShipperRefund {
-    description: "Enable a Shipper to refund payment for a disputed order"
 
 }
 
@@ -286,7 +285,6 @@ rule ShipperRefund {
 *
 **/
 rule ShipperResolve {
-    description: "Enable a Shipper to resolve a disputed order"
 
 }
 
@@ -294,7 +292,6 @@ rule ShipperResolve {
 *
 **/
 rule ShipperDelivering {
-    description: "Enable a Shipper to update delivery status on an order"
 
 }
 
@@ -302,7 +299,6 @@ rule ShipperDelivering {
 *
 **/
 rule ShipperDelivered {
-    description: "Enable a Shipper to mark an order as delivered"
 
 }
 
@@ -310,7 +306,6 @@ rule ShipperDelivered {
 *
 **/
 rule ShipperACL {
-    description: "Allow Shipper read, update access to order where they are listed as shiper and the order has been Submitted for delivery"
 
 }
 
@@ -318,7 +313,6 @@ rule ShipperACL {
 *
 */
 rule netAccessShipper {
-  description: "Allow Sellers access to the network"
 
 }
 

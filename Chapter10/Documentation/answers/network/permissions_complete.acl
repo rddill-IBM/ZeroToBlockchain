@@ -10,6 +10,28 @@ rule AllAccess {
 */
 
 /**
+* added to support composer V0.14
+*/
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+/**
+* added to support composer V0.14
+*/
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+/**
 *
 **/
 rule BuyerACLCreate {
@@ -181,7 +203,7 @@ rule SellerACL {
 rule netAccessSeller {
   description: "Allow Sellers access to the network"
   participant: "org.acme.Z2BTestNetwork.Seller"
-  operation: READ, CREATE, UPDATE, DELETE
+  operation: READ, CREATE, UPDATE
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW
 }
@@ -352,10 +374,32 @@ rule netAccessShipper {
 /**
 *
 **/
-rule FinanceCoACL {
+rule FinanceCoACL2 {
     description: "Allow FinanceCo full access to all Orders"
     participant: "org.acme.Z2BTestNetwork.FinanceCo"
     operation: ALL
-    resource: "org.acme.Z2BTestNetwork.*"
+    resource: "org.acme.Z2BTestNetwork.**"
     action: ALLOW
+}
+/**
+*
+rule FinanceCoACL {
+    description: "Allow Finance Company full access to order where they are listed as shiper and the order has been Submitted for delivery"
+    participant(m): "org.acme.Z2BTestNetwork.FinanceCo"
+    operation: ALL
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: (v.financeCo.financeCoID == m.getIdentifier()) 
+    action: ALLOW
+}
+**/
+
+/**
+*
+*/
+rule netAccessFinanceCo {
+  description: "Allow Finance Company access to the network"
+  participant: "org.acme.Z2BTestNetwork.FinanceCo"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }

@@ -12,7 +12,10 @@ body {height: 100%}
 		overflow: auto;
 	}
 	.scrollingHalfPane{
-
+		height: calc(40vh - 5em);
+		margin-left: 0px;
+		width: 100%;
+		overflow: auto;
 	}
 	.button-wide {
 		width: 30%;
@@ -43,7 +46,10 @@ body {height: 100%}
 		overflow: auto;
 	}
 	.scrollingHalfPane{
-
+		height: calc(40vh - 5em);
+		margin-left: 0px;
+		width: 100%;
+		overflow: auto;
 	}
 	.button-wide {
 		width: 15%;
@@ -107,19 +113,10 @@ p.message{
 	background-color: #DCE8CB
 }
 .halfPane{
-	position: absolute;
-	height: 40%;
-	margin: .0625em;
-	width: 48%;
-	overflow: hidden;
+
 }
 .halfPane2{
-	position: absolute;
-	height: 40%;
-	margin: .0625em;
-	top: 50%;
-	width: 48%;
-	overflow: hidden;
+
 }
 
 .scrollingPaneTopLeft{

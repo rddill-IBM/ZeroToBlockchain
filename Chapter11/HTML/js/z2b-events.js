@@ -15,7 +15,8 @@
 // z2c-events.js
 
 /**
- * load the administration User Experience
+ * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
+ * However, if this is a newly created network, then there are no members to retrieve and this will create four empty arrays
  */
 function singleUX ()
 {
@@ -31,21 +32,13 @@ function singleUX ()
   $.when($.get(toLoad), $.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
       $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_page, _sellers, _buyers, _providers, _shippers)
     { 
-      buyers = _buyers[0].members;
-      sellers = _sellers[0].members;
-      s_string = _getMembers(sellers);
-      providers = _providers[0].members
-      p_string = _getMembers(providers);
-      shippers = _shippers[0].members
-      sh_string = _getMembers(shippers);
-      $("#body").empty();
-      $("#body").append(_page[0]);
-      loadBuyerUX();
-      loadSellerUX();
-      loadProviderUX();
-      loadShipperUX();
+
     });
 }
+/**
+ * load all of the members in the network for use in the different user experiences. This routine is designed for use if the network has been newly deployed and the web app was
+ * started before the autoLoad function was run on the newly deployed network (which, by default, is empty).
+ */
 function deferredSingleUX()
 {
   var d_prompts = $.Deferred();
@@ -71,6 +64,10 @@ function deferredSingleUX()
     }).fail(d_prompts.reject);
       return d_prompts.promise();      
 }
+/**
+ * return an option list for use in an HTML <select> element from the provided member array.
+ * @param {Array} _members - array of members
+ */
 function _getMembers(_members)
 {
   var _str = '';

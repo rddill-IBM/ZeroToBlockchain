@@ -31,7 +31,7 @@ function loadAdminUX ()
   $.when($.get(toLoad)).done(function (page)
     {$('#body').empty();
     $('#body').append(page);
-    goMultiLingual("US_English", "admin");    
+    updatePage("admin");    
     listMemRegistries();
   });
 }
@@ -601,7 +601,7 @@ function getChainInfo()
 }
 /**
  * get History
- */
+ */ 
 
 function getHistorian()
 {

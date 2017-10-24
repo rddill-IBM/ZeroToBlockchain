@@ -12,6 +12,13 @@
  * limitations under the License.
  */
 
+ /**
+ * This file is used to automatically populate the network with Order assets and members
+ * The opening section loads node modules required for this set of nodejs services 
+ * to work. Most of these are from the hyperledger composer SDK. This module also 
+ * uses services created specifically for this tutorial, in the Z2B_Services.js
+ *  and Z2B_Utilities.js modules. 
+ */
 
 'use strict';
 const BrowserFS = require('browserfs/dist/node/index');
@@ -33,6 +40,10 @@ const svc = require('./Z2B_Services');
 const util = require('./Z2B_Utilities');
 const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
+/**
+ * itemTable and memberTable are used by the server to reduce load time requests 
+ * for member secrets and item information
+ */
 let itemTable = new Array();
 let memberTable = new Array();
 let orderStatus = svc.orderStatus;
@@ -41,7 +52,9 @@ let connection; let socketAddr;
 
 
 /**
- * get the connection port
+ * getPort is used to return the port number for socket interactions so that 
+ * the browser can receive asynchronous notifications of work in process. 
+ * This helps the user understand the current status of the auto load process. 
  * @param {express.req} req - the inbound request object from the client
  * @param {express.res} res - the outbound response object for communicating back to client
  * @param {express.next} next - an express service to enable post processing prior to responding to the client
@@ -54,7 +67,9 @@ exports.getPort = function(req, res, next) {
 } 
 
 /**
- * load up the network based on the data in the startup folder
+ * autoLoad reads the memberList.json file from the Startup folder and adds members, 
+ * executes the identity process, and then loads orders
+ * 
  * @param {express.req} req - the inbound request object from the client
  * @param {express.res} res - the outbound response object for communicating back to client
  * @param {express.next} next - an express service to enable post processing prior to responding to the client
@@ -74,13 +89,22 @@ exports.autoLoad = function(req, res, next) {
     let adminConnection = new AdminConnection();
         adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(() => {
-            businessNetworkConnection = new BusinessNetworkConnection();
+                // a businessNetworkConnection is required to add members
+                businessNetworkConnection = new BusinessNetworkConnection();
             return businessNetworkConnection.connect(config.composer.connectionProfile, network, config.composer.adminID, config.composer.adminPW)
             .then(() => {
+                // a factory is required to build the member object
                 factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+                //iterate through the list of members in the memberList.json file and 
+                // first add the member to the network, then create an identity for 
+                // them. This generates the memberList.txt file later used for 
+                // retrieving member secrets. 
                 for (let each in startupFile.members)
                     {(function(_idx, _arr)
                         {
+                            // the participant registry is where member information is first stored
+                            // there are individual registries for each type of participant, or member.
+                            // In our case, that is Buyer, Seller, Provider, Shipper, FinanceCo
                             return businessNetworkConnection.getParticipantRegistry(NS+'.'+_arr[_idx].type)
                             .then(function(participantRegistry){
                                 return participantRegistry.get(_arr[_idx].id)
@@ -97,6 +121,7 @@ exports.autoLoad = function(req, res, next) {
                                         svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].companyName+" successfully added");
                                     })
                                     .then(() => {
+                                        // an identity is required before a member can take action in the network. 
                                         return businessNetworkConnection.issueIdentity(NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
                                             .then((result) => {
                                                 let _mem = _arr[_idx];
@@ -115,11 +140,14 @@ exports.autoLoad = function(req, res, next) {
                             .catch((error) => {console.log('error with getParticipantRegistry', error.message)});
                         })(each, startupFile.members)
                     }
+                    // iterate through the order objects in the memberList.json file.
                     for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items)}
                     svc.saveItemTable(itemTable);
                     for (let each in startupFile.assets)
                         {(function(_idx, _arr)
                             {
+                                // each type of asset, like each member, gets it's own registry. Our application
+                                // has only one type of asset: "Order"
                                 return businessNetworkConnection.getAssetRegistry(NS+'.'+_arr[_idx].type)
                                 .then((assetRegistry) => {
                                     return assetRegistry.get(_arr[_idx].id)
@@ -128,13 +156,14 @@ exports.autoLoad = function(req, res, next) {
                                         svc.m_connection.sendUTF('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+NS+'.'+_arr[_idx].type);
                                     })
                                     .catch((error) => {
+                                        // first, an Order Object is created
                                         let order = factory.newResource(NS, _arr[_idx].type, _arr[_idx].id);
                                         order = svc.createOrderTemplate(order);
                                         let _tmp = svc.addItems(_arr[_idx], itemTable);
                                         order.items = _tmp.items;
                                         order.amount = _tmp.amount;
                                         order.orderNumber = _arr[_idx].id;
-                                        // create the buy transaction
+                                        // then the buy transaction is created
                                         const createNew = factory.newTransaction(NS, 'CreateOrder');
                                         order.buyer = factory.newRelationship(NS, 'Buyer', _arr[_idx].buyer);
                                         order.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
@@ -146,12 +175,17 @@ exports.autoLoad = function(req, res, next) {
                                         createNew.buyer = factory.newRelationship(NS, 'Buyer', _arr[_idx].buyer);
                                         createNew.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
                                         createNew.amount = order.amount;
-                                        // add the order to the asset registry.
+                                        // then the order is added to the asset registry.
                                         return assetRegistry.add(order)
                                         .then(() => {
+                                            // then a createOrder transaction is processed which uses the chaincode 
+                                            // establish the order with it's initial transaction state.
                                             svc.loadTransaction(svc.m_connection, createNew, order.orderNumber, businessNetworkConnection);
                                         })
                                         .catch((error) => {
+                                            // in the development environment, because of how timing is set up, it is normal to 
+                                            // encounter the MVCC_READ_CONFLICT error. This is a database timing error, not a 
+                                            // logical transaction error. 
                                         if (error.message.search('MVCC_READ_CONFLICT') != -1)
                                             {console.log("AL: "+_arr[_idx].id+" retrying assetRegistry.add for: "+_arr[_idx].id);
                                             svc.addOrder(svc.m_connection, order, assetRegistry, createNew, businessNetworkConnection);
@@ -171,7 +205,10 @@ exports.autoLoad = function(req, res, next) {
 }
 
 /**
- * get member secret from member table
+ * get member secret from member table. In normal production, the use would be responsible
+ * for knowing their member secret. Because this is a demo, we're managing that informaiton
+ * on the server and this routine gets that information for us so that we can successfully
+ * execute transactions. 
  * @param {express.req} req - the inbound request object from the client
  *  req.body.id - the id of the member to find
  * @param {express.res} res - the outbound response object for communicating back to client

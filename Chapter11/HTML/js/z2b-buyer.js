@@ -24,9 +24,13 @@ var totalAmount = 0;
  */
 function loadBuyerUX ()
 {
+  // get the html page to load
   toLoad = "buyer.html";
-  if (buyers.length === 0) 
+  // get the port to use for web socket communications with the server
   getPort();
+  // if (buyers.length === 0) then autoLoad() was not successfully run before this web app starts, so the sie of the buyer list is zero
+  // assume user has run autoLoad and rebuild member list
+  // if autoLoad not yet run, then member list length will still be zero
   if (buyers.length === 0) 
   { $.when($.get(toLoad), $.get('/setup/getPort'), deferredSingleUX()).done(function (page, port, res)
   {setupBuyer(page[0], port[0]);});
@@ -39,22 +43,29 @@ function loadBuyerUX ()
 
 function setupBuyer(page, port)
 {
+  // empty the hetml element that will hold this page
   $("#buyerbody").empty();
   $("#buyerbody").append(page);
-  goMultiLingual("US_English", "buyer");   
+  // update the text on the page using the prompt data for the selected language
+  updatePage("buyer");   
   msgPort = port.port;
+  // connect to the web socket and tell the web socket where to display messages
   wsDisplay('buyer_messages', msgPort);   
+  // enable the buttons to process an onClick event
   var _create = $("#newOrder");
   var _list = $("#orderStatus");
   var _orderDiv = $("#"+orderDiv);
   _create.on('click', function(){displayOrderForm();});
   _list.on('click', function(){listOrders()});
   $("#buyer").empty();
+  // build the buer select HTML element
   for (each in buyers)
     {(function(_idx, _arr){
       $("#buyer").append('<option value="'+_arr[_idx].id+'">' +_arr[_idx].id+'</option>');;
     })(each, buyers)}
+    // display the name of the current buyer
   $("#company")[0].innerText = buyers[0].companyName;
+  // create a function to execute when the user selects a different buyer
   $("#buyer").on('change', function() { _orderDiv.empty(); $("#buyer_messages").empty(); $("#company")[0].innerText = findMember($("#buyer").find(":selected").text(),buyers).companyName; });
 
 }
@@ -66,25 +77,30 @@ function displayOrderForm()
 {  toLoad = "createOrder.html"; 
 totalAmount = 0;
 newItems = [];
+// get the order creation web page and also get all of the items that a user can select
 $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (page, _items)
   { 
     itemTable = _items[0].items;
     let _orderDiv = $("#"+orderDiv);
     _orderDiv.empty();
     _orderDiv.append(page[0]);
+    // update the page with the appropriate text for the selected language
     updatePage('createOrder');
     $('#seller').empty();
+    // populate the seller HTML select object. This string was built during the singleUX or deferredSingleUX function call
     $('#seller').append(s_string);
     $('#seller').val($("#seller option:first").val());
     $('#orderNo').append('xxx');
     $('#status').append('New Order');
     $('#today').append(new Date().toISOString());
     $('#amount').append('$'+totalAmount+'.00');
+    // build a select list for the items
     var _str = "";
     for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>'})(each, itemTable)}
     $('#items').empty();
     $('#items').append(_str);
     $('#cancelNewOrder').on('click', function (){_orderDiv.empty();});
+    // hide the submit new order function until an item has been selected
     $('#submitNewOrder').hide();
     $('#submitNewOrder').on('click', function ()
       { let options = {};
@@ -96,22 +112,30 @@ $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (pag
         $.when($.post('/composer/client/addOrder', options)).done(function(_res)
         {    _orderDiv.empty(); _orderDiv.append(formatMessage(_res.result)); console.log(_res);});
       });
+    // function to call when an item has been selected
     $('#addItem').on('click', function ()
     { let _ptr = $("#items").find(":selected").val();
-    $('#items').find(':selected').remove();
-    let _item = itemTable[_ptr];
+      // remove the just selected item so that it cannot be added twice. 
+      $('#items').find(':selected').remove();
+      // build a new item detail row in the display window
+      let _item = itemTable[_ptr];
       let len = newItems.length;
       _str = '<tr><td>'+_item.itemNo+'</td><td>'+_item.itemDescription+'</td><td><input type="number" id="count'+len+'"</td><td id="price'+len+'"></td></tr>'
       $('#itemTable').append(_str);
+      // set the initial item count to 1
       $('#count'+len).val(1);
+      // set the initial price to the price of one item
       $('#price'+len).append("$"+_item.unitPrice+".00");
+      // add an entry into an array for this newly added item
       let _newItem = _item;
       _newItem.extendedPrice = _item.unitPrice;
       newItems[len] = _newItem;
       newItems[len].quantity=1;
       totalAmount += _newItem.extendedPrice;
+      // update the order amount with this new item
       $('#amount').empty();
       $('#amount').append('$'+totalAmount+'.00');
+      // function to update item detail row and total amount if itemm count is changed
       $('#count'+len).on('change', function ()
       {let len = this.id.substring(5);
         let qty = $('#count'+len).val();
@@ -134,13 +158,18 @@ $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (pag
 function listOrders()
 {
   var options = {};
+  // get the users email address
   options.id = $("#buyer").find(":selected").text();
+  // get their password from the server. This is clearly not something we would do in production, but enables us to demo more easily
   $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
   {
+    // get their orders
     options.userID = _mem.userID; options.secret = _mem.secret;
     $.when($.post('/composer/client/getMyOrders', options)).done(function(_results)
       {
+        // if they have no orders, then display a message to that effect
         if (_results.orders.length < 1) {$("#orderDiv").empty(); $("#orderDiv").append(formatMessage(textPrompts.orderProcess.b_no_order_msg+options.id));}
+        // if they have orders, format and display the orders. 
         else{formatOrders($("#orderDiv"), _results.orders)}
       });
   });
@@ -161,7 +190,15 @@ function formatOrders(_target, _orders)
     { _action = '<th><select id=b_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
     let r_string;
     r_string = '</th>';
-
+//
+// each order can have different states and the action that a buyer can take is directly dependent on the state of the order. 
+// this switch/case table displays selected order information based on its current status and displays selected actions, which
+// are limited by the sate of the order.
+//
+// Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
+// These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
+// associated with the language selected by the web user.
+//
       switch (JSON.parse(_arr[_idx].status).code)
       {
         case orderStatus.PayRequest.code:
@@ -232,10 +269,14 @@ function formatOrders(_target, _orders)
       })(every, _arr[_idx].items)
     }
     _str += '</table>';
-    console.log(_str);
     })(each, _orders)
   }
+  // append the newly built order table to the web page
   _target.append(_str);
+  //
+  // now that the page has been placed into the browser, all of the id tags created in the previous routine can now be referenced. 
+  // iterate through the page and make all of the different parts of the page active.
+  //
   for (let each in _orders)
     {(function(_idx, _arr)
       { $("#b_btn_"+_idx).on('click', function () 

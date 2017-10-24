@@ -48,4 +48,4 @@ echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "deploying network"
 cd network/dist
-composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
+composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString  

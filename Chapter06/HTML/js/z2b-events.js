@@ -15,7 +15,8 @@
 // z2c-events.js
 
 /**
- * load the administration User Experience
+ * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
+ * However, if this is a newly created network, then there are no members to retrieve and this will create four empty arrays
  */
 function singleUX ()
 {
@@ -39,6 +40,10 @@ function singleUX ()
       sh_string = _getMembers(shippers);
     });
 }
+/**
+ * load all of the members in the network for use in the different user experiences. This routine is designed for use if the network has been newly deployed and the web app was
+ * started before the autoLoad function was run on the newly deployed network (which, by default, is empty).
+ */
 function deferredSingleUX()
 {
   var d_prompts = $.Deferred();
@@ -64,6 +69,10 @@ function deferredSingleUX()
     }).fail(d_prompts.reject);
       return d_prompts.promise();      
 }
+/**
+ * return an option list for use in an HTML <select> element from the provided member array.
+ * @param {Array} _members - array of members
+ */
 function _getMembers(_members)
 {
   var _str = '';

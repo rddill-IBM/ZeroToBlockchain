@@ -20,7 +20,7 @@ const financeCoID = 'easymoney@easymoneyinc.com';
 const financeCoName = 'The Global Financier';
 
 /**
- * load the administration User Experience
+ * load the finance company User Experience
  */
 function loadFinanceCoUX ()
 {
@@ -41,7 +41,6 @@ function setupFinanceCo(page, port)
   $("#body").empty();
   $("#body").append(page);
   goMultiLingual("US_English", "financeCo");
-  console.log('port is: '+port.port);
   msgPort = port.port;
   wsDisplay('finance_messages', msgPort);
   var _clear = $("#financeCOclear");
@@ -51,7 +50,7 @@ function setupFinanceCo(page, port)
   _list.on('click', function(){listFinanceOrders()});
 }
 /**
- * lists all orders for the selected seller
+ * lists all orders for the selected financier
  */
 function listFinanceOrders()
 {
@@ -59,12 +58,9 @@ function listFinanceOrders()
   options.id = financeCoID;
   $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
   {
-    console.log(_mem);
     options.userID = _mem.userID; options.secret = _mem.secret;
     $.when($.post('/composer/client/getMyOrders', options)).done(function(_results)
       {
-        console.log(_results.result);
-        console.log(_results.orders);
         if (_results.orders.length < 1) {$("#"+financeCOorderDiv).empty(); $("#"+financeCOorderDiv).append(formatMessage('No orders for the financeCo: '+options.id));}
         else{orders = _results.orders; formatFinanceOrders($("#"+financeCOorderDiv), orders)}
       });
@@ -72,7 +68,7 @@ function listFinanceOrders()
 }
 /**
  * used by the listOrders() function
- * formats the orders for a buyer. Orders to be formatted are provided in the _orders array
+ * formats the orders for a financier. Orders to be formatted are provided in the _orders array
  * output replaces the current contents of the html element identified by _target
  * @param _target - string with div id prefaced by #
  * @param _orders - array with order objects
@@ -85,7 +81,16 @@ function formatFinanceOrders(_target, _orders)
   {(function(_idx, _arr)
     { _action = '<th><select id=f_action'+_idx+'><option value="NoAction">No Action</option>';
     p_string = '';
-      switch (JSON.parse(_arr[_idx].status).code)
+//
+// each order can have different states and the action that a financier can take is directly dependent on the state of the order. 
+// this switch/case table displays selected order information based on its current status and displays selected actions, which
+// are limited by the sate of the order.
+//
+// Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
+// These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
+// associated with the language selected by the web user.
+//
+switch (JSON.parse(_arr[_idx].status).code)
       {
         case orderStatus.PayRequest.code:
         _date = _arr[_idx].paymentRequested;
@@ -153,12 +158,9 @@ function formatFinanceOrders(_target, _orders)
           options.action = $("#f_action"+_idx).find(":selected").text();
           options.orderNo = $("#f_order"+_idx).text();
           options.participant = financeCoID;
-          console.log(options);
           $("#finance_messages").prepend(formatMessage('Processing '+options.action+' request for order number: '+options.orderNo));
           $.when($.post('/composer/client/orderAction', options)).done(function (_results)
-          { console.log(_results);
-            $("#finance_messages").prepend(formatMessage(_results.result));
-          });
+          { $("#finance_messages").prepend(formatMessage(_results.result)); });
       });
     })(each, _orders)
   }
@@ -168,7 +170,6 @@ function formatFinanceOrders(_target, _orders)
  */
 function formatDetail(_cur, _order)
 {
-  console.log('['+_cur+'] is ',_order);
   var _out = '<div class="acc_body off" id="order'+_cur+'_b">';
   _out += '<h3 id="status">'+textPrompts.financeCoOrder.status+'\t'+JSON.parse(_order.status).text+'</h3>';
   _out += '<table class="wide"><tr><th id="action">'+textPrompts.financeCoOrder.status+'</th><th id="by">'+textPrompts.financeCoOrder.by+'</th><th id="date">'+textPrompts.financeCoOrder.date+'</th><th id="comments">'+textPrompts.financeCoOrder.comments+'</th></tr>';

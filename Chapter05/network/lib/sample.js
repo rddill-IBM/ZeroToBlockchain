@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 var orderStatus = {
     Created: {code: 1, text: 'Order Created'},
     Bought: {code: 2, text: 'Order Purchased'},

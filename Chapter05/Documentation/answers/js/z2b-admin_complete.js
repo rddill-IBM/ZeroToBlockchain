@@ -31,6 +31,7 @@ function loadAdminUX ()
   $.when($.get(toLoad)).done(function (page)
     {$('#body').empty();
     $('#body').append(page);
+    updatePage("admin");    
     listMemRegistries();
   });
 }
@@ -41,12 +42,11 @@ function loadAdminUX ()
  */
 function wsDisplay(_target, _port)
 {
-  console.log('wsDisplay target: '+_target+' port: '+_port);
   var content = $('#'+_target);
   var wsSocket = new WebSocket('ws://localhost:'+_port);
   wsSocket.onopen = function () {wsSocket.send('connected to client');};
 
-  wsSocket.onmessage = function (message) {console.log('wsSocket message: ', message.data); content.append(formatMessage(message.data));};
+  wsSocket.onmessage = function (message) {content.append(formatMessage(message.data));};
 
   wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ' + error);};
 
@@ -102,12 +102,12 @@ function getConnectForm ()
         res[parts[0]][parts[1]] = $('#'+_arr[_idx]).val();
         }
     })(each, fields) }
-    console.log(res);
     return res;
 }
 
 /**
  * test creating a network connection
+ * @param {networkConnectionData} - Data from the form used to populate a hyperledger fabric V1 network connection.
  */
 function createConnection (_form)
 { 
@@ -115,7 +115,6 @@ console.log(_form);
 $.when($.post('/composer/admin/createProfile', _form)).done(function(_results)
 {
   var _str = '';
-  console.log(_results);
   _str +='<h2>network profile creation request</h2>';
   _str += '<h4>Creation request results: '+_results.profile+'</h4>';
   $('#admin-forms').empty();
@@ -132,7 +131,6 @@ function getProfiles()
 {
   $.when($.get('/composer/admin/getAllProfiles')).done(function (_profiles)
   {
-    console.log('connection results: ', _profiles);
     var _str = '';
     // list cert URL & cert path
     _str +='<h3>network connection profile list request</h3>';
@@ -147,6 +145,8 @@ function getProfiles()
 
 /**
  * gather and list all of the current network connection profiles
+ * @param {integer} - _state is a switch, if it == 0 (zero) then display the deleteConnection button, else hide that button. 
+ * This allows the same routine to be used for display or delete processing 
  */
 function listProfiles(_state)
 {
@@ -188,7 +188,6 @@ function networkDeploy()
   options.myArchive = networkFile;
   $.when($.post('/composer/admin/deploy', options)).done(function (_results)
   { var _str = '';
-    console.log(_results)
     _str +='<h2>network deploy request for '+networkFile+'</h2>';
     _str += '<h4>Network deploy results: '+_results.deploy+'</h4>';
     $('#admin-forms').empty();
@@ -205,7 +204,6 @@ function networkInstall()
   options.myArchive = networkFile;
   $.when($.post('/composer/admin/install', options)).done(function (_results)
   { var _str = '';
-    console.log(_results)
     _str +='<h2>network install request for '+networkFile+'</h2>';
     _str += '<h4>Network install results: '+_results.install+'</h4>';
     $('#admin-forms').empty();
@@ -222,7 +220,6 @@ function networkStart()
   options.myArchive = networkName;
   $.when($.post('/composer/admin/start', options)).done(function (_results)
   { var _str = '';
-    console.log(_results)
     _str +='<h2>network start request for '+networkName+'</h2>';
     _str += '<h4>Network start results: '+_results.start+'</h4>';
     $('#admin-forms').empty();
@@ -243,7 +240,6 @@ function deleteConnectionProfile(_name)
     $.when($.post('/composer/admin/deleteProfile', options)).done(function(_results)
     {
       var _str = '';
-      console.log(_results);
       _str +='<h2>network profile delete request for '+_name+'</h2>';
       _str += '<h4>Profile delete request results: '+_results.profile+'</h4>';
       $('#admin-forms').empty();
@@ -264,7 +260,6 @@ function ping()
   var options = {}; options.businessNetwork = businessNetwork;
   $.when($.post('/composer/admin/ping', options)).done(function (_results)
   {
-    console.log(_results)
     var _str = '';
     _str +='<h2>network ping request to '+businessNetwork+'</h2>';
     _str += '<h4>Ping request results: '+'</h4><table width="90%"><tr><th>Item</th><th width="65%">Value</th></tr>';
@@ -288,7 +283,6 @@ function networkUndeploy()
     $.when($.post('/composer/admin/undeploy', options)).done(function(_results)
     {
       var _str = '';
-      console.log(_results);
       _str +='<h2>Network undeploy request for '+businessNetwork+'</h2>';
       _str += '<h4>Network Undeploy request results: '+_results.undeploy+'</h4>';
       $('#admin-forms').empty();
@@ -311,7 +305,6 @@ function networkUpdate()
   options.myArchive = networkFile;
   $.when($.post('/composer/admin/update', options)).done(function (_results)
   { var _str = '';
-    console.log(_results)
     _str +='<h2>network update request for '+networkFile+'</h2>';
     _str += '<h4>Network update results: '+_results.update+'</h4>';
     $('#admin-forms').empty();
@@ -379,7 +372,7 @@ function preLoad()
 function listMemRegistries()
 {
   $.when($.get('/composer/admin/getRegistries')).done(function (_results)
-  { console.log(_results);
+  { 
     $('#registryName').empty();
     var _str = '';
     _str +='<h2>Registry List</h2>';
@@ -405,7 +398,7 @@ function listRegistry()
   var options = {};
   options.registry = $('#registryName').find(':selected').text();
   $.when($.post('/composer/admin/getMembers', options)).done(function (_results)
-  { console.log(_results);
+  { 
     var _str = '';
     _str +='<h2>Registry List</h2>';
     _str += '<h4>Network update results: '+_results.result+'</h4>';
@@ -428,7 +421,7 @@ function listAssets()
   options.registry = 'Order';
   options.type='admin';
   $.when($.post('/composer/admin/getAssets', options)).done(function (_results)
-  { console.log(_results);
+  { 
     var _str = '';
     _str +='<h2>Registry List</h2>';
     _str += '<h4>Network update results: '+_results.result+'</h4>';
@@ -469,9 +462,7 @@ function addMember()
     options.id = $('#participant_id').val();
     options.type = $('#member_type').find(':selected').text();
     $.when($.post('/composer/admin/addMember', options)).done(function(_res)
-    {
-      $('#messages').append(formatMessat(_res));
-      console.log(_res);});
+    { $('#messages').append(formatMessat(_res)); });
   });
 });
 }
@@ -487,7 +478,7 @@ function removeMember()
   $('#messages').empty();   
   $('#messages').append(formatMessage('Getting Member List for '+options.registry+'.'));
   $.when($.post('/composer/admin/getMembers', options),$.get('removeMember.html')).done(function (_results, _page)
-  { console.log(_results);
+  { 
     $('#admin-forms').append(_page[0]);
     $('#member_type').append(options.registry);
     member_list = _results[0].members;
@@ -506,9 +497,7 @@ function removeMember()
       $('#member_list').find(':selected').remove();
       $('#messages').append(formatMessage('starting delete member request.'));
       $.when($.post('/composer/admin/removeMember', options)).done(function (_results)
-        { console.log(_results);
-          $('#messages').append(formatMessage(_results));
-        });
+        { $('#messages').append(formatMessage(_results));});
     });
     $('#member_list').on('change',function()
     { var id = $('#member_list').find(':selected').text();
@@ -530,7 +519,7 @@ function getSecret()
   $('#messages').empty();   
   $('#messages').append('<br/>Getting Member List for '+options.registry+'.');
   $.when($.post('/composer/admin/getMembers', options),$.get('getMemberSecret.html')).done(function (_results, _page)
-  { console.log(_results);
+  { 
     $('#admin-forms').append(_page[0]);
     $('#member_type').append(options.registry);
     member_list = _results[0].members;
@@ -548,7 +537,7 @@ function getSecret()
       options.id = $('#member_list').find(':selected').text();
       $('#messages').append(formatMessage('getting member secret.'));
       $.when($.post('/composer/admin/getSecret', options)).done(function (_results)
-        { console.log(_results);
+        { 
           $('#secret').empty(); $('#secret').append(_results.secret);
           $('#userID').empty(); $('#userID').append(_results.userID);
           $('#messages').append(formatMessage(_results));
@@ -584,7 +573,6 @@ function displayMember(id, _list)
 
 function findMember(_id, _list)
 {
-  console.log(_id, _list);
   _mem = {'id': _id, 'companyName': 'not found'};
   for (each in _list){(function(_idx, _arr)
   {
@@ -602,7 +590,6 @@ function getChainInfo()
 {
   $.when($.get('fabric/getChainInfo')).done(function(_res)
   { var _str = '<h2> Get Chain Info: '+_res.result+'</h2>';
-  console.log(_res);
   if (_res.result == "success")
     {_str += 'Current Hash: '+formatMessage(_res.currentHash);
     _str+= '<ul><li>High: '+_res.blockchain.height.high+'</li><li>Low: '+_res.blockchain.height.low+'</li></ul>'}
@@ -620,9 +607,18 @@ function getHistorian()
 {
   $.when($.get('fabric/getHistory')).done(function(_res)
   { var _str = '<h2> Get History Records: '+_res.result+'</h2>';
-  console.log(_res);
   if (_res.result == "success")
-    {_str += 'Current length: '+formatMessage(_res.history.length);}
+    {_str += 'Current length: '+formatMessage(_res.history.length);
+    _str += '<table><tr><th>Transaction ID</th><th>Transaction Type</th><th>TimeStamp</th></tr>';
+    _res.history.sort(function(a,b){return (b.transactionTimestamp > a.transactionTimestamp) ? -1 : 1;});
+    for (each in _res.history)
+    {(function(_idx, _arr){
+      var _row = _arr[_idx];
+      _str += '<tr><td>'+_row.transactionId+'</td><td>'+_row.transactionType+'</td><td>'+_row.transactionTimestamp+'</td></tr>';
+      })(each, _res.history)
+    }
+    _str +='</table>';
+  }
     else
     {_str += formatMessage(_res.message);}
     $("#admin-forms").empty();
@@ -643,9 +639,8 @@ function getChainEvents()
   csSocket.onopen = function () {csSocket.send('connected to client');};
   csSocket.onmessage = function (message) {
     _blctr ++;
-    console.log('csSocket message.data '+ message.data);
     if (message.data != 'connected')
-      {$('#blockchain').append('<span class="block"><br/>block '+JSON.parse(message.data).header.number+'<br/>Hash: '+JSON.parse(message.data).header.data_hash+'</span>');
+      {$('#blockchain').append('<span class="block">block '+JSON.parse(message.data).header.number+'<br/>Hash: '+JSON.parse(message.data).header.data_hash+'</span>');
       if (_blctr > 4) {var leftPos = $('#blockchain').scrollLeft(); $('#blockchain').animate({scrollLeft: leftPos + 300}, 250);}
     }
   };

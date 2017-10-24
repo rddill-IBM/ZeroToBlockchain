@@ -40,7 +40,8 @@ app.set('port', appEnv.port);
 var  Z2Blockchain  = {
 
 /**
- * create an empty order
+ * create an empty order. This is used by any server side routine that needs to create an new
+ * empty order.
  * @param {createOrderTemplate} _inbound - Order created with factory.newResource(NS, 'Order',.orderNumber)
  * @returns {Order} - updated order item with all required fields except for relationships (buyer, seller)
  * @utility
@@ -75,7 +76,7 @@ var  Z2Blockchain  = {
         return(_inbound);
     },
 /**
- * find a vendor in an array
+ * find a vendor in an array. This routine is no longer used
  * @param {vendor_type} _string - type of vendor to find (e.g. 'supplier', 'shipper', etc.)
  * @param {vendor_array} _vendorArray - vendor array from order
  * @returns {$identifier} - returns the identifier if found else -1
@@ -89,7 +90,7 @@ var  Z2Blockchain  = {
         return(-1);
     },
 /**
- * find a item in an array
+ * find a item in an array. This is only used by the autoLoad process
  * @param {item_number} _itemNo - item number to find
  * @param {vendor_array} _itemArray - item array from order
  * @returns {JSON_object} - returns the item if found else error response
@@ -102,7 +103,7 @@ var  Z2Blockchain  = {
         return({'description':'Item '+_itemNo+ 'Not Found', 'unitPrice': 0, 'extendedPrice': 0});
     },
 /**
- * update item quantity
+ * update item quantity. used by the autoLoad process.
  * @param {item_number} _itemNo - item number to find
  * @param {vendor_array} _itemArray - item array from order
  * @param {item_number} _qty - quantity to change * @utility
@@ -208,7 +209,8 @@ var  Z2Blockchain  = {
         return ({'items': _items, 'amount': _amount});
     },
 /**
- * formats an Order into a reusable json object. work-around because serializer is not workin
+ * formats an Order into a reusable json object. work-around because serializer 
+ * was not initially working. This function is no longer in use.
  * @param {Order} _order - the inbound Order item retrieved from a registry
  * @return JSON object order elements
  * @function
@@ -229,7 +231,8 @@ var  Z2Blockchain  = {
     },
 
 /**
- * JSON object of available order status types and codes
+ * JSON object of available order status types and codes. This is used by nodejs 
+ * server side code to correctly update order status with identical codes and text.
  */
     orderStatus: {
         Created: {code: 1, text: 'Order Created'},
@@ -249,7 +252,11 @@ var  Z2Blockchain  = {
         Refunded: {code: 13, text: 'Order Refunded'}
     },
 /**
- * 
+ * the user experience is enhanced if the browser can be notified of aysnchronous events. 
+ * the createMessateSockt function creates a web socket service to which the browser can
+ * attach. 
+ * @param {integer} _port - port number to use for this socket connection
+ * @returns {websocket} - web socket connection to be used on the server side.
  */
     m_connection: null,
     m_socketAddr: null,
@@ -275,6 +282,11 @@ var  Z2Blockchain  = {
         }
         return {conn: this.m_connection, socket: this.m_socketAddr};
     },
+/**
+ * the cs_connection is used to display blockchain information to the web browser over
+ * a sepaarate port from the user experience socket. 
+ * @returns {websocket} - web socket connection to be used on the server side.
+ */
 
     cs_connection: null,
     cs_socketAddr: null,

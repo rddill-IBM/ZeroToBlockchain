@@ -199,7 +199,6 @@ rule ProviderRequestShipping {
 rule ProviderBackorder {
 
 }
-
 /**
 *
 **/
@@ -232,34 +231,7 @@ rule ProviderACL {
 *
 */
 rule netAccessProvider {
-  description: "Allow Sellers access to the network"
-  participant: "org.acme.Z2BTestNetwork.Provider"
-  operation: READ, CREATE, UPDATE, DELETE
-  resource: "org.hyperledger.composer.system.**"
-  action: ALLOW
-}
 
-/**
-*
-**/
-rule ShipperACL {
-    description: "Allow Shipper read, update access to order where they are listed as shiper and the order has been Submitted for delivery"
-    participant(m): "org.acme.Z2BTestNetwork.Shipper"
-    operation: READ, UPDATE
-    resource(v): "org.acme.Z2BTestNetwork.Order"
-    condition: ((v.shipper.shipperID == m.getIdentifier()) && (v.requestShipment != ''))
-    action: ALLOW
-}
-
-/**
-*
-*/
-rule netAccessShipper {
-  description: "Allow Sellers access to the network"
-  participant: "org.acme.Z2BTestNetwork.Shipper"
-  operation: READ, CREATE, UPDATE, DELETE
-  resource: "org.hyperledger.composer.system.**"
-  action: ALLOW
 }
 
 /**

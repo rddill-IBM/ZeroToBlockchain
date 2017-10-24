@@ -43,6 +43,9 @@ function setupSeller(page, port)
   var _list = $("#sellerOrderStatus");
   var _orderDiv = $("#"+sellerOrderDiv);
   _clear.on('click', function(){_orderDiv.empty();});
+  //
+  // this section changes from the previous chapter, buyer changing to seller
+  //
   _list.on('click', function(){listSellerOrders()});
   $("#seller").empty();
   $("#seller").append(s_string);
@@ -59,6 +62,9 @@ function setupSeller(page, port)
 function listSellerOrders()
 {
   var options = {};
+  //
+  // seller instead of buyer
+  //
   options.id = $("#seller").find(":selected").val();
   $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
   {
@@ -84,7 +90,16 @@ function formatSellerOrders(_target, _orders)
   for (let each in _orders)
   {(function(_idx, _arr)
     { _action = '<th><select id=s_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
-      switch (JSON.parse(_arr[_idx].status).code)
+//
+// each order can have different states and the action that a buyer can take is directly dependent on the state of the order. 
+// this switch/case table displays selected order information based on its current status and displays selected actions, which
+// are limited by the sate of the order.
+//
+// Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
+// These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
+// associated with the language selected by the web user.
+//
+switch (JSON.parse(_arr[_idx].status).code)
       {
         case orderStatus.PayRequest.code:
           _date = _arr[_idx].paymentRequested;
