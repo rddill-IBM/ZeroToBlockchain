@@ -113,6 +113,7 @@ p.message{
 	background-color: #DCE8CB
 }
 .halfPane{
+	font-size: 1em;
 	position: absolute;
 	height: 40%;
 	margin: .0625em;
@@ -120,6 +121,7 @@ p.message{
 	overflow: hidden;
 }
 .halfPane2{
+	font-size: 1em;
 	position: absolute;
 	height: 40%;
 	margin: .0625em;
