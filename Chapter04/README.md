@@ -1,33 +1,88 @@
-# bd test Business Network
+# Zero To Blockchain Chapter04 for hyplerledger compose.
 
-> Zero To Blockchain Chapter04 for hyplerledger compose.
+[Table of Contents](../README.md)
 
-This business network defines:
+This chapter focuses on the following files: 
+```
+Chapter 05
+  ↳ network
+   permissions.acl
+   queries.qry
+    ↳lib
+      sample.js
+    ↳models
+      base.cto
+      events.cto
+      sample.cto
+    ↳test
+      sample.js
+```
 
-**Participant**
-`Buyer`
-`Seller`
-`Provider`
-`Shipper`
-`FinanceCo`
+Key files:
+ - **models/sample.cto** 
+   - This is the 'model' file, which defines the types of members and assets in a business network and also establishes the speicif transactions which can be executed in a network. 
+- **lib/sample.js**
+  - The sample.js file in the lib folder contains all of the code to implement each transaction defined in the sample.cto file. 
+- **test/sample.js**
+  - This file provides the unit tests for the network. 
 
-**Asset**
-`Order`
+## Installing the code:
+ - run this command from a terminal window: ```npm install```
+ - then run ```buildAndDeploy`` (yes, case is important)
+ - then run ```npm run test```
+ - this should deliver the following result: 
+ ```
+ Finance Network
+    #createOrder
+      ✓ should be able to create an order (134ms)
+    #issueBuyRequest
+      ✓ should be able to issue a buy request (76ms)
+    #issueOrderFromSupplier
+      ✓ should be able to issue a supplier order (64ms)
+    #issueRequestShipment
+      ✓ should be able to issue a request to ship product (51ms)
+    #issueDelivery
+      ✓ should be able to record a product delivery
+    #issueRequestPayment
+      ✓ should be able to issue a request to request payment for a product (58ms)
+    #issuePayment
+      ✓ should be able to record a product payment
+    #issueDispute
+      ✓ should be able to record a product dispute
+    #issueResolution
+      ✓ should be able to record a dispute resolution (41ms)
+    #issueBackorder
+      ✓ should be able to record a product backorder
 
-**Transaction**
-`CreateOrder`
-`Buy`
-`OrderFromSupplier`
-`RequestShipping`
-`Deliver`
-`RequestPayment`
-`Pay`
-`Dispute`
-`Resolve`
-`Backorder`
 
-**Event**
-`(none yet)`
+  10 passing (2s)
+  ```
+
+The business network definitions are contained in the **sample.cto** file, which includes the *base.cto* and the *events.cto* file. 
+
+## Participant
+- `Buyer`
+- `Seller`
+- `Provider`
+- `Shipper`
+- `FinanceCo`
+
+## Asset
+- `Order`
+
+- `CreateOrder`
+- `Buy`
+- `OrderFromSupplier`
+- `RequestShipping`
+- `Deliver`
+- `RequestPayment`
+- `Pay`
+- `Dispute`
+- `Resolve`
+- `Backorder`
+
+## Event
+- `(none yet)`
 
 Orders are created by Buyers and executed by Sellers, who may work with a 3rd part (Provider) to fulfill the order. Either Sellers or Providers can RequestShipment, which is fulfilled by a Shipper who executes a Deliver transaction when complete. Orders can be Disputed. Disputed Orders can be resolved. Payments are made against either Delivered or Resolved Orders. 
 
@@ -174,3 +229,4 @@ Submit a  transaction:
     --> FinanceCo financeCo
 }
 ```
+

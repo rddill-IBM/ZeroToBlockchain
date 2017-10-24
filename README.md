@@ -5,28 +5,28 @@ Please note that this is not yet ready for public consumption. Comments are welc
 
 Base concept is: 
 
-Chapter 1 		What is Blockchain? Concept and Architecture overview
+Chapter 1 What is Blockchain? Concept and Architecture overview
 
-Chapter 2 		What's the story we'll implement
+Chapter 2 What's the story we'll implement
 
-Chapter 2.1 	Architecture for the Story
+Chapter 2.1 Architecture for the Story
 
-Chapter 3:		Set up local HyperLedger V1 development environment
+Chapter 3 Creating the Blockchain Development Environment
 
-Chapter 4: 		Build and test the network
+Chapter 4 [Building your first network](./Chapter04/README.md)
 
-Chapter 5:		Administration User Experience
+Chapter 5 [Building the Admin User Experience](./Chapter05/README.md)
 
-Chapter 6:		Buyer Support and User Experience
+Chapter 6 [Building the Buyer User Experience](./Chapter06/README.md)
 
-Chapter 7:		Seller Support and User Experience
+Chapter 7 [Building the Seller User Experience](./Chapter07/README.md)
 
-Chapter 8:		Shipper Support and User Experience
+Chapter 8 [Building the Provider User Experience](./Chapter09/README.md)
 
-Chapter 9:		Provider Support and User Experience
+Chapter 9 [Building the Shipper User Experience](./Chapter09/README.md)
 
-Chapter 10:		Finance Company Support and User Experience
+Chapter 10 [Building the Finance Company User Experience](./Chapter10/README.md)
 
-Chapter 11:		Combining for Demonstration
+Chapter 11 [Building the Unified User Experience](./Chapter11/README.md)
 
-Chapter 12:		Events and Automating for Demonstration
+Chapter 12 Events
