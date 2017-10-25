@@ -7,7 +7,7 @@ This is **V0.11**, which means that the tutorial code and documentation is compl
 
 Support for HyperLedger Composer V1.0 (not yet released) will be implemented shortly after it is released
 
-Base concept is: 
+## Tutorial flow: 
 
 Chapter 1 What is Blockchain? Concept and Architecture overview
 
@@ -33,6 +33,6 @@ Chapter 10 [Building the Finance Company User Experience](./Chapter10/README.md)
 
 Chapter 11 [Building the Unified User Experience](./Chapter11/README.md)
 
-Chapter 12 Events
+Chapter 12 Events (under development)
 
 *Additional planned functionality: Deploying on Kubernetes on IBM Bluemix*
