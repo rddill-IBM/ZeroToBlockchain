@@ -1,7 +1,11 @@
 # ZeroToBlockchain
-Tutorial on getting started with Blockchain on IBM Bluemix 
+Tutorial on getting started with IBM Blockchain using HyperLedger Composer V 0.13 running on Hyperledger Fabric V 1.0 or higher. 
 
-Please note that this is not yet ready for public consumption. Comments are welcomed on the idea. 
+This is **V0.11**, which means that the tutorial code and documentation is complete through Chapter 11. 
+ - This will be updated to V1.0 when Chapter 12 code is complete.
+ - and to V1.1 when support for version 0.14 of HyperLedger Composer is available. Composer V0.14 was a 'breaking' release, which means that it implemented security in a manner which broke all previous Composer implementations.  
+
+Support for HyperLedger Composer V1.0 (not yet released) will be implemented shortly after it is released
 
 Base concept is: 
 
@@ -30,3 +34,5 @@ Chapter 10 [Building the Finance Company User Experience](./Chapter10/README.md)
 Chapter 11 [Building the Unified User Experience](./Chapter11/README.md)
 
 Chapter 12 Events
+
+*Additional planned functionality: Deploying on Kubernetes on IBM Bluemix*
