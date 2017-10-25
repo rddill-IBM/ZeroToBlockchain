@@ -40,7 +40,7 @@ function setupFinanceCo(page, port)
 {
   $("#body").empty();
   $("#body").append(page);
-  goMultiLingual("US_English", "financeCo");
+  updatePage("financeCo");
   console.log('port is: '+port.port);
   msgPort = port.port;
   wsDisplay('finance_messages', msgPort);
