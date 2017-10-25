@@ -23,7 +23,7 @@ function loadSellerUX ()
   toLoad = "seller.html";
   getPort();
   if (buyers.length === 0) 
-  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredSingleUX()).done(function (page, port, res)
+  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
   {setupSeller(page[0], port[0]);});
 }
   else{

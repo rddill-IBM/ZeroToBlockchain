@@ -32,7 +32,7 @@ function loadBuyerUX ()
   // assume user has run autoLoad and rebuild member list
   // if autoLoad not yet run, then member list length will still be zero
   if (buyers.length === 0) 
-  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredSingleUX()).done(function (page, port, res)
+  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
   {setupBuyer(page[0], port[0]);});
 }
   else{
@@ -77,7 +77,7 @@ $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (pag
     _orderDiv.append(page[0]);
     // update the page with the appropriate text for the selected language
 
-    // populate the seller HTML select object. This string was built during the singleUX or deferredSingleUX function call
+    // populate the seller HTML select object. This string was built during the memberLoad or deferredMemberLoad function call
 
     // build a select list for the items
 

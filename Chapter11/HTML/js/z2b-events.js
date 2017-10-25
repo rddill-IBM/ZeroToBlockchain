@@ -15,12 +15,31 @@
 // z2c-events.js
 
 /**
- * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
- * However, if this is a newly created network, then there are no members to retrieve and this will create four empty arrays
+ * load the four initial user roles into a single page.
  */
 function singleUX ()
 {
-  var toLoad = 'singleUX.html';
+  var toLoad = 'singleUX.html'
+  if (buyers.length === 0) 
+  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (_page, _port, _res)
+    { 
+      
+    });
+  }
+  else{
+    $.when($.get(toLoad)).done(function(_page)
+    {
+
+    });
+  }
+}
+
+/**
+ * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
+ * However, if this is a newly created network, then there are no members to retrieve and this will create four empty arrays
+ */
+function memberLoad()
+{
   var options = {};
   options.registry = 'Seller';
   var options2 = {};
@@ -29,8 +48,8 @@ function singleUX ()
   options3.registry = 'Provider';
   var options4 = {};
   options4.registry = 'Shipper';
-  $.when($.get(toLoad), $.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
-      $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_page, _sellers, _buyers, _providers, _shippers)
+  $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
+      $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
     { 
 
     });
@@ -39,7 +58,7 @@ function singleUX ()
  * load all of the members in the network for use in the different user experiences. This routine is designed for use if the network has been newly deployed and the web app was
  * started before the autoLoad function was run on the newly deployed network (which, by default, is empty).
  */
-function deferredSingleUX()
+function deferredMemberLoad()
 {
   var d_prompts = $.Deferred();
   var options = {};
