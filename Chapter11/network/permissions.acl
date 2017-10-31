@@ -10,7 +10,6 @@ rule AllAccess {
 */
 /**
 * added to support composer V0.14
-*/
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -18,10 +17,9 @@ rule NetworkAdminUser {
     resource: "**"
     action: ALLOW
 }
-
+*/
 /**
 * added to support composer V0.14
-*/
 rule NetworkAdminSystem {
     description: "Grant business network administrators full access to system resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -29,7 +27,7 @@ rule NetworkAdminSystem {
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
-
+*/
 /**
 *
 **/
