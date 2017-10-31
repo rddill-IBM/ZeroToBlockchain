@@ -1,85 +1,36 @@
-# ZeroToBlockchain Chapter 11: Building the Unified User Experience
+# ZeroToBlockchain
+Tutorial on getting started with Blockchain on IBM Bluemix 
 
-[Return to Table of Contents](../README.md)
+Please note that this is not yet ready for public consumption. Comments are welcomed on the idea. 
 
-In this chapter, we will update the code from Chapter 11 to include event creation and monitoring on the server and event subscription and notification in the browser.
+Base concept is: 
 
-```
-Chapter 12
-  ↳ controller
-     ↳restapi
-       router.js
-        ↳features
-           ↳composer
-             autoLoad.js
-             hlcAdmin.js
-             hlcClient.js          <== Updated
-             queryBlockChain.js
-             Z2B_Services.js       <== Updated
-             Z2B_Utilities.js
-           ↳ text
-               multi-lingual.js
-               resources.js
-  ↳ HTML
-    index.html
-    admin.html
-    buyer.html                     <== Updated
-    ceateConnectionProfile.html
-    createMember.html
-    createOrder.html
-    deleteConnectionProfile.html
-    financeCo.html                 <== Updated
-    getMemberSecret.html
-    removeMember.html
-    provider.html                  <== Updated
-    seller.html                    <== Updated
-    shipper.html                   <== Updated
-    singleUX.html
-     ↳CSS
-       pageStyles.css
-     ↳js
-       z2b-admin.js
-       z2b-buyer.js                <== Updated
-       z2b-events.js               <== Updated
-       z2b-financeCo.js            <== Updated
-       z2b-initiate.js
-       z2b-provider.js             <== Updated
-       z2b-seller.js               <== Updated
-       z2b-shipper.js              <== Updated
-       z2b-utilities.js
-  ↳ network
-   permissions.acl
-   queries.qry
-    ↳lib
-      sample.js                    <== Updated
-    ↳models
-      base.cto
-      events.cto
-      sample.cto                   <== Updated
-```
-No new files are created.  Fifteen existing files are updated:
+Chapter 1 What is Blockchain? Concept and Architecture overview
 
-## Files used in this chapter
-### Web Server Code Unique to this Chapter
- - **hlcClient.jss**
-   - add event monitoring to client routines
-   - add event notification to browser via web socket. 
-     - it should be noted that this is a rough implementation for notifying the user of asynchronous events and is appropriate for a lightweight demo but inappropriate for a PoC or a production system. 
+Chapter 2 What's the story we'll implement
 
-### Defining the business network
- 
- - **/models/sample.CTO**
-   - add events to sample.CTO file
- - **/lib/sample.js**
-   - add event notification to transactions
- 
+Chapter 2.1 Architecture for the Story
 
-### Web Browser Code 
- - **all UX files**
-   - Add placeholder for notification icon and add placeholder for notification counter.
- - **all UX javascript files**
-   - use subscribe, unsubscribe and notifyMe routines
- - **z2b-events.js**
-   - add event support for alert subscription, notification
- - **CSS/pageStyles.css**
-   - add support for notification icon and text
+Chapter 3 [Creating the Blockchain Development Environment](./Chapter03/README.md)
+
+Chapter 4 [Building your first network](./Chapter04/README.md)
+
+Chapter 5 [Building the Admin User Experience](./Chapter05/README.md)
+
+Chapter 6 [Building the Buyer User Experience](./Chapter06/README.md)
+
+Chapter 7 [Building the Seller User Experience](./Chapter07/README.md)
+
+Chapter 8 [Building the Provider User Experience](./Chapter09/README.md)
+
+Chapter 9 [Building the Shipper User Experience](./Chapter09/README.md)
+
+Chapter 10 [Building the Finance Company User Experience](./Chapter10/README.md)
+
+Chapter 11 [Building the Unified User Experience](./Chapter11/README.md)
+
+Chapter 12 [Events](./Chapter12/README.md)
+
+Chapter 13 Deploying a demo on Bluemix/Kubernetes (available in late November)
+
+Chapter 14 Debugging HyperLedger Composer inside Docker (available in late November)

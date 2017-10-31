@@ -1,6 +1,6 @@
-# bd test Business Network
+# Chapter 03: Installing your Development Environment
 
-> Zero To Blockchain Chapter04 for hyplerledger compose.
+> Zero To Blockchain Chapter03 for hyplerledger compose.
 
 This business network defines:
 

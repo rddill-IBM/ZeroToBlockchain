@@ -1,10 +1,10 @@
-# Zero To Blockchain Chapter04 for hyplerledger compose.
+# Zero To Blockchain Chapter04 for hyplerledger composer.
 
 [Table of Contents](../README.md)
 
 This chapter focuses on the following files: 
 ```
-Chapter 05
+Chapter 04
   ↳ network
    permissions.acl
    queries.qry

@@ -1,4 +1,4 @@
-# ZeroToBlockchain Chapter 11: Building the Unified User Experience
+# ZeroToBlockchain Chapter 12: Creating, monitoring and consuming events
 
 [Return to Table of Contents](../README.md)
 
