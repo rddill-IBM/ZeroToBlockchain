@@ -7,8 +7,9 @@ dos2unix `ls *.sh`
 for i in "${chapters[@]}"
 do
     echo "changing to ${i}"
-    cd "${i}" 
+    cd "${i}"
     pwd
+    dos2unix buildAndDeploy
     testRes=`ls *.sh`
     if [[ "${testRes}" != "" ]]; then
         echo " updating files"
