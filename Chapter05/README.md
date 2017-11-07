@@ -1,6 +1,6 @@
 # ZeroToBlockchain Chapter 5: Building the Admin interface
 
-[Return to Table of Contents](../README.md)
+[Return to Table of Contents](../README.pdf)
 
 In this chapter, we will build a nodeJS web server which will interact with the HyperLedger Composer defined Blockchain and create an administrative interface for the network. This runs on HyperLedger Fabric Version 1.0. The code that we will write is managed in this chapter and all the subsequent chapters in the following folder structure:
 

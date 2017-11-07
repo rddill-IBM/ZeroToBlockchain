@@ -1,6 +1,6 @@
 # ZeroToBlockchain Chapter 12: Creating, monitoring and consuming events
 
-[Return to Table of Contents](../README.md)
+[Return to Table of Contents](../README.pdf)
 
 In this chapter, we will update the code from Chapter 11 to include event creation and monitoring on the server and event subscription and notification in the browser.
 

@@ -1,6 +1,6 @@
 # ZeroToBlockchain Chapter 11: Building the Unified User Experience
 
-[Return to Table of Contents](../README.md)
+[Return to Table of Contents](../README.pdf)
 
 In this chapter, we will integrate the User Experiences for Buyer, Seller, Provider and Shipper in a single web page to streamline demonstrating the network. 
 
@@ -65,7 +65,7 @@ One new file is created and two existing files are updated:
 
 ### Defining the business network
  
- - **np updates**
+ - **no updates**
  
 
 ### Web Browser Code 

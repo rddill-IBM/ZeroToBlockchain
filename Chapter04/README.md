@@ -1,6 +1,6 @@
 # Zero To Blockchain Chapter04 for hyplerledger composer.
 
-[Table of Contents](../README.md)
+[Table of Contents](../README.pdf)
 
 This chapter focuses on the following files: 
 ```
