@@ -1,6 +1,4 @@
 #!/bin/bash
-
-#!/bin/bash
  
  YELLOW='\033[1;33m'
  RED='\033[1;31m'
