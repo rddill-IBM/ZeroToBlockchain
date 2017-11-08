@@ -52,3 +52,5 @@ showStep "starting network"
 ./startup.sh
 showStep "deploying network"
 ./deployNetwork.sh -n $NETWORK_NAME
+showStep "starting REST server"
+./start_rest_server.sh
