@@ -39,7 +39,6 @@ jspm_packages
 
 # OSX files
 .DS_Store
-env.json
 Chapter00
 package-lock.json
 *.key
