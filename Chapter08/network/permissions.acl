@@ -10,6 +10,29 @@ rule AllAccess {
 */
 
 /**
+* Added to support V0.14 breaking changes
+*
+*/
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+/**
+* end of V0.14 additions
+*/
+
+/**
 *
 **/
 rule BuyerACLCreate {
@@ -190,48 +213,111 @@ rule netAccessSeller {
 *
 **/
 rule ProviderRequestShipping {
-
+    description: "Enable a Provider to initiate a shipping request for an order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestShipping"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ProviderBackorder {
-
+    description: "Enable a Provider to issue a backorder status for an order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.BackOrder"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
 }
+
 /**
 *
 **/
 rule ProviderPayRequest {
-
+    description: "Enable a Provider to issue a request for payment"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ProviderResolve {
-
+    description: "Enable a Provider to resolve a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ProviderRefund {
-
+    description: "Enable a Provider to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ProviderACL {
-
+    description: "Allow Provider read and update access to order where they are listed as seller and the order has been submitted to them to provide (Seller issues OrderFromSupplier transaction"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.provider.providerID == m.getIdentifier()) && (v.ordered != ''))
+    action: ALLOW
 }
 
 /**
 *
 */
 rule netAccessProvider {
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
 
+/**
+*
+**/
+rule ShipperACL {
+    description: "Allow Shipper read, update access to order where they are listed as shiper and the order has been Submitted for delivery"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.shipper.shipperID == m.getIdentifier()) && (v.requestShipment != ''))
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessShipper {
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Shipper"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }
 
 /**

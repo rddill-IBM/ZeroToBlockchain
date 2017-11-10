@@ -149,7 +149,6 @@ function getAlertPort ()
       wsSocket.onmessage = function (message) {
         console.log(message.data);
         var event = JSON.parse(message.data);
-        // use the addNotification routine in this file to update the alert status for the relevant subscriber
         addNotification(event.type, event.ID, event.orderID);
         };
     
@@ -172,7 +171,6 @@ function getFinanceAlertPort ()
       wsSocket.onmessage = function (message) {
         console.log(message.data);
         var event = JSON.parse(message.data);
-        // use the addNotification routine in this file to update the alert status for the relevant subscriber
         addNotification(event.type, event.ID, event.orderID);
         };
     
@@ -185,16 +183,10 @@ function getFinanceAlertPort ()
  */
 function addNotification(_event, _id, _orderID)
 {
-  // let's display each received event
   var method = 'showNotification';
   console.log(method+' _event'+_event+' id: '+_id+' orderID: '+_orderID);
-  // using the getSubscriber routine, find the class of this event
   type = getSubscriber(_id)
-  // if no one of the specified type is listening, just return with a value of 'none'
   if (type == 'none') {return}
-  // create a switch/case statement for each type of member
-  // update the x_alerts array with the new alert
-  // call the toggleAlert routine to update the alert icon
   switch(type)
   {
     case 'Buyer':
@@ -227,12 +219,11 @@ function addNotification(_event, _id, _orderID)
  */
 function toggleAlert(_target, _array, _count)
 {
-  // if there aren't any elements in the array, then hide the alert icon
   if (_array.length < 1) 
   {$(_target).removeClass('on'); $(_target).addClass('off'); }
-  // if the alert array has anything in it, then show the alert icon and update the count with the number of items in the alert array
   else {$(_count).empty(); $(_count).append(_array.length);
     $(_target).removeClass('off'); $(_target).addClass('on'); }
+
 }
 /**
  * check to see if _id is subscribing
@@ -240,7 +231,6 @@ function toggleAlert(_target, _array, _count)
 function getSubscriber(_id)
 {
   var type = 'none';
-  // get the member type from the subscriber array. if the member is not not found, return 'none'
   for (each in subscribers){(function(_idx, _arr){if (_arr[_idx].id == _id){type=_arr[_idx].type;}})(each, subscribers)}
   return(type);
 }
@@ -251,7 +241,6 @@ function getSubscriber(_id)
  */
 function z2bSubscribe(_type, _id)
 {
-  // update the subscriber array with the provided id and type. 
   subscribers.push({'type': _type, 'id': _id});
 }
 /**
@@ -261,7 +250,6 @@ function z2bSubscribe(_type, _id)
  */
 function z2bUnSubscribe(_id)
 {
-  // remove the provided id from the member array. If the id is not found, the subscriber array is returned in the original state.
   var _s1 = subscribers;
   var _s2 = [];
   for (each in _s1) {(function(_idx, _arr){if (_arr[_idx] != _id){_s2.push(_arr[_idx])}})(each, _s1)}
@@ -273,7 +261,6 @@ function z2bUnSubscribe(_id)
  */
 function notifyMe (_alerts, _id)
 {
-  // check to see if the provided orderID is in the provided alert array. If so, return true, else return false. 
   var b_h = false;
   for (each in _alerts) {(function(_idx, _arr){if (_id === _arr[_idx].order){b_h = true;}})(each, _alerts)}
   return b_h;

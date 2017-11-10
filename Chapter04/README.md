@@ -28,7 +28,30 @@ Key files:
 
 ## Installing the code:
  - run this command from a terminal window: ```npm install```
- - then run ```buildAndDeploy`` (yes, case is important)
+   - when you run ```npm install``` command, you will get the following error, which you can ignore. The error is caused by the installation process for the SDK tooling, which searches for all instances of files ending in ```.cto``` . Because we have those files in the answers folder, as well as in the (correctly placed) network/models folder, npm install gets confused. It's ok, the process will still work correctly. 
+   ```
+   Looking for package.json of Business Network Definition
+	Input directory: /Users/robertdill/Documents/GitHub/Z2B_Master/Chapter04
+    Error: namespace already exists
+        at ModelManager.addModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/modelmanager.js:241:31)
+        at Function._processModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:457:43)
+        at Promise.resolve.then (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:620:18)
+        at process._tickCallback (internal/process/next_tick.js:109:7)
+        at Module.runMain (module.js:606:11)
+        at run (bootstrap_node.js:383:7)
+        at startup (bootstrap_node.js:149:9)
+        at bootstrap_node.js:496:3
+    Error: namespace already exists
+        at ModelManager.addModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/modelmanager.js:241:31)
+        at Function._processModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:457:43)
+        at Promise.resolve.then (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:620:18)
+        at process._tickCallback (internal/process/next_tick.js:109:7)
+        at Module.runMain (module.js:606:11)
+        at run (bootstrap_node.js:383:7)
+        at startup (bootstrap_node.js:149:9)
+        at bootstrap_node.js:496:3 ```
+        
+ - then run ```buildAndDeploy``` (yes, case is important)
  - then run ```npm run test```
  - this should deliver the following result: 
  ```

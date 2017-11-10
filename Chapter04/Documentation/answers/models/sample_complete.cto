@@ -25,29 +25,40 @@ asset Order identified by orderNumber {
     o String orderNumber
     o String[] items
     o String status
-    o Integer amount
-    o String created
-    o String bought
-    o String ordered
-    o String dateBackordered
-    o String requestShipment
-    o String delivered
-    o String disputeOpened
-    o String disputeResolved
-    o String paymentRequested
-    o String orderRefunded
-    o String paid
-    o String[] vendors
     o String dispute
     o String resolve
     o String backorder
     o String refund
+    o Integer amount
+    o String created
+    o String bought
+    o String cancelled
+    o String ordered
+    o String dateBackordered
+    o String requestShipment
+    o String delivered
+    o String delivering
+    o String disputeOpened
+    o String disputeResolved
+    o String paymentRequested
+    o String orderRefunded
+    o String approved
+    o String paid
+    --> Provider provider
+    --> Shipper shipper
     --> Buyer buyer
     --> Seller seller 
+    --> FinanceCo financeCo 
 
 }
   transaction CreateOrder {
     o Integer amount
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction OrderCancel {
     --> Order order
     --> Buyer buyer
     --> Seller seller
@@ -60,12 +71,19 @@ asset Order identified by orderNumber {
   transaction OrderFromSupplier {
     --> Order order
     --> Provider provider
+    --> Seller seller
 }
   transaction RequestShipping {
     --> Order order
     --> Shipper shipper
+    --> Provider provider
 }
   transaction Deliver {
+    --> Order order
+    --> Shipper shipper
+}
+  transaction Delivering {
+    o String deliveryStatus
     --> Order order
     --> Shipper shipper
 }
@@ -86,12 +104,18 @@ asset Order identified by orderNumber {
     --> Order order
     --> Buyer buyer
     --> Seller seller
+    --> Shipper shipper
+    --> Provider provider
     --> FinanceCo financeCo
 }
   transaction RequestPayment {
     --> Order order
-    --> Buyer buyer
     --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction AuthorizePayment {
+    --> Order order
+    --> Buyer buyer
     --> FinanceCo financeCo
 }
   transaction Pay {
@@ -102,7 +126,6 @@ asset Order identified by orderNumber {
   transaction Refund {
     o String refund
     --> Order order
-    --> Buyer buyer
     --> Seller seller
     --> FinanceCo financeCo
 }

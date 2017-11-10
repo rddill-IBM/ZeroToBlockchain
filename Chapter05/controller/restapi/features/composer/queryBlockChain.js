@@ -58,6 +58,7 @@ exports.getChainInfo = function(req, res, next) {
         return hfc.newDefaultKeyValueStore({ path: wallet_path })
         .then((wallet) => {
             client.setStateStore(wallet);
+            // change PeerAdmin in following line to adminID
             return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
                 if (user === null || user === undefined || user.isEnrolled() === false) 
@@ -103,6 +104,7 @@ exports.getChainEvents = function(req, res, next) {
             return hfc.newDefaultKeyValueStore({ path: wallet_path })
             .then((wallet) => {
                 client.setStateStore(wallet);
+                // change PeerAdmin in following line to adminID
                 return client.getUserContext(config.composer.PeerAdmin, true);})
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
@@ -110,7 +112,8 @@ exports.getChainEvents = function(req, res, next) {
                         channel = client.newChannel(config.fabric.channelName);
                         channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
                         channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
-                        var pemPath = path.join(__dirname,'creds','Admin@org1.example.com-cert.pem');
+                        // change Admin in following line to admin
+                        var pemPath = path.join(__dirname,'creds','admin@org.hyperledger.composer.system-cert.pem');
                         var adminPEM = fs.readFileSync(pemPath);
                         var bcEvents = new hfcEH(client);
                         bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});

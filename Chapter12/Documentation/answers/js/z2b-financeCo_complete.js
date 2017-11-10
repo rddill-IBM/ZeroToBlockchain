@@ -60,7 +60,6 @@ function setupFinanceCo(page, port)
   var _orderDiv = $("#"+financeCOorderDiv);
   _clear.on('click', function(){_orderDiv.empty();});
   _list.on('click', function(){listFinanceOrders()});
-  //set the alerts file to an empty array and update the html class appropriately
   z2bSubscribe('FinanceCo', f_id);  
 }
 /**
@@ -173,7 +172,6 @@ function formatFinanceOrders(_target, _orders)
             $("#finance_messages").prepend(formatMessage(_results.result));
           });
       });
-      // using the notifyMe function in the events.js file, update the b_status+_idx HTML element appropriately
       if (notifyMe(f_alerts, _arr[_idx].id)) {$("#f_status"+_idx).addClass('highlight'); }
     })(each, _orders)
   }

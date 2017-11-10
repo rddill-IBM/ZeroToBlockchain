@@ -10,6 +10,29 @@ rule AllAccess {
 */
 
 /**
+* Added to support V0.14 breaking changes
+*
+*/
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+/**
+* end of V0.14 additions
+*/
+
+/**
 *
 **/
 rule BuyerACLCreate {
@@ -115,42 +138,75 @@ rule netAccessBuyer {
 *
 **/
 rule SellerOrderFromSupplier {
-
+    description: "Enable a Seller to Submit an Order to a third party for fulfillment"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.OrderFromSupplier"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule SellerRequestPayment {
-
+    description: "Enable a Seller to request payment for a fulfilled order"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule SellerResolve {
-
+    description: "Enable a Seller to resolve a dispute"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule SellerRefund {
-
+    description: "Enable a Seller to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule SellerACL {
-
+    description: "Allow Seller full access to order where they are listed as seller and the order has been Submitted for Purchase"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.seller.sellerID == m.getIdentifier()) && (v.bought != ''))
+    action: ALLOW
 }
 
 /**
 *
 */
 rule netAccessSeller {
-
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Seller"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }
 
 /**

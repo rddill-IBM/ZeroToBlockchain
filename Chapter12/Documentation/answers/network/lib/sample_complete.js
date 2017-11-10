@@ -347,11 +347,8 @@ function displayObjectValues (_string, _object)
 function z2bEmit(_event, _order)
 {
     var method = 'z2bEmit';
-    // get the factory
     var factory = getFactory();
-    // create a new event
     var z2bEvent = factory.newEvent(ns, _event);
-    // update the event with the order ID and the buyerID
     z2bEvent.orderID = _order.$identifier;
     z2bEvent.buyerID = _order.buyer.$identifier;
     switch (_event)
@@ -361,7 +358,6 @@ function z2bEmit(_event, _order)
         break;
         case 'Bought':
         case 'PaymentRequested':
-            // these events have the same members
             z2bEvent.sellerID = _order.seller.$identifier;
             z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
@@ -374,7 +370,6 @@ function z2bEmit(_event, _order)
         case 'ShipRequest':
         case 'DeliveryStarted':
         case 'DeliveryCompleted':
-            // these events have the same members
             z2bEvent.sellerID = _order.seller.$identifier;
             z2bEvent.providerID = _order.provider.$identifier;
             z2bEvent.shipperID = _order.shipper.$identifier;
@@ -383,21 +378,18 @@ function z2bEmit(_event, _order)
         case 'Resolved':
         case 'Refunded':
         case 'Paid':
-            // these events have the same members
             z2bEvent.sellerID = _order.seller.$identifier;
             z2bEvent.providerID = _order.provider.$identifier;
             z2bEvent.shipperID = _order.shipper.$identifier;
             z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
         case 'PaymentAuthorized':
-            // these events have the same members
             z2bEvent.sellerID = _order.seller.$identifier;
             z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
         default:
         break;
     }
-    // emit the populated event
     emit(z2bEvent);
     return 
 }

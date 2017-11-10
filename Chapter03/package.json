@@ -1,6 +1,6 @@
 {
   "engines": {
-    "composer": ""
+    "composer": "^0.10.0"
   },
   "name": "zerotoblockchain-network",
   "version": "0.1.6",
@@ -33,31 +33,15 @@
   "author": "Bob Dill, IBM Distinguished Engineer",
   "license": "Apache-2.0",
   "devDependencies": {
-    "http": "",
-    "https": "",
-    "fs": "",
-    "mime": "",
-    "path": "",
-    "body-parser": "",
-    "cfenv": "",
-    "cookie-parser": "",
-    "express-session": "",
-    "vcap_services": "",
-    "uuid": "",
-    "connect-busboy": "",
-    "ejs": "",
-    "date-format": "",
-    "extend": "",
     "browserfs": "^1.2.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "composer-admin": "",
-    "composer-cli": "",
-    "composer-client": "",
+    "composer-admin": "^0.14.0",
+    "composer-cli": "^0.14.0",
+    "composer-client": "^0.14.0",
     "composer-common": "",
-    "composer-connector-embedded": "",
-    "composer-connector-hlf": "",
-    "composer-cucumber-steps": "",
+    "composer-connector-embedded": "^0.14.0",
+    "composer-cucumber-steps": "^0.14.0",
     "cucumber": "^2.2.0",
     "eslint": "^3.6.1",
     "istanbul": "^0.4.5",
@@ -99,10 +83,5 @@
     "branches": 100,
     "functions": 100,
     "lines": 100
-  },
-  "dependencies": {
-    "express": "^4.15.4",
-    "http": "0.0.0",
-    "sleep": "^5.1.1"
   }
 }

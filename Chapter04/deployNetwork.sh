@@ -76,5 +76,16 @@ echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "deploying network"
-cd network/dist 
-composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
+# original - V0.13
+# cd network/dist
+# composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
+#
+# what the documentation implies is required
+# cd network/dist
+# composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString
+#
+# what really works
+composer identity request -p hlfv1 -i admin -s adminpw
+composer identity import -p hlfv1 -u admin -c ~/.identityCredentials/admin-pub.pem -k ~/.identityCredentials/admin-priv.pem 
+cd network/dist
+composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString

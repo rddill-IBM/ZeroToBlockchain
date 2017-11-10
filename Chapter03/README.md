@@ -227,3 +227,20 @@ If github is new to you, please use the following process:
     - press the enter key.
 
 This will make a local copy of the tutorial on your computer and, because you cloned from your personal copy of the tutorial, will allow you to save your work up to github.com and, if you choose, share your work with others. 
+# Check out the network
+
+ - Open a Terminal Window and change to Chapter03
+ - Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
+ - Open HyperLedger Composer [Playground](https://composer-playground.mybluemix.net) and then click on the web page to select the option to use your own business network 
+    - You may get the following message. If so, congrats! You've used playground before. Click on ```Clear local Storage```
+    ![Invalid Storage](../assets/IBMCloud_playground_invalid.png)
+    - You may see this message. If so, click on ```Let's Blockchain!```
+    ![Let's Blockchain!](../assets/IBMCloud_playground_lets.png)
+    - You should then see this page. Click on the right hand icon - deploy a new business network
+    ![Deploy new network](../assets/IBMCloud_playground_deploy1.png)
+    - which takes you to this page: 
+    ![Drag your file here](../assets/IBMCloud_playground_drag.png)
+    - navigate in Finder (OSX) or the Ubuntu File Explorer to Chapter03/network/dist
+    - and then drag the ```zerotoblockchain-network.bna``` file to the highlighted icon in the playground
+    - The right hand side of the screen will now activate. Press the ```Deploy```  button
+    ![Deploy](../assets/IBMCloud_playground_deploy2.png)

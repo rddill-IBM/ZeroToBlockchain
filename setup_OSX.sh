@@ -110,13 +110,13 @@ function installNodeDev ()
         if [[ $SDK_INSTALL == "true" ]]; then
             showStep "The composer-cli contains all the command line operations for developing business networks."
             npm uninstall -g composer-cli
-            npm install -g composer-cli@0.13.2
+            npm install -g composer-cli@0.14.2
             showStep "The generator-hyperledger-composer is a Yeoman plugin that creates bespoke applications for your business network."
             npm uninstall -g generator-hyperledger-composer
-            npm install -g generator-hyperledger-composer@0.13.2
+            npm install -g generator-hyperledger-composer@0.14.2
             showStep "The composer-rest-server uses the Hyperledger Composer LoopBack Connector to connect to a business network, extract the models and then present a page containing the REST APIs that have been generated for the model."
             npm uninstall -g composer-rest-server
-            npm install -g composer-rest-server@0.13.2
+            npm install -g composer-rest-server@0.14.2
             showStep "Yeoman is a tool for generating applications. When combined with the generator-hyperledger-composer component, it can interpret business networks and generate applications based on them."
             npm install -g yo
         else   

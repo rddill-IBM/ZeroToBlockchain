@@ -47,7 +47,7 @@ var orderStatus = {
   // goMultiLingual() establishes what languages are available for this web app, populates the header with available languages and sets the default language to US_English
   goMultiLingual("US_English", "index");
   // singleUX loads the members already present in the network
-  loadMembers();
+  memberLoad();
   // goChainEvents creates a web socket connection with the server and initiates blockchain event monitoring
   getChainEvents();
 }

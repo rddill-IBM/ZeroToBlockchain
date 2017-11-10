@@ -1,9 +1,9 @@
 {
   "engines": {
-    "composer": "^0.10.0"
+    "composer": ""
   },
   "name": "zerotoblockchain-network",
-  "version": "0.1.6",
+  "version": "0.1.5",
   "description": "Zero to Blockchain tutorial network",
   "networkImage": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimage.svg",
   "networkImageanimated": "https://hyperledger.github.io/composer-sample-networks/packages/basic-sample-network/networkimageanimated.svg",
@@ -36,11 +36,11 @@
     "browserfs": "^1.2.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "composer-admin": "^0.9.0",
-    "composer-cli": "^0.9.0",
-    "composer-client": "^0.9.0",
-    "composer-connector-embedded": "^0.9.0",
-    "composer-cucumber-steps": "^0.9.0",
+    "composer-admin": "^0.14.0",
+    "composer-cli": "^0.14.0",
+    "composer-client": "^0.14.0",
+    "composer-connector-embedded": "^0.14.0",
+    "composer-cucumber-steps": "^0.14.0",
     "cucumber": "^2.2.0",
     "eslint": "^3.6.1",
     "istanbul": "^0.4.5",

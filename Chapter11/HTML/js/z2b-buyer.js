@@ -87,7 +87,7 @@ $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (pag
     // update the page with the appropriate text for the selected language
     updatePage('createOrder');
     $('#seller').empty();
-    // populate the seller HTML select object. This string was built during the memberLoad or deferredMemberLoad function call
+    // populate the seller HTML select object. This string was built during the MemberLoad or deferredMemberLoad function call
     $('#seller').append(s_string);
     $('#seller').val($("#seller option:first").val());
     $('#orderNo').append('xxx');

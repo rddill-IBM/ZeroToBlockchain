@@ -31,7 +31,7 @@ function loadAdminUX ()
   $.when($.get(toLoad)).done(function (page)
     {$('#body').empty();
     $('#body').append(page);
-    goMultiLingual("US_English", "admin");    
+    updatePage("admin");    
     listMemRegistries();
   });
 }
@@ -76,6 +76,7 @@ function displayProfileForm ()
   $.when($.get(toLoad)).done(function (page)
     {$('#admin-forms').empty();
     $('#admin-forms').append(page);
+    updatePage("createConnectionProfile");
     var _cancel = $('#cancel');
     var _submit = $('#submit');
     _cancel.on('click', function (){$('#admin-forms').empty();});
@@ -154,6 +155,7 @@ function listProfiles(_state)
   {
     $('#admin-forms').empty();
     $('#admin-forms').append(page);
+    updatePage("deleteConnectionProfile");
     $('#connection_profiles').on('change',function()
     { var name = $('#connection_profiles').find(':selected').text();
       var profile = connection_profiles[name];
@@ -449,6 +451,7 @@ function addMember()
   { 
    $('#admin-forms').empty();
    $('#admin-forms').append(_page);
+   updatePage("createMember");
    var _cancel = $('#cancel');
    var _submit = $('#submit');
    $('#messages').empty();   
@@ -481,6 +484,7 @@ function removeMember()
   { 
     $('#admin-forms').append(_page[0]);
     $('#member_type').append(options.registry);
+    updatePage("removeMember");
     member_list = _results[0].members;
     for (each in _results[0].members)
       {(function(_idx, _arr){
@@ -521,6 +525,7 @@ function getSecret()
   $.when($.post('/composer/admin/getMembers', options),$.get('getMemberSecret.html')).done(function (_results, _page)
   { 
     $('#admin-forms').append(_page[0]);
+    updatePage("getMemberSecret");
     $('#member_type').append(options.registry);
     member_list = _results[0].members;
     for (each in _results[0].members)

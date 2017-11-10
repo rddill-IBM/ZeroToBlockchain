@@ -1,6 +1,35 @@
 #!/bin/bash
  
-. ../common_OSX.sh
+ YELLOW='\033[1;33m'
+ RED='\033[1;31m'
+ GREEN='\033[1;32m'
+ RESET='\033[0m'
+
+# indent text on echo
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+# Grab the current directory
+function getCurrent() 
+    {
+        showStep "getting current directory"
+        DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+        THIS_SCRIPT=`basename "$0"`
+        showStep "Running '${THIS_SCRIPT}'"
+    }
+
+# displays where we are, uses the indent function (above) to indent each line
+function showStep ()
+    {
+        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${RESET}-----> $*" | indent
+        echo -e "${YELLOW}=====================================================${RESET}" | indent
+    }
 
 function printHelp ()
 {
@@ -19,7 +48,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}network deploy script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${RED}This has been successfully tested on OSX Sierra and Ubuntu 16.04" | indent
     echo -e "${YELLOW}This script will create your Composer archive" | indent
     echo ""
 }
@@ -47,5 +76,16 @@ echo  "Parameters:"
 echo -e "Network Name is: ${GREEN} $NETWORK_NAME ${RESET}" | indent
 
 showStep "deploying network"
+# original - V0.13
+# cd network/dist
+# composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
+#
+# what the documentation implies is required
+# cd network/dist
+# composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString
+#
+# what really works
+composer identity request -p hlfv1 -i admin -s adminpw
+composer identity import -p hlfv1 -u admin -c ~/.identityCredentials/admin-pub.pem -k ~/.identityCredentials/admin-priv.pem 
 cd network/dist
-composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
+composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString

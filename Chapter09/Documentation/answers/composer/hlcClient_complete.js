@@ -142,6 +142,10 @@ exports.orderAction = function (req, res, next) {
                     order.status = req.body.action;
                     switch (req.body.action)
                     {
+                        case 'Pay':
+                        console.log('Pay entered');
+
+                        break;
                         case 'Dispute':
                         console.log('Dispute entered');
                         updateOrder = factory.newTransaction(NS, 'Dispute');                        

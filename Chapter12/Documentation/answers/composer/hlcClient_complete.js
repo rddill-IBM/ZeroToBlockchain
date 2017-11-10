@@ -364,25 +364,18 @@ exports.addOrder = function (req, res, next) {
 exports.init_z2bEvents = function (req, res, next)
 {
     var method = 'init_z2bEvents';
-    // check to see if we're already registered. Don't want to overload the system with duplicate event monitoring
     if (bRegistered) {res.send('Already Registered');}
     else{
         bRegistered = true;
-        // create an alert socket using the capability in Z2B_Services
         let _conn = svc.createAlertSocket();
-        // create a new business network connection
         let businessNetworkConnection;
         businessNetworkConnection = new BusinessNetworkConnection();
         businessNetworkConnection.setMaxListeners(50);
-        // connect to the business network using the data and admin id and password from the env.json file
         return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
         .then(() => {
-            // monitor for events and call the _monitor function when an event is received
             businessNetworkConnection.on('event', (event) => {_monitor(svc.al_connection, svc.f_connection, event); });
-            // we're only listening for 1 event. Send a message back to the browser on success.
             res.send('event registration complete');
         }).catch((error) => {
-            // if the monitor request failed, log it and send a failed message back to the browser
             console.log(method+' business network connection failed'+error.message); 
             res.send(method+' business network connection failed'+error.message);
         });
@@ -395,26 +388,20 @@ exports.init_z2bEvents = function (req, res, next)
  */
 function _monitor(_conn, _f_conn, _event)
 {
-    // let's log each received event
     var method = '_monitor';
     console.log(method+ ' _event received: '+_event.$type+' for Order: '+_event.orderID);
-    // create an event object and populate it with everything needed for an Order Creation event
-    // hint, look in the sample.cto and sample.js files to know what to use here. 
     var event = {};
     event.type = _event.$type;
     event.orderID = _event.orderID;
     event.ID = _event.buyerID;
+    _conn.sendUTF(JSON.stringify(event));
     
     switch (_event.$type)
     {
         case 'Created':
-            // send an event back to the browser
-            _conn.sendUTF(JSON.stringify(event));
         break;
         case 'Bought':
         case 'PaymentRequested':
-            // these events send notifications to the same users
-            // the finance ID uses a different connector, so that you can open it in a different window and still receive alerts. 
             event.ID = _event.sellerID;
             _conn.sendUTF(JSON.stringify(event));
             event.ID = _event.financeCoID;
@@ -423,7 +410,6 @@ function _monitor(_conn, _f_conn, _event)
         case 'Ordered':
         case 'Cancelled':
         case 'Backordered':
-            // these events send notifications to the same users
             event.ID = _event.sellerID;
             _conn.sendUTF(JSON.stringify(event));
             event.ID = _event.providerID;
@@ -432,7 +418,6 @@ function _monitor(_conn, _f_conn, _event)
         case 'ShipRequest':
         case 'DeliveryStarted':
         case 'DeliveryCompleted':
-            // these events send notifications to the same users
             event.ID = _event.sellerID;
             _conn.sendUTF(JSON.stringify(event));
             event.ID = _event.providerID;
@@ -444,8 +429,6 @@ function _monitor(_conn, _f_conn, _event)
         case 'Resolved':
         case 'Refunded':
         case 'Paid':
-            // these events send notifications to the same users
-            // the finance ID uses a different connector, so that you can open it in a different window and still receive alerts. 
             event.ID = _event.sellerID;
             _conn.sendUTF(JSON.stringify(event));
             event.ID = _event.providerID;
@@ -456,8 +439,6 @@ function _monitor(_conn, _f_conn, _event)
             _f_conn.sendUTF(JSON.stringify(event));
         break;
         case 'PaymentAuthorized':
-            // these events send notifications to the same users
-            // the finance ID uses a different connector, so that you can open it in a different window and still receive alerts. 
             event.ID = _event.sellerID;
             _conn.sendUTF(JSON.stringify(event));
             event.ID = _event.financeCoID;

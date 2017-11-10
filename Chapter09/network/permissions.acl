@@ -10,6 +10,29 @@ rule AllAccess {
 */
 
 /**
+* Added to support V0.14 breaking changes
+*
+*/
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+/**
+* end of V0.14 additions
+*/
+
+/**
 *
 **/
 rule BuyerACLCreate {
@@ -278,42 +301,75 @@ rule netAccessProvider {
 *
 **/
 rule ShipperRefund {
-
+    description: "Enable a Shipper to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ShipperResolve {
-
+    description: "Enable a Shipper to resolve a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ShipperDelivering {
-
+    description: "Enable a Shipper to update delivery status on an order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Delivering"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ShipperDelivered {
-
+    description: "Enable a Shipper to mark an order as delivered"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Deliver"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
 }
 
 /**
 *
 **/
 rule ShipperACL {
-
+    description: "Allow Shipper read, update access to order where they are listed as shiper and the order has been Submitted for delivery"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.shipper.shipperID == m.getIdentifier()) && (v.requestShipment != ''))
+    action: ALLOW
 }
 
 /**
 *
 */
 rule netAccessShipper {
-
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Shipper"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }
 
 /**

@@ -43,12 +43,11 @@ function singleUX ()
     });
   }
 }
-
 /**
  * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
  * However, if this is a newly created network, then there are no members to retrieve and this will create four empty arrays
  */
-function memberLoad()
+function memberLoad ()
 {
   var options = {};
   options.registry = 'Seller';
@@ -61,7 +60,13 @@ function memberLoad()
   $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
       $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
     { 
-
+      buyers = _buyers[0].members;
+      sellers = _sellers[0].members;
+      s_string = _getMembers(sellers);
+      providers = _providers[0].members
+      p_string = _getMembers(providers);
+      shippers = _shippers[0].members
+      sh_string = _getMembers(shippers);
     });
 }
 /**

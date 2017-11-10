@@ -108,7 +108,6 @@ exports.getFinanceAlertPort = function(req, res, next) {
  */
 exports.autoLoad = function(req, res, next) {
     // get the autoload file
-    var method = 'autoLoad';
     let newFile = path.join(path.dirname(require.main.filename),'startup','memberList.json');
     let startupFile = JSON.parse(fs.readFileSync(newFile));
     // connect to the network
@@ -122,7 +121,6 @@ exports.autoLoad = function(req, res, next) {
         .then(() => {
                 // a businessNetworkConnection is required to add members
                 businessNetworkConnection = new BusinessNetworkConnection();
-                businessNetworkConnection.setMaxListeners(50);
             return businessNetworkConnection.connect(config.composer.connectionProfile, network, config.composer.adminID, config.composer.adminPW)
             .then(() => {
                 // a factory is required to build the member object
@@ -208,8 +206,6 @@ exports.autoLoad = function(req, res, next) {
                                         createNew.seller = factory.newRelationship(NS, 'Seller', _arr[_idx].seller);
                                         createNew.amount = order.amount;
                                         // then the order is added to the asset registry.
-                                        svc.addOrder(svc.m_connection, order, assetRegistry, createNew, businessNetworkConnection);
-                                        /*
                                         return assetRegistry.add(order)
                                         .then(() => {
                                             // then a createOrder transaction is processed which uses the chaincode 
@@ -226,7 +222,6 @@ exports.autoLoad = function(req, res, next) {
                                             }
                                             else {console.log('error with assetRegistry.add', error.message)}
                                         });
-                                        */
                                      });
                                     })
                                 .catch((error) => {console.log('error with getParticipantRegistry', error.message)});

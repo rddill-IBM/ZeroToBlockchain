@@ -18,8 +18,6 @@ var orderDiv = "orderDiv";
 var itemTable = {};
 var newItems = [];
 var totalAmount = 0;
-
-// create vars for the buyer to use for the notification process
 var b_notify = '#buyer_notify';
 var b_count = '#buyer_count';
 var b_id = '';
@@ -53,8 +51,6 @@ function setupBuyer(page, port)
   // empty the hetml element that will hold this page
   $("#buyerbody").empty();
   $("#buyerbody").append(page);
-
-  //set the alerts file to an empty array and update the html class appropriately
   b_alerts = [];
   if (b_alerts.length == 0) 
   {$(b_notify).removeClass('on'); $(b_notify).addClass('off'); }
@@ -78,19 +74,14 @@ function setupBuyer(page, port)
     })(each, buyers)}
     // display the name of the current buyer
   $("#company")[0].innerText = buyers[0].companyName;
-  // update the buyer id field
   b_id = buyers[0].id;
-  // subscribe to events
   z2bSubscribe('Buyer', b_id);
   // create a function to execute when the user selects a different buyer
   $("#buyer").on('change', function() 
     { _orderDiv.empty(); $("#buyer_messages").empty(); 
       $("#company")[0].innerText = findMember($("#buyer").find(":selected").text(),buyers).companyName; 
-      // unsubscribe the current member
       z2bUnSubscribe(b_id);
-      // update the buyer id field
       b_id = findMember($("#buyer").find(":selected").text(),buyers).id;
-      // subscribe to events
       z2bSubscribe('Buyer', b_id);
     });
 
@@ -316,7 +307,6 @@ function formatOrders(_target, _orders)
           $.when($.post('/composer/client/orderAction', options)).done(function (_results)
           { $("#buyer_messages").prepend(formatMessage(_results.result)); });
       });
-      // using the notifyMe function in the events.js file, update the b_status+_idx HTML element appropriately
       if (notifyMe(b_alerts, _arr[_idx].id)) {$("#b_status"+_idx).addClass('highlight'); }
     })(each, _orders)
   }
