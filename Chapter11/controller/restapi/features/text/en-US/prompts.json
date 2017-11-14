@@ -1,7 +1,7 @@
 {
   "index": {"language": "US English",
     "title": "Z2B Chapter 11",
-    "header": "Chapter 11: Working with Events",
+    "header": "Chapter 11: Integrating the User Experiences",
     "titleBar": "Zero to Blockchain Tutorial",
     "idx_unified": "load Unified User Experience",
     "idx_buyer": "load Buyer User Experience",
@@ -15,7 +15,7 @@
     "idx_preload": "Preload Network"
   },
   "admin": {
-    "title": "Zero To Blockchain Chapter11",
+    "title": "Zero To Blockchain Chapter 11",
     "npm": "Network Profile Management",
     "npm_API": "API",
     "npm_param": "Parameters",
