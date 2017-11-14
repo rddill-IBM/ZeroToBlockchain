@@ -139,11 +139,11 @@ exports.deleteProfile = function(req, res, next) {
  * @function
  */
 exports.deploy = function(req, res, next) {
-    
+
         let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive));
-    
+
         let adminConnection = new composerAdmin.AdminConnection();
-    
+
         return BusinessNetworkDefinition.fromArchive(archiveFile)
             .then(function(archive) {
                 adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
@@ -171,7 +171,7 @@ exports.deploy = function(req, res, next) {
  * @function
  */
 exports.networkInstall = function(req, res, next) {
-    
+
     let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network/dist',req.body.myArchive));
 
     let adminConnection = new composerAdmin.AdminConnection();
@@ -208,7 +208,7 @@ exports.networkInstall = function(req, res, next) {
  * @function
  */
 exports.networkStart = function(req, res, next) {
-    
+
     let adminConnection = new composerAdmin.AdminConnection();
 
     return BusinessNetworkDefinition.fromArchive(archiveFile)
@@ -308,7 +308,8 @@ exports.getProfile = function(req, res, next) {
 exports.listAsAdmin = function(req, res, next) {
     let adminConnection = new composerAdmin.AdminConnection();
     util.displayObjectValuesRecursive(adminConnection);
-    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
+    // updated to use PeerAdmin, PeerPW to work with V0.14
+    adminConnection.connect(config.composer.connectionProfile, config.composer.PeerAdmin, config.composer.PeerPW)
         .then(function(){
             adminConnection.list()
                 .then((businessNetworks) => {
@@ -461,7 +462,7 @@ exports.getRegistries = function(req, res, next)
                         for (let each in participantRegistries)
                             { (function (_idx, _arr)
                                 { let r_type = _arr[_idx].name.split('.');
-                                    allRegistries.push([r_type[r_type.length-1]]); 
+                                    allRegistries.push([r_type[r_type.length-1]]);
                             })(each, participantRegistries)
                             }
                         res.send({'result': 'success', 'registries': allRegistries});
@@ -508,19 +509,19 @@ exports.getMembers = function(req, res, next) {
                                             _jsn.id = _arr[_idx].buyerID;
                                             break;
                                             case 'Seller':
-                                            _jsn.id = _arr[_idx].sellerID;                                            
+                                            _jsn.id = _arr[_idx].sellerID;
                                             break;
                                             case 'Provider':
                                             _jsn.id = _arr[_idx].providerID;
                                             break;
                                             case 'Shipper':
-                                            _jsn.id = _arr[_idx].shipperID;                                            
+                                            _jsn.id = _arr[_idx].shipperID;
                                             break;
                                             case 'FinanceCo':
-                                            _jsn.id = _arr[_idx].financeCoID;                                            
+                                            _jsn.id = _arr[_idx].financeCoID;
                                             break;
                                             default:
-                                            _jsn.id = _arr[_idx].id;                                            
+                                            _jsn.id = _arr[_idx].id;
                                         }
                                         allMembers.push(_jsn); })(each, members)
                                 }
@@ -537,7 +538,7 @@ exports.getMembers = function(req, res, next) {
         })
         .catch((error) => {console.log('error with admin network Connect', error);
         res.send({'result': 'failed '+error.message, 'members': []});});
-   
+
 }
 
 /**
@@ -573,7 +574,7 @@ exports.getAssets = function(req, res, next) {
                                 console.log('there are '+members.length+' entries in the '+req.body.registry+' Registry with id: '+members[0].$namespace);
                                 for (let each in members)
                                     { (function (_idx, _arr)
-                                        { 
+                                        {
                                             switch(req.body.type)
                                             {
                                                 case 'Buyer':
@@ -587,7 +588,7 @@ exports.getAssets = function(req, res, next) {
                                                             _jsn.id = _arr[_idx].orderNumber;
                                                             break;
                                                             default:
-                                                            _jsn.id = _arr[_idx].id;                                            
+                                                            _jsn.id = _arr[_idx].id;
                                                         }
                                                         allOrders.push(_jsn);
                                                     }
@@ -601,7 +602,7 @@ exports.getAssets = function(req, res, next) {
                                                     _jsn.id = _arr[_idx].orderNumber;
                                                     break;
                                                     default:
-                                                    _jsn.id = _arr[_idx].id;                                            
+                                                    _jsn.id = _arr[_idx].id;
                                                 }
                                                 allOrders.push(_jsn);
                                                 break;
@@ -661,7 +662,7 @@ exports.addMember = function(req, res, next) {
                         participantRegistry.add(participant)
                         .then(() => {console.log(req.body.companyName+" successfully added"); res.send(req.body.companyName+" successfully added");})
                         .catch((error) => {console.log(req.body.companyName+" add failed",error); res.send(error);});
-                        }); 
+                        });
                     })
                     .catch((error) => {console.log('error with getParticipantRegistry', error); res.send(error);});
                 })
@@ -693,9 +694,9 @@ exports.removeMember = function(req, res, next) {
                 return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
                 .then(function(participantRegistry){
                     return participantRegistry.get(req.body.id)
-                    .then((_res) => { 
+                    .then((_res) => {
                         return participantRegistry.remove(req.body.id)
-                        .then((_res) => { 
+                        .then((_res) => {
                             res.send('member id '+req.body.id+' successfully removed from the '+req.body.registry+' member registry.');
                         })
                         .catch((_res) => { res.send('member id '+req.body.id+' does not exist in the '+req.body.registry+' member registry.');});
@@ -741,7 +742,7 @@ exports.getHistory = function(req, res, next) {
                             for (let each in history)
                                 { (function (_idx, _arr)
                                     { let _jsn = _arr[_idx];
-                                    allHistory.push(ser.toJSON(_jsn)); 
+                                    allHistory.push(ser.toJSON(_jsn));
                                     })(each, history)
                                 }
                             res.send({'result': 'success', 'history': allHistory});
