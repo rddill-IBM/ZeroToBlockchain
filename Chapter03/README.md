@@ -230,7 +230,8 @@ This will make a local copy of the tutorial on your computer and, because you cl
 # Check out the network
 
  - Open a Terminal Window and change to Chapter03
- - Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
+ - OSX: Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
+ - Ubuntu: Issue the command ```./buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
  - Open HyperLedger Composer [Playground](https://composer-playground.mybluemix.net) and then click on the web page to select the option to use your own business network 
     - You may get the following message. If so, congrats! You've used playground before. Click on ```Clear local Storage```
     ![Invalid Storage](../assets/IBMCloud_playground_invalid.png)
