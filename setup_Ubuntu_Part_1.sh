@@ -113,11 +113,10 @@ function nodeV6Install()
 	[ -s "${NVM_DIR}/bash_completion" ] && . "${NVM_DIR}/bash_completion"
 
 	showStep "Installing nodeJS"
-	nvm install --lts
+	nvm install v6.12.0
 
 	showStep "Configure nvm to use version 6.x"
-	nvm use --lts
-	nvm alias default 'lts/*'
+	nvm use v6.12.0
 
 	# Install the latest version of npm
 	showStep "Installing npm"
