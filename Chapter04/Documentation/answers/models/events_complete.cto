@@ -30,12 +30,12 @@ event ordered extends BasicEvent {
   o String orderNumber
 }
 
-// notify seller, buyer that items are on backorder 
+// notify seller, buyer that items are on backorder
 event backordered extends BasicEvent {
   o String orderNumber
 }
 
-// notify seller, buyer, shipper that shipper has been contacted 
+// notify seller, buyer, shipper that shipper has been contacted
 event ship extends BasicEvent {
   o String orderNumber
 }
@@ -45,17 +45,17 @@ event delivered extends BasicEvent {
   o String orderNumber
 }
 
-// notify seller, financeCo that order is in dispute 
+// notify seller, financeCo that order is in dispute
 event dispute extends BasicEvent {
   o String orderNumber
 }
 
-// notify seller, buyer that dispute has been resolved 
+// notify seller, buyer that dispute has been resolved
 event resolved extends BasicEvent {
   o String orderNumber
 }
 
-// notify financeCo, buyer that a request for payment has been issued 
+// notify financeCo, buyer that a request for payment has been issued
 event requestPayment extends BasicEvent {
   o String orderNumber
 }

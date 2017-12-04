@@ -47,8 +47,8 @@ asset Order identified by orderNumber {
     --> Provider provider
     --> Shipper shipper
     --> Buyer buyer
-    --> Seller seller 
-    --> FinanceCo financeCo 
+    --> Seller seller
+    --> FinanceCo financeCo
 
 }
   transaction CreateOrder {
