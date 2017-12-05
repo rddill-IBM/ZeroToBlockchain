@@ -23,4 +23,69 @@ abstract event BasicEvent {
 // notify seller, financeCo that an order has been placed
 event requested extends BasicEvent {
   o String orderNumber
+  o String sellerID
+  o String orderID
+}
+
+// notify seller, supplier that a fulfillment request has been placed
+event ordered extends BasicEvent {
+  o String orderNumber
+  o String providerID
+  o String orderID
+}
+
+// notify seller, buyer that items are on backorder 
+event backordered extends BasicEvent {
+  o String orderNumber
+  o String sellerID
+  o String orderID
+}
+
+// notify seller, buyer, shipper that shipper has been contacted 
+event shipRequest extends BasicEvent {
+  o String orderNumber
+  o String shipperID
+  o String orderID
+}
+
+// notify seller, supplier, buyer that order has been delivered
+event delivering extends BasicEvent {
+  o String orderNumber
+  o String buyerID
+  o String orderID
+}
+
+// notify seller, supplier, buyer that order has been delivered
+event delivered extends BasicEvent {
+  o String orderNumber
+  o String buyerID
+  o String orderID
+}
+
+// notify seller, financeCo that order is in dispute 
+event dispute extends BasicEvent {
+  o String orderNumber
+  o String sellerID
+  o String orderID
+}
+
+// notify seller, buyer that dispute has been resolved 
+event resolved extends BasicEvent {
+  o String orderNumber
+  o String sellerID
+  o String orderID
+}
+
+// notify financeCo, buyer that a request for payment has been issued 
+event requestPayment extends BasicEvent {
+  o String buyerID
+  o String orderID
+  o String orderNumber
+}
+
+// notify seller, buyer that order has been paid /
+event Paid extends BasicEvent {
+  o String sellerID
+  o String orderID
+  o String orderNumber
 }

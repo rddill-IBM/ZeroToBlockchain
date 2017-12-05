@@ -80,12 +80,38 @@ showStep "deploying network"
 # cd network/dist
 # composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -i PeerAdmin -s randomString
 #
-# what the documentation implies is required
+# what the v0.14 documentation implies is required
 # cd network/dist
 # composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString
 #
-# what really works
-composer identity request -p hlfv1 -i admin -s adminpw
-composer identity import -p hlfv1 -u admin -c ~/.identityCredentials/admin-pub.pem -k ~/.identityCredentials/admin-priv.pem 
+# what really works for v0.14
+# composer identity request -p hlfv1 -i admin -s adminpw
+# composer identity import -p hlfv1 -u admin -c ~/.identityCredentials/admin-pub.pem -k ~/.identityCredentials/admin-priv.pem 
+# cd network/dist
+# composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString
+#
+# documentation for v0.15
+#
 cd network/dist
-composer network deploy -a $NETWORK_NAME.bna -p hlfv1 -A admin -S adminpw -i PeerAdmin -s randomString
+showStep "installing PeerAdmin card"
+composer runtime install --card PeerAdmin@hlfv1 --businessNetworkName $NETWORK_NAME
+showStep "starting network"
+# change in documentation
+# composer network start --card PeerAdmin@hlfv1 --networkAdmin admin --networkAdminEnrollSecret adminpw --archiveFile $NETWORK_NAME.bna --file networkadmin.card
+# corrected to: 
+composer network start -c PeerAdmin@hlfv1 -A admin -S adminpw -a $NETWORK_NAME.bna --file networkadmin.card
+showStep "importing networkadmin card"
+if composer card list -n admin@$NETWORK_NAME > /dev/null; then
+    composer card delete -n admin@$NETWORK_NAME
+fi
+composer card import --file networkadmin.card
+showStep "pinging admin@$NETWORK_NAME card"
+composer network ping --card admin@$NETWORK_NAME
+#
+# creating card for test program
+# composer card create -p controller/restapi/features/composer/creds/connection.json -u defaultProfile -c controller/restapi/features/composer/creds/admin@org.hyperledger.composer.system-cert.pem -k controller/restapi/features/composer/creds/114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457_sk -r PeerAdmin -r ChannelAdmin
+# composer card import --file defaultProfile@hlfv1.card
+# showStep "pinging defaultProfile@hlfv1 card"
+# composer network ping --card defaultProfile@hlfv1
+#
+

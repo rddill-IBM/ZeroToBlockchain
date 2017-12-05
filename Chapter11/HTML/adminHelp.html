@@ -1,0 +1,29 @@
+<h1>Why All The Changes?</h1>
+<p>HyperLedger Composer has gone through two significant changes in 4Q2017. 
+    The first, Version 0.14, changed how security worked and clarified the difference between the business network administrator (admin) and 
+the fabric Administrator (PeerAdmin). While this had little effect on what the Admin user interface could do, it did
+change significantly how the underlying code worked in the hlcAdmin.js file and in the autoLoad.js file. The biggest code change 
+is that the autoLoad process started issuing Identities instead of just adding members to the registry. The other significant
+change required adding two statements to the permissions.acl file. 
+</p>
+<p>Then Version 0.15 was released and the entire access structure was changed from connection profile + username/password (which is why we had the getSecret() method)
+    to idCards. This necessitated changes in some of the scripts we use (buildAndDeploy, startup.sh, deployNetwork.sh), 
+    required a complete rewrite for how the test code loads and connects to the network and also required changes in the admin
+    interface. You'll see a number of items which have a <span class='strike'>yellow strikethrough</span>, indicating that they 
+    are no longer available. 
+</p>
+<p>We aren't using connection profiles any more as part of the log in process, so that whole section is no longer useful. 
+    Because we're using cards, we don't need to use, nor do we need to capture, the user secrets associated with each 
+    Member. so that is deactivated. 
+</p>
+<p>We do, however, need more capability for Members. Along with the Add Member function, which we've had all along, we now need
+    the ability to issue an Identity for that Member and then to create an idCard for that member. You'll see those new 
+    functions in the Resource Management part of the administrative user interface, along with a feature which will
+    check to see if an idCard already exists for a specific member. 
+</p>
+<p>An Identity can only be issued for an existing Member, so the process is to: <ul><li>Add a Member</li>
+    <li>Issue an Identity</li><li>Create an idCard</li></ul>
+    Creating an idCard requires the password, or secret, which was generated during the issue Identity process. Each of these 
+    functions has been implemented individually. It would be a great idea to combine the issue Identity process with the Create idCard
+    process, so that you don't have to remember to copy the generated secret and type it into the createCard page. 
+</p>

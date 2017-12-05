@@ -1,7 +1,7 @@
 {
     "index": {"language":"美式英语",
     "title":"Z2B 第12章",
-    "header":"第12章: 集成用户视图",
+    "header":"第12章: 事件的处理",
     "titleBar":"从0到区块链教程",
     "idx_unified":"导入统一的用户体验",
     "idx_buyer":"导入买家用户体验",
@@ -15,7 +15,7 @@
     "idx_preload":"预先导入网络"
     },
     "admin": {
-    "title":"从0到区块链 第12章",
+    "title":"从0到区块链 第5章",
     "npm":"网络配置文件管理",
     "npm_API":"API",
     "npm_param":"参数",
@@ -54,6 +54,9 @@
     "rm_am_param":"Co 名字，ID， 类型",
     "rm_rm_api":"删除成员",
     "rm_gs_api":"获取成员秘密",
+    "rm_ii_api":"Issue Identity",
+    "rm_cc_api":"Check if card exists",
+    "rm_cc2_api": "Create Card",
     "bc":"区块链",
     "bc_api":"API",
     "bc_param":"参数",
@@ -65,7 +68,7 @@
     "bc_gh_param":"(无)"
     },
     "buyer": {
-    "title":"买家第12章. 选择买家看它们的视图",
+    "title":"买家第6章. 选择买家看它们的视图",
     "newOrder":"创建新订单",
     "orderStatus":"显示订单状态"
     },
@@ -96,8 +99,8 @@
     "cd_financeco":"FinanceCo",
     "cd_cn":"公司名称",
     "cd_e":"电子邮箱地址",
-    "cancelNewOrder":"取消",
-    "submitNewOrder":"提交"
+    "cancel":"取消",
+    "submit":"提交"
     },
     "createOrder": {
     "title":"创建新订单",
@@ -117,7 +120,7 @@
     "submit":"提交"
     },
     "financeCo": {
-    "title":"从0到区块链 第12章：全球金融家",
+    "title":"从0到区块链 第10章：全球金融家",
     "financeCOclear":"清除窗口",
     "financeCOorderStatus":"显示订单状态“"
     },
@@ -132,7 +135,7 @@
     "submit":"提交"
     },
     "provider": {
-    "title":"提供商第12章. 选择提供商看它们的视图",
+    "title":"提供商第8章. 选择提供商看它们的视图",
     "provider_clear":"清除窗口",
     "providerOrderStatus":"显示订单状态"
     },
@@ -147,12 +150,12 @@
     "submit":"提交"
     },
     "seller": {
-    "title":"卖家 第12章. 选择卖家看它们的视图",
+    "title":"卖家 第7章. 选择卖家看它们的视图",
     "seller_clear":"清除窗口",
     "sellerOrderStatus":"显示订单状态"
     },
     "shipper": {
-    "title":"发货商第12章. 选择发货商看它们的视图",
+    "title":"发货商第9章. 选择发货商看它们的视图",
     "shipper_clear":"清除窗口",
     "shipperOrderStatus":"显示订单状态"
     },

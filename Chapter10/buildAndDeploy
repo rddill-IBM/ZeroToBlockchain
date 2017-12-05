@@ -52,5 +52,3 @@ showStep "starting network"
 ./startup.sh
 showStep "deploying network"
 ./deployNetwork.sh -n $NETWORK_NAME
-showStep "copying credentials"
-cp controller/restapi/features/composer/creds/114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457-priv ~/.hfc-key-store

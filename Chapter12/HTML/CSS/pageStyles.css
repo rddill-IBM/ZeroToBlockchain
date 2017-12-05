@@ -18,7 +18,7 @@ body {height: 100%}
 		overflow: auto;
 	}
 	.button-wide {
-		width: 30%;
+		width: 15%;
 		color: blue;
 		font-size: 1em;
 		text-align: center;
@@ -88,17 +88,43 @@ body {height: 100%}
 	}
 }
 .highlight {
-
+	border: .125em solid rgb(88, 8, 235);
+	-webkit-border-radius: .5em;
+	  -moz-border-radius: .5em;
+	  border-radius: .5em;
+	  background-color: rgb(252, 245, 151);
+	  font-weight: bold;  
 }
 .notify.on {
-
-}
+	border-radius: 100%;
+	height: 2em;
+	width: 2em;
+	background-color: rgba(226, 32, 91, 0.77);
+	color: #ffffff;
+	text-align: top;
+	position: relative;
+	top: .4em;
+	float: right;
+	right: .5em;
+	visibility: visible;
+  }
   .notify.off {
 	visibility: hidden;
   }
   .n_count.on { font-size: .5em; font-weight: bold; visibility: visible;}
   .n_count.off { font-size: .5em; font-weight: bold; visibility: hidden;}
   h2 {font-size: 1.5em; margin-top: .25em; margin-bottom: .25em;}
+  .strike {
+    position: relative;
+}
+.strike::before {
+    content: '';
+    border-bottom: 2px solid rgb(232, 235, 65);
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
 .buyer { background-color: #CBCFD0; }
 .seller { background-color: rgb(173, 242, 173);}
 .provider { background-color: rgb(192, 221, 252);}

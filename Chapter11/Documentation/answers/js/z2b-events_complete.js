@@ -14,34 +14,37 @@
 
 // z2c-events.js
 
+'use strict';
+
 /**
  * load the four initial user roles into a single page.
  */
 function singleUX ()
 {
-  var toLoad = 'singleUX.html'
-  if (buyers.length === 0) 
-  { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (_page, _port, _res)
-    {  msgPort = _port.port;
-      $('#body').empty();
-      $('#body').append(_page);
-      loadBuyerUX();
-      loadSellerUX();
-      loadProviderUX();
-      loadShipperUX();
-    });
-  }
-  else{
-    $.when($.get(toLoad)).done(function(_page)
+    let toLoad = 'singleUX.html';
+    if ((typeof(buyers) === 'undefined') || (buyers === null) || (buyers.length === 0))
+    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (_page, _port, _res)
     {
-      $('#body').empty();
-      $('#body').append(_page);
-      loadBuyerUX();
-      loadSellerUX();
-      loadProviderUX();
-      loadShipperUX();
+        msgPort = _port.port;
+        $('#body').empty();
+        $('#body').append(_page);
+        loadBuyerUX();
+        loadSellerUX();
+        loadProviderUX();
+        loadShipperUX();
     });
-  }
+    }
+    else{
+        $.when($.get(toLoad)).done(function(_page)
+        {
+            $('#body').empty();
+            $('#body').append(_page);
+            loadBuyerUX();
+            loadSellerUX();
+            loadProviderUX();
+            loadShipperUX();
+        });
+    }
 }
 /**
  * load all of the members in the network for use in the different user experiences. This is a synchronous routine and is executed autormatically on web app start. 
@@ -49,25 +52,25 @@ function singleUX ()
  */
 function memberLoad ()
 {
-  var options = {};
-  options.registry = 'Seller';
-  var options2 = {};
-  options2.registry = 'Buyer';
-  var options3 = {};
-  options3.registry = 'Provider';
-  var options4 = {};
-  options4.registry = 'Shipper';
-  $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
-      $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
-    { 
-      buyers = _buyers[0].members;
-      sellers = _sellers[0].members;
-      s_string = _getMembers(sellers);
-      providers = _providers[0].members
-      p_string = _getMembers(providers);
-      shippers = _shippers[0].members
-      sh_string = _getMembers(shippers);
-    });
+    let options = {};
+    options.registry = 'Seller';
+    let options2 = {};
+    options2.registry = 'Buyer';
+    let options3 = {};
+    options3.registry = 'Provider';
+    let options4 = {};
+    options4.registry = 'Shipper';
+    $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
+        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
+        {
+            buyers = _buyers[0].members;
+            sellers = _sellers[0].members;
+            s_string = _getMembers(sellers);
+            providers = _providers[0].members;
+            p_string = _getMembers(providers);
+            shippers = _shippers[0].members;
+            sh_string = _getMembers(shippers);
+        });
 }
 /**
  * load all of the members in the network for use in the different user experiences. This routine is designed for use if the network has been newly deployed and the web app was
@@ -75,28 +78,28 @@ function memberLoad ()
  */
 function deferredMemberLoad()
 {
-  var d_prompts = $.Deferred();
-  var options = {};
-  options.registry = 'Seller';
-  var options2 = {};
-  options2.registry = 'Buyer';
-  var options3 = {};
-  options3.registry = 'Provider';
-  var options4 = {};
-  options4.registry = 'Shipper';
-  $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
-      $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
-    { 
-      buyers = _buyers[0].members;
-      sellers = _sellers[0].members;
-      s_string = _getMembers(sellers);
-      providers = _providers[0].members
-      p_string = _getMembers(providers);
-      shippers = _shippers[0].members
-      sh_string = _getMembers(shippers);
-      d_prompts.resolve();
-    }).fail(d_prompts.reject);
-      return d_prompts.promise();      
+    let d_prompts = $.Deferred();
+    let options = {};
+    options.registry = 'Seller';
+    let options2 = {};
+    options2.registry = 'Buyer';
+    let options3 = {};
+    options3.registry = 'Provider';
+    let options4 = {};
+    options4.registry = 'Shipper';
+    $.when($.post('/composer/admin/getMembers', options), $.post('/composer/admin/getMembers', options2),
+        $.post('/composer/admin/getMembers', options3), $.post('/composer/admin/getMembers', options4)).done(function (_sellers, _buyers, _providers, _shippers)
+        {
+            buyers = _buyers[0].members;
+            sellers = _sellers[0].members;
+            s_string = _getMembers(sellers);
+            providers = _providers[0].members;
+            p_string = _getMembers(providers);
+            shippers = _shippers[0].members;
+            sh_string = _getMembers(shippers);
+            d_prompts.resolve();
+        }).fail(d_prompts.reject);
+    return d_prompts.promise();      
 }
 /**
  * return an option list for use in an HTML <select> element from the provided member array.
@@ -104,10 +107,10 @@ function deferredMemberLoad()
  */
 function _getMembers(_members)
 {
-  var _str = '';
-  for (each in _members)
-  {(function(_idx, _arr){if (_arr[_idx].id != 'noop@dummy')
-    {_str +='<option value="'+_arr[_idx].id+'">' +_arr[_idx].companyName+'</option>';}})(each, _members)}
+    let _str = '';
+    for (let each in _members)
+    {(function(_idx, _arr){if (_arr[_idx].id != 'noop@dummy')
+        {_str +='<option value="'+_arr[_idx].id+'">' +_arr[_idx].companyName+'</option>';}})(each, _members)}
     _str += '</select>';
-  return _str;
+    return _str;
 }

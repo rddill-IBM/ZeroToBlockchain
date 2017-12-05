@@ -114,6 +114,17 @@ body {height: 100%}
   .n_count.on { font-size: .5em; font-weight: bold; visibility: visible;}
   .n_count.off { font-size: .5em; font-weight: bold; visibility: hidden;}
   h2 {font-size: 1.5em; margin-top: .25em; margin-bottom: .25em;}
+  .strike {
+    position: relative;
+}
+.strike::before {
+    content: '';
+    border-bottom: 2px solid rgb(232, 235, 65);
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
 .buyer { background-color: #CBCFD0; }
 .seller { background-color: rgb(173, 242, 173);}
 .provider { background-color: rgb(192, 221, 252);}

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-ded_URL="https://api.w3ibm.bluemix.net"
 pub_URL="https://api.ng.bluemix.net"
 gb_URL="https://api.eu-gb.bluemix.net"
 de_URL="https://api.eu-de.bluemix.net"
@@ -18,7 +17,7 @@ then targetURL=$de_URL
 elif [[ $2 == "sydney" ]]
 then targetURL=$au_URL
 else
-  echo "Parameter 2 is required to be either 'dedicated' or one of the following public designations:"
+  echo "Parameter 2 is required to be one of the following public designations:"
   echo "North America: 'public', Great Britain: 'gb', Europe: 'germany', Australia: 'sydney'"
   echo "Please reissue the command as 'z2c_login {your_login_id} {dedicated || public || gb || germany || sydney}'"
   exit -1

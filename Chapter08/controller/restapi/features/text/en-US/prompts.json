@@ -53,7 +53,10 @@
     "rm_am_api": "Add Member",
     "rm_am_param": "Co Name, id, Type",
     "rm_rm_api": "Remove Member",
-    "rm_gs_api": "getMemberSecret",
+    "rm_gs_api": "get Member Secret",
+    "rm_ii_api": "Issue Identity",
+    "rm_cc_api": "Check if card exists",
+    "rm_cc2_api": "Create Card",
     "bc": "BlockChain",
     "bc_api": "API",
     "bc_param": "Parameters",
@@ -96,8 +99,8 @@
     "cd_financeco": "FinanceCo",
     "cd_cn": "Company Name",
     "cd_e": "email Address",
-    "cancelNewOrder": "Cancel",
-    "submitNewOrder": "Submit"
+    "cancel": "Cancel",
+    "submit": "Submit"
   },
   "createOrder": {
     "title": "Create New Order",

@@ -347,21 +347,10 @@ function displayObjectValues (_string, _object)
 function z2bEmit(_event, _order)
 {
     var method = 'z2bEmit';
-    // get the factory
-    /*
-    *   YOUR CODE HERE
-    *
-    */
-    // create a new event
-    /*
-    *   YOUR CODE HERE
-    *
-    */
-    // update the event with the order ID and the buyerID
-    /*
-    *   YOUR CODE HERE
-    *
-    */
+    var factory = getFactory();
+    var z2bEvent = factory.newEvent(ns, _event);
+    z2bEvent.orderID = _order.$identifier;
+    z2bEvent.buyerID = _order.buyer.$identifier;
     switch (_event)
     {
         case 'Created':
@@ -369,53 +358,38 @@ function z2bEmit(_event, _order)
         break;
         case 'Bought':
         case 'PaymentRequested':
-            // these events have the same members
-            /*
-            *   YOUR CODE HERE
-            *
-            */
+            z2bEvent.sellerID = _order.seller.$identifier;
+            z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
         case 'Ordered':
         case 'Cancelled':
         case 'Backordered':
-            /*
-            *   YOUR CODE HERE
-            *
-            */
+            z2bEvent.sellerID = _order.seller.$identifier;
+            z2bEvent.providerID = _order.provider.$identifier;
         break;
         case 'ShipRequest':
         case 'DeliveryStarted':
         case 'DeliveryCompleted':
-            // these events have the same members
-            /*
-            *   YOUR CODE HERE
-            *
-            */
+            z2bEvent.sellerID = _order.seller.$identifier;
+            z2bEvent.providerID = _order.provider.$identifier;
+            z2bEvent.shipperID = _order.shipper.$identifier;
         break;
         case 'DisputeOpened':
         case 'Resolved':
         case 'Refunded':
         case 'Paid':
-            // these events have the same members
-            /*
-            *   YOUR CODE HERE
-            *
-            */
+            z2bEvent.sellerID = _order.seller.$identifier;
+            z2bEvent.providerID = _order.provider.$identifier;
+            z2bEvent.shipperID = _order.shipper.$identifier;
+            z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
         case 'PaymentAuthorized':
-            // these events have the same members
-            /*
-            *   YOUR CODE HERE
-            *
-            */
+            z2bEvent.sellerID = _order.seller.$identifier;
+            z2bEvent.financeCoID = _order.financeCo.$identifier;
         break;
         default:
         break;
     }
-    // emit the populated event
-    /*
-    *   YOUR CODE HERE
-    *
-    */
+    emit(z2bEvent);
     return 
 }

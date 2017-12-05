@@ -14,66 +14,71 @@
 
 // z2c-provider.js
 
-var providerOrderDiv = "providerOrderDiv";
+'use strict';
+
+let providerOrderDiv = 'providerOrderDiv';
 
 /**
  * load the Provider User Experience
  */
 function loadProviderUX ()
 {
-  toLoad = "provider.html";
+    let toLoad = 'provider.html';
     getPort();
-    if (buyers.length === 0) 
+    if (buyers.length === 0)
     { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
       {setupProvider(page[0], port[0]);});
     }
     else{
-      $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-      {setupProvider(page[0], port[0]);});
+        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
+        {setupProvider(page[0], port[0]);});
     }
-  }
-  
+}
+
+/**
+ * load the Provider User Experience
+ * @param {String} page - the name of the page to load
+ * @param {Integer} port - the port number to use
+ */
 function setupProvider(page, port)
   {
-  $("#body").empty();
-  $("#body").append(page);
-  updatePage("provider");
-  msgPort = port.port;
-  wsDisplay('provider_messages', msgPort);
-  var _clear = $("#provider_clear");
-  var _list = $("#providerOrderStatus");
-  var _orderDiv = $("#"+providerOrderDiv);
-  _clear.on('click', function(){_orderDiv.empty();});
-  _list.on('click', function(){listProviderOrders()});
-  $("#provider").empty();
-  $("#provider").append(p_string);
-  $("#providerCompany").empty();
-  $("#providerCompany").append("something");
-  $("#provider").on('change', function() { 
-    $("#providerCompany").empty(); _orderDiv.empty(); $("#provider_messages").empty();
-    $("#providerCompany").append(findMember($("#provider").find(":selected").val(),providers).companyName);
-  });
+    $('#body').empty();
+    $('#body').append(page);
+    updatePage('provider');
+    console.log('port is: '+port.port);
+    msgPort = port.port;
+    wsDisplay('provider_messages', msgPort);
+    let _clear = $('#provider_clear');
+    let _list = $('#providerOrderStatus');
+    let _orderDiv = $('#'+providerOrderDiv);
+    _clear.on('click', function(){_orderDiv.empty();});
+    _list.on('click', function(){listProviderOrders();});
+    $('#provider').empty();
+    $('#provider').append(p_string);
+    $('#providerCompany').empty();
+    $('#providerCompany').append(providers[0].companyName);
+    $('#provider').on('change', function() {
+        $('#providerCompany').empty(); _orderDiv.empty(); $('#provider_messages').empty();
+        $('#providerCompany').append(findMember($('#provider').find(':selected').val(),providers).companyName);
+    });
 }
 /**
  * lists all orders for the selected Provider
  */
 function listProviderOrders()
 {
-  var options = {};
-  options.id = $("#provider").find(":selected").val();
-  $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
-  {
-    console.log(_mem);
-    options.userID = _mem.userID; options.secret = _mem.secret;
+    let options = {};
+    options.id = $('#provider').find(':selected').val();
+    options.userID = options.id;
     $.when($.post('/composer/client/getMyOrders', options)).done(function(_results)
-      {
+    {
         console.log(_results.result);
         console.log(_results.orders);
-        if (_results.orders.length < 1) {$("#providerOrderDiv").empty(); $("#providerOrderDiv").append(formatMessage(textPrompts.orderProcess.p_no_order_msg+options.id));}
-        else{formatProviderOrders($("#providerOrderDiv"), _results.orders)}
-      });
-  });
+        if (_results.orders.length < 1) {$('#providerOrderDiv').empty(); $('#providerOrderDiv').append(formatMessage(textPrompts.orderProcess.p_no_order_msg+options.id));}
+        else{formatProviderOrders($('#providerOrderDiv'), _results.orders);}
+    });
 }
+
 /**
  * used by the listOrders() function
  * formats the orders for a Provider. Orders to be formatted are provided in the _orders array
@@ -83,89 +88,89 @@ function listProviderOrders()
  */
 function formatProviderOrders(_target, _orders)
 {
-  _target.empty();
-  let _str = ""; let _date = ""; let b_string;
-  for (let each in _orders)
-  {(function(_idx, _arr)
-    { _action = '<th><select id=p_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
-    b_string = '';
-//
-// each order can have different states and the action that a Provider can take is directly dependent on the state of the order. 
-// this switch/case table displays selected order information based on its current status and displays selected actions, which
-// are limited by the sate of the order.
-//
-// Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
-// These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
-// associated with the language selected by the web user.
-//
-switch (JSON.parse(_arr[_idx].status).code)
-      {
-        case orderStatus.Ordered.code:
-
-        break;
-        case orderStatus.Cancelled.code:
-
-        break;
-        case orderStatus.ShipRequest.code:
-
-        break;
-        case orderStatus.Backordered.code:
-
-        break;
-        case orderStatus.Delivered.code:
-
-        break;
-        case orderStatus.Delivering.code:
-
-        break;
-        case orderStatus.Resolve.code:
-
-        break;
-        case orderStatus.Dispute.code:
-
-        break;
-        case orderStatus.Cancelled.code:
-
-        break;
-        case orderStatus.Paid.code:
-
-        break;
-        default:
-          break;
-      }
-      _button = '<th><button id="p_btn_'+_idx+'">'+textPrompts.orderProcess.ex_button+'</button></th>'
-      _action += "</select>";
-      if (_idx > 0) {_str += '<div class="spacer"></div>';}
-      _str += '<table class="wide"><tr><th>'+textPrompts.orderProcess.orderno+'</th><th>'+textPrompts.orderProcess.status+'</th><th class="right">'+textPrompts.orderProcess.total+'</th><th colspan="3" class="right message">'+textPrompts.orderProcess.buyer+findMember(_arr[_idx].buyer.split('#')[1],buyers).companyName+'</th></tr>';
-      _str += '<tr><th id ="p_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+'<br/><select id="shippers'+_idx+'">'+sh_string+b_string+'</th>'+_button+'</tr></table>';
-      _str+= '<table class="wide"><tr align="center"><th>'+textPrompts.orderProcess.itemno+'</th><th>'+textPrompts.orderProcess.description+'</th><th>'+textPrompts.orderProcess.qty+'</th><th>'+textPrompts.orderProcess.price+'</th></tr>'
-    for (let every in _arr[_idx].items)
-    {(function(_idx2, _arr2)
-      { let _item = JSON.parse(_arr2[_idx2]);
-        _str += '<tr><td align="center">'+_item.itemNo+'</td><td>'+_item.description+'</td><td align="center">'+_item.quantity+'</td><td align="right">$'+_item.extendedPrice+'.00</td><tr>';
-      })(every, _arr[_idx].items)
-    }
-    _str += '</table>';
-  })(each, _orders)
-  }
-  _target.append(_str);
-  for (let each in _orders)
+    _target.empty();
+    let _str = ''; let _date = ''; let b_string;
+    for (let each in _orders)
     {(function(_idx, _arr)
-      { $("#p_btn_"+_idx).on('click', function () 
+        { let _action = '<th><select id=p_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
+        b_string = '';
+        //
+        // each order can have different states and the action that a Provider can take is directly dependent on the state of the order. 
+        // this switch/case table displays selected order information based on its current status and displays selected actions, which
+        // are limited by the sate of the order.
+        //
+        // Throughout this code, you will see many different objects referemced by 'textPrompts.orderProcess.(something)' 
+        // These are the text strings which will be displayed in the browser and are retrieved from the prompts.json file 
+        // associated with the language selected by the web user.
+        //
+        switch (JSON.parse(_arr[_idx].status).code)
         {
-          var options = {};
-          options.action = $("#p_action"+_idx).find(":selected").text();
-          options.orderNo = $("#p_order"+_idx).text();
-          options.participant = $("#provider").val();
-          options.shipper = $("#shippers"+_idx).find(":selected").val();
-          if ((options.action == 'Resolve') || (options.action == 'Refund') || (options.action == 'BackOrder')) {options.reason = $("#p_reason"+_idx).val();}
-          console.log(options);
-          $("#provider_messages").prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)+options.orderNo));
-          $.when($.post('/composer/client/orderAction', options)).done(function (_results)
-          { console.log(_results);
-            $("#provider_messages").prepend(formatMessage(_results.result));
-          });
-      });
-    })(each, _orders)
-  }
+        case orderStatus.Ordered.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Cancelled.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.ShipRequest.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Backordered.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Delivered.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Delivering.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Resolve.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Dispute.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Cancelled.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        case orderStatus.Paid.code:
+            // ========> Your Code Goes Here <=========
+            break;
+        default:
+            break;
+        }
+        let _button = '<th><button id="p_btn_'+_idx+'">'+textPrompts.orderProcess.ex_button+'</button></th>'
+        _action += '</select>';
+        if (_idx > 0) {_str += '<div class="spacer"></div>';}
+        _str += '<table class="wide"><tr><th>'+textPrompts.orderProcess.orderno+'</th><th>'+textPrompts.orderProcess.status+'</th><th class="right">'+textPrompts.orderProcess.total+'</th><th colspan="3" class="right message">'+textPrompts.orderProcess.buyer+findMember(_arr[_idx].buyer.split('#')[1],buyers).companyName+'</th></tr>';
+        _str += '<tr><th id ="p_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+'<br/><select id="shippers'+_idx+'">'+sh_string+b_string+'</th>'+_button+'</tr></table>';
+        _str+= '<table class="wide"><tr align="center"><th>'+textPrompts.orderProcess.itemno+'</th><th>'+textPrompts.orderProcess.description+'</th><th>'+textPrompts.orderProcess.qty+'</th><th>'+textPrompts.orderProcess.price+'</th></tr>';
+        for (let every in _arr[_idx].items)
+        {(function(_idx2, _arr2)
+        { let _item = JSON.parse(_arr2[_idx2]);
+            _str += '<tr><td align="center">'+_item.itemNo+'</td><td>'+_item.description+'</td><td align="center">'+_item.quantity+'</td><td align="right">$'+_item.extendedPrice+'.00</td><tr>';
+        })(every, _arr[_idx].items);
+        }
+        _str += '</table>';
+    })(each, _orders);
+    }
+    _target.append(_str);
+    for (let each in _orders)
+        {(function(_idx, _arr)
+        { $('#p_btn_'+_idx).on('click', function ()
+            {
+            let options = {};
+            options.action = $('#p_action'+_idx).find(':selected').text();
+            options.orderNo = $('#p_order'+_idx).text();
+            options.participant = $('#provider').val();
+            options.shipper = $('#shippers'+_idx).find(':selected').val();
+            if ((options.action == 'Resolve') || (options.action === 'Refund') || (options.action === 'BackOrder')) {options.reason = $('#p_reason'+_idx).val();}
+            console.log(options);
+            $('#provider_messages').prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)+options.orderNo));
+            $.when($.post('/composer/client/orderAction', options)).done(function (_results)
+            { console.log(_results);
+                $('#provider_messages').prepend(formatMessage(_results.result));
+            });
+        });
+        })(each, _orders);
+    }
 }

@@ -88,6 +88,12 @@ body {height: 100%}
 	}
 }
 h2 {font-size: 1.5em; margin-top: .25em; margin-bottom: .25em;}
+.strike {
+    
+}
+.strike::before {
+   
+}
 .buyer { background-color: #CBCFD0; }
 .seller { background-color: rgb(173, 242, 173);}
 .provider { background-color: rgb(192, 221, 252);}
@@ -113,7 +119,6 @@ p.message{
 	background-color: #DCE8CB
 }
 .halfPane{
-	font-size: 1em;
 	position: absolute;
 	height: 40%;
 	margin: .0625em;
@@ -121,7 +126,6 @@ p.message{
 	overflow: hidden;
 }
 .halfPane2{
-	font-size: 1em;
 	position: absolute;
 	height: 40%;
 	margin: .0625em;

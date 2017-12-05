@@ -56,20 +56,21 @@ function check4Brew ()
         brew install dos2unix
     }
 
-# check to see if nodev6 is installed. install it if it's not already there. 
+# check to see if nodev8 is installed. install it if it's not already there. 
 function check4node ()
     {
         if [[ $NODE_INSTALL == "true" ]]; then 
             which node
             if [ "$?" -ne 0 ]; then
-                showStep "${RED}node not installed. installing Node V6"
-                brew install node@6
+                showStep "${RED}node not installed. installing Node V8"
+                brew install node@8
             else            
-                if [[ `brew search /node@6/` != "node@6" ]]; then
-                showStep "${RED}found node $? installed, but not V6. installing Node V6"
-                brew install node@6
+                if [[ `brew search /node@6/` != "node@8" ]]; then
+                showStep "${RED}found node $? installed, but not V8. installing Node V8"
+                brew install node@8
+                echo "PATH=/usr/local/opt/node@8/bin:"'$PATH' >>~/.bash_profile
                 else
-                    showStep "${GREEN}Node V6 already installed"
+                    showStep "${GREEN}Node V8 already installed"
                 fi
             fi
         else   
@@ -77,6 +78,8 @@ function check4node ()
         fi
         showStep "installing jsdoc globally"
         npm install -g jsdoc
+        showStep "installing node-gyp globally"
+        npm install -g node-gyp
     }
 
 # check to see if git is installed. install it if it's not already there. 
@@ -110,13 +113,14 @@ function installNodeDev ()
         if [[ $SDK_INSTALL == "true" ]]; then
             showStep "The composer-cli contains all the command line operations for developing business networks."
             npm uninstall -g composer-cli
-            npm install -g composer-cli@0.14.2
+            npm install -g composer-cli@0.16.0
             showStep "The generator-hyperledger-composer is a Yeoman plugin that creates bespoke applications for your business network."
             npm uninstall -g generator-hyperledger-composer
-            npm install -g generator-hyperledger-composer@0.14.2
+            npm install -g generator-hyperledger-composer@0.16.0
             showStep "The composer-rest-server uses the Hyperledger Composer LoopBack Connector to connect to a business network, extract the models and then present a page containing the REST APIs that have been generated for the model."
             npm uninstall -g composer-rest-server
-            npm install -g composer-rest-server@0.14.2
+            npm install -g composer-rest-server@0.16.0
+
             showStep "Yeoman is a tool for generating applications. When combined with the generator-hyperledger-composer component, it can interpret business networks and generate applications based on them."
             npm install -g yo
         else   
@@ -128,14 +132,34 @@ function installNodeDev ()
 function install_hlf ()
     {
         if [[ $HLF_INSTALL == "true" ]]; then
-            if [ ! -d "$HLF_INSTALL_PATH" ]; then
-                showStep "creating hlf tools folder $HLF_INSTALL_PATH "
-                mkdir -p "$HLF_INSTALL_PATH"
+            echo $HLF_INSTALL_PATH
+            if [ -d $HLF_INSTALL_PATH ]; then
+            showStep "removing $HLF_INSTALL_PATH"
+                rm -R "$HLF_INSTALL_PATH"
             fi
+            if [ -d ~/.composer ]; then
+                showStep "removing .composer"
+                rm -R ~/.composer
+            fi
+            if [ -d ~/.composer-credentials ]; then
+                showStep "removing .composer-credentials"
+                rm -R ~/.composer-credentials
+            fi
+            if [ -d ~/.composer-connection-profiles ]; then
+                showStep "removing .composer-connection-profiles"
+                rm -R ~/.composer-connection-profiles
+            fi
+            showStep "creating hlf tools folder $HLF_INSTALL_PATH "
+            mkdir -p "$HLF_INSTALL_PATH"
             cd "$HLF_INSTALL_PATH"
             pwd
             showStep "retrieving image scripts from git"
-            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/v0.2.2/packages/fabric-dev-servers/fabric-dev-servers.zip
+
+            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.zip
+#
+# can no longer use V 0.2.2 with Composer v0.15
+#            curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/v0.2.2/packages/fabric-dev-servers/fabric-dev-servers.zip
+#
             showStep "unzipping images"
             unzip -o fabric-dev-servers.zip
             showStep "making scripts executable"
@@ -147,15 +171,24 @@ function install_hlf ()
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for OSX"
-            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/v1.0.3/scripts/bootstrap-1.0.1.sh | bash
+#
+# v0.12-v0.14
+#            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/v1.0.4/scripts/bootstrap-1.0.1.sh | bash
+#
+# v0.15
+#            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap-1.0.1.sh | bash
+#
+# v 0.16
+#
+            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release/scripts/bootstrap-1.0.1.sh | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             showStep "updating .bash_profile with new paths"
             # ensure that the following lines start with a new line
             echo "  "  >>~/.bash_profile
             echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
-            echo "PATH=${HLF_INSTALL_PATH}/bin:/usr/local/opt/node@6/bin:"'$PATH' >>~/.bash_profile
             echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
+            echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
@@ -188,7 +221,7 @@ function printHeader ()
     echo -e "${YELLOW}It will then execute a brew update and brew upgrade to ensure" | indent
     echo -e "${YELLOW}   that you are at the latest release of your brew installed packages" | indent
     echo -e "${YELLOW}dos2unix is installed by brew to correct scripts from hyperledger and composer" | indent
-    echo -e "${YELLOW}The exec will proceed with checking to ensure you are at Node V6" | indent
+    echo -e "${YELLOW}The exec will proceed with checking to ensure you are at Node V8" | indent
     echo -e "${YELLOW}   which is required for working with HyperLedger Composer" | indent
     echo -e "${YELLOW}The script will then install the nodejs SDK for hyperledger and composer" | indent
     echo -e "${YELLOW}The script will finish by downloading the docker images for hyperledger${RESET}" | indent
@@ -254,6 +287,8 @@ do
 
 
     getCurrent
+    showStep "installing xCode command line tools"
+    xcode-select --install
     showStep "checking Brew"
     check4Brew
     showStep "checking git"

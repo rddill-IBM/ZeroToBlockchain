@@ -15,17 +15,17 @@
 'use strict';
 
 const AdminConnection = require('composer-admin').AdminConnection;
-const BrowserFS = require('browserfs/dist/node/index');
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
+
+const hlc_idCard = require('composer-common').IdCard;
 const path = require('path');
+const _home = require('os').homedir();
 
 require('chai').should();
 
 const network = 'zerotoblockchain-network';
-const adminID = 'admin';
-const adminPW = 'adminpw';
-const bfs_fs = BrowserFS.BFSRequire('fs');
+const _timeout = 90000;
 const NS = 'org.acme.Z2BTestNetwork';
 const orderNo = '12345';
 const buyerID = 'billybob@email.com';
@@ -57,6 +57,7 @@ let orderStatus = {
     'Refund': {'code': 12, 'text': 'Order Refund Requested'},
     'Refunded': {'code': 13, 'text': 'Order Refunded'}
 };
+
 
 /**
  * create an empty order
@@ -110,30 +111,12 @@ function addItems (_inbound)
     return (_inbound);
 }
 
-describe('Finance Network', () => {
-
-    // let adminConnection;
+describe('Finance Network', function () {
+    this.timeout(_timeout);
     let businessNetworkConnection;
-
-    before(() => {
-        BrowserFS.initialize(new BrowserFS.FileSystem.InMemory());
-        const adminConnection = new AdminConnection({ fs: bfs_fs });
-        return adminConnection.createProfile('defaultProfile', {
-            type: 'embedded'
-        })
-            .then(() => {
-                return adminConnection.connect('defaultProfile', adminID, adminPW);
-            })
-            .then(() => {
-                return BusinessNetworkDefinition.fromDirectory(path.resolve(__dirname, '..'));
-            })
-            .then((businessNetworkDefinition) => {
-                return adminConnection.deploy(businessNetworkDefinition);
-            })
-            .then(() => {
-                businessNetworkConnection = new BusinessNetworkConnection({ fs: bfs_fs });
-                return businessNetworkConnection.connect('defaultProfile', network, adminID, adminPW);
-            });
+    before(function () {
+        businessNetworkConnection = new BusinessNetworkConnection();
+        return businessNetworkConnection.connect('admin@zerotoblockchain-network');
     });
 
     describe('#createOrder', () => {

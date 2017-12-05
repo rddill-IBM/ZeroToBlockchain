@@ -6,6 +6,6 @@
     "French":     {"active": "yes", "menu": "Le Français", "model": "fr-FR_BroadbandModel", "voice": "fr-FR_ReneeVoice", "data": "/text/fr/prompts.json"},
     "Japanese":   {"active": "yes", "menu": "Japanese", "model": "ja-JP_BroadbandModel", "voice": "ja-JP_EmiVoice", "data": "/text/jp/prompts.json"},
     "Chinese":   {"active": "yes", "menu": "Chinese", "model": "zh-CN_BroadbandModel", "voice": "", "data": "/text/ch/prompts.json"},
-    "Brazilian_Portuguese": {"active": "no", "menu": "Português do Brasi", "model": "pt-BR_BroadbandModel", "voice": "pt-BR_IsabelaVoice", "data": "/text/pt/prompts.json"}
+    "Brazilian_Portuguese": {"active": "yes", "menu": "Português do Brasi", "model": "pt-BR_BroadbandModel", "voice": "pt-BR_IsabelaVoice", "data": "/text/pt/prompts.json"}
     }
     

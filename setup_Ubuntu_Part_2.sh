@@ -87,13 +87,14 @@ function install_hlf ()
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for Ubuntu"
-            curl -sSL https://goo.gl/eYdRbX | bash
+            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release/scripts/bootstrap-1.0.1.sh | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             echo 'PATH="'"${HLF_INSTALL_PATH}/bin:$PATH"'"' >>~/.profile
             echo 'HLF_INSTALL_PATH="'"${HLF_INSTALL_PATH}"'"'  >>~/.bashrc
             echo 'export HLF_INSTALL_PATH'  >>~/.bashrc
             echo 'export FABRIC_VERSION'  >>~/.bashrc
+            sudo chmod +rw ~/.composer
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
@@ -156,4 +157,6 @@ do
     getCurrent
     showStep "installing hyperledger docker images"
     install_hlf
+    showStep "Copying PeerAdmin Credentials"
+    cp -Rv ~/fabric-tools/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
     showStep "installation complete"

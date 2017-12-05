@@ -47,6 +47,17 @@ body {height: 100%}
 		overflow: auto;
 	}
 }	
+.strike {
+    position: relative;
+}
+.strike::before {
+    content: '';
+    border-bottom: 2px solid rgb(232, 235, 65);
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
 .buyer { background-color: #CBCFD0; }
 .seller { background-color: #5DC15D;}
 .provider { background-color: #8A99D3;}
@@ -72,14 +83,14 @@ p.message{
 }
 .scrollingPaneLeft{
 	position: fixed;
-	height: 85%;
+	height: 80%;
 	margin-left: 1%;
 	width: 45%;
 	overflow: auto;
 }
 .scrollingPaneRight{
 	position: fixed;
-	height: 85%;
+	height: 80%;
 	margin-left: 50%;
 	width: 45%;
 	overflow: auto;
@@ -87,10 +98,10 @@ p.message{
 .blockchain {
 	background-color: black;
 	position: fixed;
-	height: 9%;
+	height: 8%;
 	margin-left: 1%;
 	width: 95%;
-	top: 90%;
+	top: 92%;
 	padding: 4px;
 	overflow-x: auto;
     overflow-y: hidden;

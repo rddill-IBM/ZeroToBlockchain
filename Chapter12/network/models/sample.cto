@@ -142,104 +142,102 @@ event Created extends Z2BEvent {
 }
 // notification that an order has been placed
 event Bought extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String financeCoID
 }
 
 // notification that a fulfillment request has been placed
 event Ordered extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
 }
 
 // notification that an order has been cancelled
 event Cancelled extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
 }
 
 // notification that items are on backorder 
 event Backordered extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
 }
 
 // notification that shipper has been contacted 
 event ShipRequest extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
 }
 
 // notification that order in being delivered
 event DeliveryStarted extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
 }
 
 // notification that order has been delivered
 event DeliveryCompleted extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
 }
 
 // notification that order is in dispute 
 event DisputeOpened extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
+  o String financeCoID
 }
 
 // notification that dispute has been resolved 
 event Resolved extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
+  o String financeCoID
 }
 
 // notification that an order has been refunded 
 event Refunded extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
+  o String financeCoID
 }
 
 // notification that a request for payment has been issued 
 event PaymentRequested extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String financeCoID
 }
 
 // notification that a request for payment has been approved by the buyer 
 event PaymentAuthorized extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String financeCoID
 }
 
 // notification that order has been paid /
 event Paid extends Z2BEvent {
-  /*
-  *   YOUR CODE HERE
-  *
-  */
+  o String sellerID
+  o String buyerID
+  o String providerID
+  o String shipperID
+  o String financeCoID
 }
