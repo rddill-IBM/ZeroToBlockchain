@@ -94,7 +94,13 @@ function install_hlf ()
             echo 'HLF_INSTALL_PATH="'"${HLF_INSTALL_PATH}"'"'  >>~/.bashrc
             echo 'export HLF_INSTALL_PATH'  >>~/.bashrc
             echo 'export FABRIC_VERSION'  >>~/.bashrc
-            sudo chmod +rw ~/.composer
+            if [ -d "~/.composer" ]; then
+                sudo chmod +rw ~/.composer
+            else
+                cd $HLF_INSTALL_PATH
+                ./createPeerAdminCard.sh
+                sudo chmod +rw ~/.composer
+            fi
         else   
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
@@ -158,5 +164,10 @@ do
     showStep "installing hyperledger docker images"
     install_hlf
     showStep "Copying PeerAdmin Credentials"
-    cp -Rv ~/fabric-tools/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
+    if [ -d "~/.hfc-key-store" ]; then
+        cp -Rv ~/{$HLF_INSTALL_PATH}/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
+    else
+        mkdir ~/.hfc-key-store
+        cp -Rv ~/{$HLF_INSTALL_PATH}/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
+    fi
     showStep "installation complete"
