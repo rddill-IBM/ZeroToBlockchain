@@ -165,9 +165,9 @@ do
     install_hlf
     showStep "Copying PeerAdmin Credentials"
     if [ -d "~/.hfc-key-store" ]; then
-        cp -Rv ~/{$HLF_INSTALL_PATH}/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
+        cp -Rv $HLF_INSTALL_PATH/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
     else
         mkdir ~/.hfc-key-store
-        cp -Rv ~/{$HLF_INSTALL_PATH}/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
+        cp -Rv $HLF_INSTALL_PATH/fabric-scripts/hlfv1/composer/creds/* ~/.hfc-key-store
     fi
     showStep "installation complete"
