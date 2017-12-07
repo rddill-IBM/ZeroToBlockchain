@@ -76,13 +76,15 @@ Some of these files are used by all chapters and some are specific to this chapt
 ### Web Browser Code 
  - **z2b-admin.js**
    - This file contains all of the browser functional code to support the administrative interface
+   **Please Note** that with the update to hyperledger-composer v0.15, composer has transitioned from using connection profiles to using idCards. This means that the connection profile creation work is no longer required to connect to the network. 
  - **index.html**
    - This file is the initial web page loaded by the application.
    - Text on this page is determined by the selected language (default is US English) 
  - **admin.html**
    - Contains the HTML to manage the admin interface
    - Text on this page is determined by the selected language 
- - **ceateConnectionProfile.html**
+    **Please Note** that with the update to hyperledger-composer v0.15, composer has transitioned from using connection profiles to using idCards. This means that the connection profile creation work is no longer required to connect to the network. Therefore, these items now show a yellow strike-through in this chapter and will not be in chapters 6-12.  
+- **ceateConnectionProfile.html**
    - Contains the HTML to manage profile creation
    - Text on this page is determined by the selected language 
  - **createMember.html**
@@ -98,4 +100,50 @@ Some of these files are used by all chapters and some are specific to this chapt
    - contains the HTML to remove a member
    - Text on this page is determined by the selected language 
 
-  
+# Where are the Answers?
+**Chapterxx/Documentation/answers**
+
+- all answers for each chapter are in the Documentation/answers folder in that chapter. 
+- The naming conventions used are:
+- ***Folder Name:***
+    - composer: these files are the answers to files located in  the following path within each chapter: ```controller/restapi/features/composer/```
+    - cto: ```network/model```
+    - CSS: ```HTML/CSS```
+    - HTML: ```/HTML/```
+    - js: ```HTML/js/```
+    - lib: ```network/lib```
+    - test: ```network/test```
+- ***File Name:***
+    - each file has the same prefix in the answers and in the target folder. The answers folder adds '_complete' to the end of the first part of the file name. For example: 
+    - the server code for administration is in the ***controller/restapi/features/composer*** folder and is called: hlcAdmin.js. The completed code for that file (in this chapter) is in the ***Documentation/answers/composer*** folder and is called hlcAdmin_complete.js
+
+# How do I get everything started once I've updated all the code?
+
+You need to run the following command **once** for each chapter: ```npm install```. This installs all of the node modules required to run your program. 
+
+**Each time you restart your system**, restart Docker, or bring your system back from a 'suspend' state, you need to run the following two commands in this order: 
+    - buildAndDeploy (OSX) ... or ... ./buildAndDeploy (Ubuntu)
+    - npm start (or npm index)
+
+The ```buildAndDeploy``` command creates the business archive, stops and restarts the docker containers and then deploys your network into those containers. 
+
+The ```npm start``` command loads and starts to execute the index.js file in your chapterxx folder. This, in turn, loads all of the services in the controller folder structure.
+
+# Why All The Changes?
+**HyperLedger Composer has gone through two significant changes in 4Q2017.**
+
+ - The first, Version 0.14, changed how security worked and clarified the difference between the business network administrator (admin) and the fabric Administrator (PeerAdmin). While this had little effect on what the Admin user interface could do, it did change significantly how the underlying code worked in the hlcAdmin.js file and in the autoLoad.js file. The biggest code change is that the autoLoad process started issuing Identities instead of just adding members to the registry. The other significant change required adding two statements to the permissions.acl file. 
+
+ - Then Version 0.15 was released and the entire access structure was changed from connection profile + username/password (which is why we had the getSecret() method) to idCards. This necessitated changes in some of the scripts we use (buildAndDeploy, startup.sh, deployNetwork.sh), required a complete rewrite for how the test code loads and connects to the network and also required changes in the admin interface. You'll see a number of items which have a -->yellow strikethrough<--, indicating that they are no longer available. 
+
+ - We aren't using connection profiles any more as part of the log in process, so that whole section is no longer useful. Because we're using cards, we don't need to use, nor do we need to capture, the user secrets associated with each Member. so that is deactivated. 
+
+**We do, however, need more capability for Members.** Along with the Add Member function, which we've had all along, we now need the ability to issue an Identity for that Member and then to create an idCard for that member. You'll see those new functions in the Resource Management part of the administrative user interface, along with a feature which will check to see if an idCard already exists for a specific member. 
+
+An Identity can only be issued for an existing Member, so the process is to: 
+
+ - Add a Member
+ - Issue an Identity
+ - Create an idCard
+ 
+Creating an idCard requires the password, or secret, which was generated during the issue Identity process. Each of these functions has been implemented individually. It would be a great idea to combine the issue Identity process with the Create idCard process, so that you don't have to remember to copy the generated secret and type it into the createCard page. 

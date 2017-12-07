@@ -24,14 +24,14 @@ The installation process for OSX has been automated and is designed to be invoke
    - Check for the presence of the Brew package manager and install it if it’s missing. If it’s present, execute the brew update and brew upgrade commands, install the dos2unix tool
    - Check for the presence of git and install it if it’s missing
    - Install GitHub Desktop V 2.33
-   - Check for the presence of nodeJS version 6 (Required for hyper ledger) and install it if it’s missing
+   - Check for the presence of nodeJS version 8 (Required for hyper ledger) and install it if it’s missing
    - Install the nodejs SDK for hyper ledger composer
    - Install the hyper ledger fabric docker images
    - Install the fabric tools and update your .bash_profile
    - Install hyper ledger  composer platform-specific binaries
 
 If you do not want to automatically take all of these actions, then execute the following command, instead, to just download the file to your system:
-   - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_OSX.sh```
+   - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_OSX.sh -o setup_OSX.sh```
    - then type in: ```dos2unix setup_OSX.sh```, which will ensure that this will now run correctly as a script file on your OSX operating system. 
 
 You have the ability to turn off any of the installation services. This is dependent on using the Brew package manager to handle various installation requirements, so if you don't want to use Brew, you'll need to install each service manually. 
@@ -73,13 +73,13 @@ The installation process for Ubuntu has been automated and is designed to be inv
  - After curl has been installed, copy the following as a single line into a terminal window and press enter
  - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_1.sh | bash```
  - This will install all required software up through docker. If you do not want to automatically install this software, then first download the the script and then use the available options to limit what it does. 
- - To download the script, execute the following command: ``````
+ - To download the script, execute the following command: ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_1.sh -o setup_Ubuntu_Part_1.sh```
  - The type in ```dos2unix setup_Ubuntu_Part_1.sh```
  - Then type in ```./setup_Ubuntu_Part_1.sh```
  - Then type in ```./setup_Ubuntu_Part_1.sh -h```, which will print out the following information: 
  ```
         installation script for the Zero To Blockchain Series
-       This is for Linux ONLY. It has been tested on Ubuntu 16.04 LTS
+       This is for Linux ONLY. It has been tested only on Ubuntu 16.04 LTS
        Other versions of Linux are not supported via this script. 
        The following will be downloaded by this script
        dos2unix, to correct scripts from hyperledger and composer
@@ -106,7 +106,7 @@ The installation process for Ubuntu has been automated and is designed to be inv
    - Update the apt-get repositories and upgrade current software
    - Ensure that the base development environment is installed
    - Check for the presence of git and install it if it’s missing
-   - Check for the presence of nodeJS version 6 (Required for hyper ledger) and install it if it’s missing
+   - Check for the presence of nodeJS version 8 (Required for hyper ledger) and install it if it’s missing
    - Install the nodejs SDK for hyper ledger composer
    - Install the VSCode editor
    - Install the hyper ledger fabric docker images
@@ -114,7 +114,7 @@ The installation process for Ubuntu has been automated and is designed to be inv
    - Install hyper ledger  composer platform-specific binaries
 
 If you do not want to automatically take all of these actions, then execute the following command, instead, to just download the file to your system:
-   - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_2.sh```
+   - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_2.sh -o setup_Ubuntu_Part_2.sh```
    - then type in: ```dos2unix setup_Ubuntu_Part_2.sh```, which will ensure that this will now run correctly as a script file on your √ operating system. 
 
 You have the ability to turn off any of the installation services. This is dependent on using the Brew package manager to handle various installation requirements, so if you don't want to use Brew, you'll need to install each service manually. 
@@ -130,12 +130,11 @@ You have the ability to turn off any of the installation services. This is depen
 
  options for this exec are: 
        -h Print this help information
-       -f defaults to true. use -d false if you do not want to have hypleledger fabric images verified
+       -f defaults to true. use -f false if you do not want to have hypleledger fabric images verified
        -p defaults to /home/robertdill/fabric-tools. use -p /home/robertdill/your/preferred/path/fabric-tools/your/path/here if you want to install hyperledger fabric tools elsewhere.
        		only valid with -f true, ignored otherwise
 
  ```
- - So if you want to install only the node services (that is, don't install git or brew), then you would type in the following: ```./setup_OSX.sh -g false -b false```, which turns off the installation options for git and brew. 
 
  Once you have run this exec, your development environment will be installed. Before you can run it, you'll have to start Docker. Press CMD+spacebar and type in docker. Highlight Docker.app and press enter. On most OSX systems, Docker.app will automatically restart each time you start up, or restart OSX. 
  
@@ -230,8 +229,7 @@ This will make a local copy of the tutorial on your computer and, because you cl
 # Check out the network
 
  - Open a Terminal Window and change to Chapter03
- - OSX: Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
- - Ubuntu: Issue the command ```./buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
+ - Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
  - Open HyperLedger Composer [Playground](https://composer-playground.mybluemix.net) and then click on the web page to select the option to use your own business network 
     - You may get the following message. If so, congrats! You've used playground before. Click on ```Clear local Storage```
     ![Invalid Storage](../assets/IBMCloud_playground_invalid.png)
