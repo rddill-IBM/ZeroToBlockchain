@@ -1,7 +1,7 @@
 # ZeroToBlockchain
 Tutorial on getting started with Blockchain on IBM Bluemix 
 
-Please note that this is not yet ready for public consumption. Comments are welcomed on the idea. 
+Please use the README.md or README.pdf files in each chapter for the latest documentation for that chapter. 
 
 Base concept is: 
 
