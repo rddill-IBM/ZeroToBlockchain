@@ -80,4 +80,4 @@ showStep "testing rest server \n when this completes, \n  go to your favorite br
 # original (pre V0.14)
 # composer-rest-server -p hlfv1 -n $NETWORK_NAME -i PeerAdmin -s randomString
 # V0.14
-composer-rest-server -p hlfv1 -n zerotoblockchain-network -i admin -s adminPW
+composer-rest-server -c admin@zerotoblockchain-network
