@@ -10,18 +10,10 @@
 # Array of supported versions
 declare -a versions=('trusty' 'xenial' 'yakkety');
 
+
 # check the version and extract codename of ubuntu if release codename not provided by user
     lsb_release -a || (echo "Error: Release information not found, run script passing Ubuntu version codename as a parameter"; exit 1)
     CODENAME=$(lsb_release -a | grep 'Codename:' | awk '{print $2}')
-
-# check version is supported
-if echo ${versions[@]} | grep -q -w ${CODENAME}; then
-    echo "Installing Hyperledger Composer prereqs for Ubuntu ${CODENAME}"
-else
-    echo "Error: Ubuntu ${CODENAME} is not supported"
-    exit 1
-fi
-
 
 # indent text on echo
 function indent() {
@@ -50,14 +42,19 @@ function getCurrent()
         UBUNTU_ARCH=`uname -m`
         UBUNTU_VERSION=`lsb_release -c | grep "Codename:"  | awk '{print $2}'`
         showStep "found Ubuntu ${UBUNTU_VERSION} as an ${UBUNTU_ARCH} system"
+        # check for 64 bit Ubuntu
         if [[ $UBUNTU_ARCH != "x86_64" ]]; then
             showStep "Install Failed, need a 64 bit system. This is ${UBUNTU_ARCH}"
             exit 1
         fi
-        if [[ ${UBUNTU_VERSION} != "xenial" ]]; then
-            showStep "Install Failed, need a Ubuntu 16 LTS. This is ${UBUNTU_VERSIO}"
+        # check version is supported
+        if echo ${versions[@]} | grep -q -w ${CODENAME}; then
+            echo "Installing Hyperledger Composer prereqs for Ubuntu ${CODENAME}"
+        else
+            echo "Error: Ubuntu ${CODENAME} is not supported"
             exit 1
         fi
+
     }
 
 # update and upgrade apt-get
