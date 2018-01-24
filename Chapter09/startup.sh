@@ -34,13 +34,13 @@ function showStep ()
 showStep "using execs from previous installation, stored in ${HLF_INSTALL_PATH}"
 cd "${HLF_INSTALL_PATH}"
 showStep "starting fabric"
-~/fabric-tools/startFabric.sh
+./startFabric.sh
 #
 # no longer required with hyperledger composer V0.15
 # showStep "creating new composer profile (required with each restart)"
 # ~/fabric-tools/createComposerProfile.sh
 #
 showStep "creating new PeerAdmin card (required with each restart)"
-~/fabric-tools/createPeerAdminCard.sh 
+./createPeerAdminCard.sh 
 composer card list --name PeerAdmin@hlfv1
 showStep "start up complete"

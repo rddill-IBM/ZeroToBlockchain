@@ -2,7 +2,8 @@
 
 # make scripts correct for osx/unix
 
-declare -a chapters=('Chapter01' 'Chapter02' 'Chapter03' 'Chapter04' 'Chapter05' 'Chapter06' 'Chapter07' 'Chapter08' 'Chapter09' 'Chapter10' 'Chapter11' 'Chapter12')
+declare -a chapters=($(ls -d -- */))
+echo "${chapters[@]}"
 dos2unix `ls *.sh`
 for i in "${chapters[@]}"
 do
