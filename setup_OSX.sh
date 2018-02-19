@@ -1,7 +1,7 @@
 #!/bin/bash
 
  #!/bin/bash
- 
+
  YELLOW='\033[1;33m'
  RED='\033[1;31m'
  GREEN='\033[1;32m'
@@ -25,7 +25,7 @@ function showStep ()
     }
 
 # Grab the current directory
-function getCurrent() 
+function getCurrent()
     {
         showStep "getting current directory"
         DIR="$( pwd )"
@@ -46,7 +46,7 @@ function check4Brew ()
             else
                 showStep "${GREEN}brew already installed"
             fi
-        else   
+        else
             showStep "${RED}skipping BREW install"
         fi
         showStep "updating brew to latest version"
@@ -56,24 +56,29 @@ function check4Brew ()
         brew install dos2unix
     }
 
-# check to see if nodev8 is installed. install it if it's not already there. 
+# check to see if nodev8 is installed. install it if it's not already there.
 function check4node ()
     {
-        if [[ $NODE_INSTALL == "true" ]]; then 
-            which node
+        if [[ $NODE_INSTALL == "true" ]]; then
+            which nvm
             if [ "$?" -ne 0 ]; then
-                showStep "${RED}node not installed. installing Node V8"
-                brew install node@8
-            else            
-                if [[ `brew search /node@6/` != "node@8" ]]; then
-                showStep "${RED}found node $? installed, but not V8. installing Node V8"
-                brew install node@8
-                echo "PATH=/usr/local/opt/node@8/bin:"'$PATH' >>~/.bash_profile
+                nvm install v8
+            else
+                which node
+                if [ "$?" -ne 0 ]; then
+                    showStep "${RED}node not installed. installing Node V8"
+                    brew install node@8
                 else
-                    showStep "${GREEN}Node V8 already installed"
+                    if [[ `brew search /node@6/` != "node@8" ]]; then
+                    showStep "${RED}found node $? installed, but not V8. installing Node V8"
+                    brew install node@8
+                    echo "PATH=/usr/local/opt/node@8/bin:"'$PATH' >>~/.bash_profile
+                    else
+                        showStep "${GREEN}Node V8 already installed"
+                    fi
                 fi
             fi
-        else   
+        else
             showStep "${RED}skipping NODE install"
         fi
         showStep "installing jsdoc globally"
@@ -82,7 +87,7 @@ function check4node ()
         npm install -g node-gyp
     }
 
-# check to see if git is installed. install it if it's not already there. 
+# check to see if git is installed. install it if it's not already there.
 function check4git ()
     {
         if [[ $GITHUB_INSTALL == "true" ]]; then
@@ -102,7 +107,7 @@ function check4git ()
             showStep "removing intermediate files"
             rm -r 'Github Desktop.app'
             rm -r 'GitHub%20Desktop%20223.zip'
-        else   
+        else
             showStep "${RED}skipping git install"
         fi
     }
@@ -123,7 +128,7 @@ function installNodeDev ()
 
             showStep "Yeoman is a tool for generating applications. When combined with the generator-hyperledger-composer component, it can interpret business networks and generate applications based on them."
             npm install -g yo
-        else   
+        else
             showStep "${RED}skipping NODE SDK for HyperLedger install"
         fi
     }
@@ -189,7 +194,7 @@ function install_hlf ()
             echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
             echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
             echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
-        else   
+        else
             showStep "${RED}skipping HyperLedger Fabric install"
         fi
     }
@@ -236,41 +241,41 @@ SDK_INSTALL="true"
 HLF_INSTALL="true"
 HLF_INSTALL_PATH="${HOME}/fabric-tools"
 
- while getopts "h:g:b:n:d:p:s:" opt; 
+ while getopts "h:g:b:n:d:p:s:" opt;
 do
     case "$opt" in
         h|\?)
         printHelp
         exit 0
         ;;
-        g)  showStep "option passed for github is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                GITHUB_INSTALL=$OPTARG 
+        g)  showStep "option passed for github is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                GITHUB_INSTALL=$OPTARG
             fi
         ;;
-        b)  showStep "option passed for brew is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                BREW_INSTALL=$OPTARG 
+        b)  showStep "option passed for brew is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                BREW_INSTALL=$OPTARG
             fi
         ;;
-        n)  showStep "option passed for node is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                NODE_INSTALL=$OPTARG 
+        n)  showStep "option passed for node is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                NODE_INSTALL=$OPTARG
             fi
         ;;
-        s)  showStep "option passed for node SDK is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                SDK_INSTALL=$OPTARG 
+        s)  showStep "option passed for node SDK is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                SDK_INSTALL=$OPTARG
             fi
         ;;
-        d)  showStep "option passed for hyperledger docker install is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                HLF_INSTALL=$OPTARG 
+        d)  showStep "option passed for hyperledger docker install is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                HLF_INSTALL=$OPTARG
             fi
         ;;
-        p)  showStep "option passed for fabric tools path is: '$OPTARG'" 
-            if [[ $OPTARG != "" ]]; then 
-                HLF_INSTALL_PATH=$OPTARG 
+        p)  showStep "option passed for fabric tools path is: '$OPTARG'"
+            if [[ $OPTARG != "" ]]; then
+                HLF_INSTALL_PATH=$OPTARG
             fi
         ;;
     esac
