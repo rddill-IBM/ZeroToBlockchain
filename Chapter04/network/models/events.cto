@@ -15,7 +15,7 @@
 /**
   * A library of standard reusable types
   */
-namespace composer.events
+namespace org.acme.Z2BTestNetwork.events
 
 abstract event BasicEvent {
 }
@@ -34,14 +34,14 @@ event ordered extends BasicEvent {
   o String orderID
 }
 
-// notify seller, buyer that items are on backorder 
+// notify seller, buyer that items are on backorder
 event backordered extends BasicEvent {
   o String orderNumber
   o String sellerID
   o String orderID
 }
 
-// notify seller, buyer, shipper that shipper has been contacted 
+// notify seller, buyer, shipper that shipper has been contacted
 event shipRequest extends BasicEvent {
   o String orderNumber
   o String shipperID
@@ -62,21 +62,21 @@ event delivered extends BasicEvent {
   o String orderID
 }
 
-// notify seller, financeCo that order is in dispute 
+// notify seller, financeCo that order is in dispute
 event dispute extends BasicEvent {
   o String orderNumber
   o String sellerID
   o String orderID
 }
 
-// notify seller, buyer that dispute has been resolved 
+// notify seller, buyer that dispute has been resolved
 event resolved extends BasicEvent {
   o String orderNumber
   o String sellerID
   o String orderID
 }
 
-// notify financeCo, buyer that a request for payment has been issued 
+// notify financeCo, buyer that a request for payment has been issued
 event requestPayment extends BasicEvent {
   o String buyerID
   o String orderID
