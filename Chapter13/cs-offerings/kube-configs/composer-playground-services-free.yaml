@@ -1,0 +1,17 @@
+---
+# The service to expose composer playground
+apiVersion: v1
+kind: Service
+metadata:
+  name: composer-playground
+  labels:
+    run: composer-playground
+spec:
+  type: NodePort
+  selector:
+    name: composer-playground
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 31080
+    name: http

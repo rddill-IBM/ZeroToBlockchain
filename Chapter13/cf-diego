@@ -1,0 +1,42 @@
+#!/bin/bash
+
+filename="manifest.yml"
+if [ -e $filename ];
+then
+  echo "using manifest.yml file in this directory"
+else
+  echo "no manifest.yml file found. exiting"
+  exit -2
+fi
+shopt -s nocasematch
+string='name:'
+targetName=""
+echo "Retrieving name from manifest file"
+while read -r line
+do
+    name="$line"
+    variable=${name%%:*}
+    if [[ $variable == *"name"* ]]
+    then
+      inBound=${name#*:}
+      targetName="$(echo -e "${inBound}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    fi
+done < "$filename"
+if [ "$targetName" == "" ];
+then
+  echo "Could not find name of application in manifest.yml file. Cancelling build."
+  echo "application name is identified by the 'name: ' term in the manifest.yml file"
+  exit -1
+else
+  echo "starting cf push for $targetName"
+
+  cf push --no-start
+
+  echo "cf enable-diego $targetName"
+  cf enable-diego $targetName
+
+  echo "cf start $targetName"
+  cf start $targetName
+
+  exit 0
+fi

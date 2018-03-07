@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-pvc
+  annotations:
+    #ibmc-file-bronze: 2 IOPS per GB.
+    #ibmc-file-silver: 4 IOPS per GB.
+    #ibmc-file-gold: 10 IOPS per GB.
+    volume.beta.kubernetes.io/storage-class: "ibmc-file-silver"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: composer-pvc
+  annotations:
+    #ibmc-file-bronze: 2 IOPS per GB.
+    #ibmc-file-silver: 4 IOPS per GB.
+    #ibmc-file-gold: 10 IOPS per GB.
+    volume.beta.kubernetes.io/storage-class: "ibmc-file-silver"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi

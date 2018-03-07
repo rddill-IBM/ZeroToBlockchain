@@ -14,6 +14,9 @@ function indent() {
   esac
 }
 
+OS=$(uname)
+export OS=$OS
+
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {

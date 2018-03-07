@@ -1,0 +1,60 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: shared-pv
+  labels:
+    type: local
+    name: shared
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/network"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: composer-pv
+  labels:
+    type: local
+    name: composer
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/composer"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: shared-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      name: shared
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: composer-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      name: composer

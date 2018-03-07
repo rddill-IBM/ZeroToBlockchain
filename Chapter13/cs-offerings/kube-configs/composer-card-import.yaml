@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: composer-card-import
+spec:
+  restartPolicy: "Never"
+  volumes:
+  - name: composer-card-store
+    persistentVolumeClaim:
+      claimName: composer-pvc
+  - name: shared
+    persistentVolumeClaim:
+      claimName: shared-pvc
+  containers:
+  - name: composer-card-import
+    image: ibmblockchain/composer-cli:0.16.2
+    imagePullPolicy: Always
+    command: ["sh", "-c", "echo $K8S_PROFILE > connection.json && composer card create -f PeerAdmin.card -p connection.json -u PeerAdmin -r PeerAdmin -r ChannelAdmin -c /shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem -k /shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/key.pem && composer card import -f PeerAdmin.card"]
+    env:
+    - name: K8S_PROFILE
+      value: >
+        {
+          "type": "hlfv1",
+          "name": "hlfv1",
+          "orderers": [
+              {
+                  "url": "grpc://blockchain-orderer:31010"
+              }
+          ],
+          "ca": {
+              "url": "http://blockchain-ca:30054",
+              "name": "CA1"
+          },
+          "peers": [
+              {
+                  "requestURL": "grpc://blockchain-org1peer1:30110",
+                  "eventURL": "grpc://blockchain-org1peer1:30111"
+              }
+          ],
+          "channel": "channel1",
+          "mspID": "Org1MSP",
+          "timeout": 300
+        }
+    volumeMounts:
+    - name: composer-card-store
+      mountPath: /home/composer/.composer
+    - name: shared
+      mountPath: /shared
+

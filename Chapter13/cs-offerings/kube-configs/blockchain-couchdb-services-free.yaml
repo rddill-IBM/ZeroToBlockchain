@@ -1,0 +1,112 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-ca
+  labels:
+    run: blockchain-ca
+spec:
+  type: NodePort
+  selector:
+    name: ca
+  ports:
+  - protocol: TCP
+    nodePort: 30054
+    targetPort: 7054
+    port: 30054
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-orderer
+  labels:
+    run: blockchain-orderer
+spec:
+  type: NodePort
+  selector:
+    name: orderer
+  ports:
+  - protocol: TCP
+    nodePort: 31010
+    targetPort: 31010
+    port: 31010
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org1peer1
+  labels:
+    run: blockchain-org1peer1
+spec:
+  type: NodePort
+  selector:
+    name: org1peer1
+  ports:
+  - protocol: TCP
+    nodePort: 30110
+    targetPort: 30110
+    port: 30110
+    name: grpc
+  - protocol: TCP
+    nodePort: 30111
+    targetPort: 30111
+    port: 30111
+    name: events
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org2peer1
+  labels:
+    run: blockchain-org2peer1
+spec:
+  type: NodePort
+  selector:
+    name: org2peer1
+  ports:
+  - protocol: TCP
+    nodePort: 30210
+    targetPort: 30210
+    port: 30210
+    name: grpc
+  - protocol: TCP
+    nodePort: 30211
+    targetPort: 30211
+    port: 30211
+    name: events
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-couchdb1
+  labels:
+    run: blockchain-couchdb1
+spec:
+  type: NodePort
+  selector:
+    name: couchdb1
+  ports:
+  - protocol: TCP
+    port: 30984
+    targetPort: 5984
+    nodePort: 30984
+    name: couchdb1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-couchdb2
+  labels:
+    run: blockchain-couchdb2
+spec:
+  type: NodePort
+  selector:
+    name: couchdb2
+  ports:
+  - protocol: TCP
+    port: 31984
+    targetPort: 5984
+    nodePort: 31984
+    name: couchdb2

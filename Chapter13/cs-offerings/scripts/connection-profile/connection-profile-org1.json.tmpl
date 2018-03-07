@@ -1,0 +1,71 @@
+{
+	"name": "Container Service Network",
+	"x-networkId": "ibm-cs-network",
+	"x-type": "hlfv1",
+	"description": "Connection Profile for an IBM Blockchain Network on the container service",
+	"version": "1.0.0",
+	"client": {
+		"organization": "Org1MSP"
+	},
+	"channels": {
+		"channel1": {
+			"orderers": [
+				"fabric-orderer"
+			],
+			"peers": {
+				"fabric-peer-org1": {
+					"endorsingPeer": true,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": true
+				}
+			},
+			"chaincodes": {
+				"example02": "v1"
+			}
+		}
+	},
+	"organizations": {
+		"Org1MSP": {
+			"mspid": "Org1MSP",
+			"peers": [
+				"blockchain-org1peer1"
+			],
+			"certificateAuthorities": [
+				"blockchain-ca"
+			],
+			"adminPrivateKey": {
+				"pem": "ADMINPRIVATEKEY"
+			},
+			"signedCert": {
+				"pem": "ADMINPUBLICKEY"
+			}
+		}
+	},
+	"orderers": {
+		"fabric-orderer": {
+			"url": "grpc://ORDERER-PUBLICIP:31010"
+		}
+	},
+	"peers": {
+		"blockchain-org1peer1": {
+			"url": "grpc://org1PEER1-PUBLICIP:30110",
+			"eventUrl": "grpc://org1PEER1-PUBLICIP:30111"
+		}
+	},
+	"certificateAuthorities": {
+		"blockchain-ca": {
+			"url": "http://CA-PUBLICIP:30054",
+			"httpOptions": {
+				"verify": true
+			},
+			"registrar": [
+				{
+					"enrollId": "admin",
+					"enrollSecret": "adminpw"
+				}
+			],
+			"caName": "CA1"
+		}
+	}
+}

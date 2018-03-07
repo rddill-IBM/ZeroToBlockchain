@@ -1,0 +1,116 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-ca
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-ca
+spec:
+  type: LoadBalancer
+  selector:
+    name: ca
+  ports:
+  - protocol: TCP
+    port: 7054
+    nodePort: 30054
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-orderer
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-orderer
+spec:
+  type: LoadBalancer
+  selector:
+    name: orderer
+  ports:
+  - protocol: TCP
+    port: 31010
+    nodePort: 31010
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org1peer1
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-org1peer1
+spec:
+  type: LoadBalancer
+  selector:
+    name: org1peer1
+  ports:
+  - protocol: TCP
+    port: 30110
+    nodePort: 30110
+    name: grpc
+  - protocol: TCP
+    port: 30111
+    nodePort: 30111
+    name: events
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org2peer1
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-org2peer1
+spec:
+  type: LoadBalancer
+  selector:
+    name: org2peer1
+  ports:
+  - protocol: TCP
+    port: 30210
+    nodePort: 30210
+    name: grpc
+  - protocol: TCP
+    port: 30211
+    nodePort: 30211
+    name: events
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-couchdb1
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-couchdb1
+spec:
+  type: LoadBalancer
+  selector:
+    name: couchdb1
+  ports:
+  - protocol: TCP
+    port: 5984
+    nodePort: 30984
+    name: couchdb1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-couchdb2
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: blockchain-couchdb2
+spec:
+  type: LoadBalancer
+  selector:
+    name: couchdb2
+  ports:
+  - protocol: TCP
+    port: 5984
+    nodePort: 31984
+    name: couchdb2

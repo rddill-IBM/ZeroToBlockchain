@@ -1,0 +1,1 @@
+{"type":"hlfv1","name":"hlfv1","orderers":[{"url":"grpc://173.193.99.29:31010"}],"ca":{"url":"http://173.193.99.29:30054","name":"CA1"},"peers":[{"requestURL":"grpc://173.193.99.29:30110","eventURL":"grpc://173.193.99.29:30111"}],"channel":"channel1","mspID":"Org1MSP","timeout":300}

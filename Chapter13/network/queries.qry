@@ -1,0 +1,35 @@
+/** Sample queries for Z2B FinanceCo business network
+*/
+
+query selectOrders {
+  description: "Select all Orders"
+  statement:
+      SELECT org.acme.Z2BTestNetwork.Order
+}
+
+query selectOrdersByBuyer {
+  description: "Select all orders for a specific buyer"
+  statement:
+      SELECT org.acme.Z2BTestNetwork.Order
+          WHERE (seller.sellerID == _$id)
+}
+
+query selectOrdersBySeller {
+  description: "Select all orders for a specific seller"
+  statement:
+      SELECT org.acme.Z2BTestNetwork.Order
+          WHERE (seller.sellerID == _$id)
+}
+
+query selectOrdersBySellerAndStatus {
+  description: "Select all orders for a specific seller with a specific status"
+  statement:
+      SELECT org.acme.Z2BTestNetwork.Order
+          WHERE (seller.sellerID == _$id AND status == _$status)
+}
+
+query getHistorianRecords {
+  description: "get all Historian records"
+  statement: SELECT org.hyperledger.composer.system.HistorianRecord
+
+}

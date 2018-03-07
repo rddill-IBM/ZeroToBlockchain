@@ -1,0 +1,88 @@
+<html><head>
+   <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Chapter 11, Zero To Blockchain">
+    <meta name="author" content="Bob Dill, IBM Distinguished Engineer">
+
+    <title id="title"></title>
+
+     </head><body class="tutorial" onLoad="initPage()">
+        <div class="cover">
+            <div class="navbar">
+                <div class="container" >
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse" style="background-color: #E0E0E0">
+                            <span class="sr-only" >Toggle navigation</span>
+                            <span class="icon-bar" ></span>
+                            <span class="icon-bar" ></span>
+                            <span class="icon-bar" ></span>
+                        </button>
+                        <a class="navbar-brand" href="#" style="color: #008571;" id="titleBar"><span></span></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+                      <ul class="nav navbar-nav ">
+                        <span class="face" id="myFace"></span>
+                       <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Select Language<b class="caret" ></b></a>
+                          <ul class="dropdown-menu" id="lang_choices">
+            				      </ul>
+                        </li>
+                        <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="idx_admin"></span><b class="caret" ></b></a>
+                                <ul class="dropdown-menu" id="Z2B_resources">
+                                    <li><a onclick="loadAdminUX()"><span id="idx_adminUX"></span></a></li>
+                                    <li><a onclick="preLoad()"><span id="idx_preload"></span></a></li>
+                                </ul>
+                              </li>
+                              <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="idx_roles"><b class="caret" ></b></a>
+                                    <ul class="dropdown-menu" id="Z2B_Role">
+                                        <li><a onclick="singleUX()"><span id="idx_unified"></span></a></li>
+                                        <li><a onclick="loadBuyerUX()"><span id="idx_buyer"></span></a></li>
+                                        <li><a onclick="loadSellerUX()"><span id="idx_seller"></span></a></li>
+                                        <li><a onclick="loadProviderUX()"><span id="idx_provider"></span></a></li>
+                                        <li><a onclick="loadShipperUX()"><span id="idx_shipper"></span></a></li>
+                                        <li><a onclick="loadFinanceCoUX()"><span id="idx_financeco"></span></a></li>
+                                    </ul>
+                                  </li>
+                               </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="active">
+                                <a href="#">Home</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="container", id="top" height="100%">
+              <div class="container" id="body"  height="100%">
+                <div class="row">
+                    <div class="col-md-12 text-center" style="color: #008571; ">
+                        <h1 id="header"></h1>
+                        <h3 id="language"></h3>
+                    </div>
+                </div>
+                </div>
+                <div class="blockchain" id="blockchain"></div>            
+            </div>
+
+          </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="js-utils/jquery-3.1.0.min.js"></script>
+    <script src="js-utils/bootstrap.min.js"></script>
+    <script src="js/z2b-utilities.js"></script>
+    <script src="js/z2b-initiate.js"></script>
+    <script src="js/z2b-admin.js"></script>
+    <script src="js/z2b-buyer.js"></script>
+    <script src="js/z2b-seller.js"></script>
+    <script src="js/z2b-provider.js"></script>
+    <script src="js/z2b-shipper.js"></script>
+    <script src="js/z2b-financeCo.js"></script>
+    <script src="js/z2b-events.js"></script>
+    <link href="CSS/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="CSS/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="CSS/pageStyles.css" rel="stylesheet" type="text/css">
+		</body></html>

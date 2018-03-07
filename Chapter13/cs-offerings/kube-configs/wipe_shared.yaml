@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wipeshared
+spec:
+  restartPolicy: "Never"
+  volumes:
+  - name: composer-card-store
+    persistentVolumeClaim:
+      claimName: composer-pvc
+  - name: shared
+    persistentVolumeClaim:
+      claimName: shared-pvc
+
+  containers:
+  - name: wipeshared
+    image: ibmblockchain/fabric-tools:1.0.3
+    imagePullPolicy: Always
+    command: ["sh", "-c", "rm -rf /shared/* /home/*"]
+    volumeMounts:
+    - name: composer-card-store
+      mountPath: /home
+    - mountPath: /shared
+      name: shared

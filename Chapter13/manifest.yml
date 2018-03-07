@@ -1,0 +1,7 @@
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  route: {your-globally-unique-application-name-here}.mybluemix.net
+  name: Z2B on Kubernetes
+  disk_quota: 1024M

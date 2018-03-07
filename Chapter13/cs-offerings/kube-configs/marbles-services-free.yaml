@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: marbles-service
+  labels:
+    run: marbles-demo
+spec:
+  type: NodePort
+  selector:
+    name: marbles-demo
+  ports:
+  - protocol: TCP
+    port: 32001
+    nodePort: 32001
+    name: http    

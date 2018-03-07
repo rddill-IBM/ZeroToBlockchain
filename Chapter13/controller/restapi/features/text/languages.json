@@ -1,0 +1,10 @@
+{
+"US_English": {"active": "yes", "menu": "US English", "model": "en-US_BroadbandModel", "voice": "en-US_AllisonVoice", "data": "/text/en-US/prompts.json"},
+"UK_English": {"active": "yes", "menu": "UK English", "model": "en-UK_BroadbandModel", "voice": "en-GB_KateVoice", "data": "/text/en-UK/prompts.json"},
+"Spanish_ES": {"active": "no", "menu": "Español (España)", "model": "es-ES_BroadbandModel", "voice": "es-ES_LauraVoice", "data": "/text/es-ES/prompts.json"},
+"Spanish_LA": {"active": "yes", "menu": "Español (latinoamericano)", "model": "es-ES_BroadbandModel", "voice": "es-LA_SofiaVoice", "data": "/text/es-LA/prompts.json"},
+"French":     {"active": "yes", "menu": "Le Français", "model": "fr-FR_BroadbandModel", "voice": "fr-FR_ReneeVoice", "data": "/text/fr/prompts.json"},
+"Japanese":   {"active": "yes", "menu": "Japanese", "model": "ja-JP_BroadbandModel", "voice": "ja-JP_EmiVoice", "data": "/text/jp/prompts.json"},
+"Chinese":   {"active": "yes", "menu": "Chinese", "model": "zh-CN_BroadbandModel", "voice": "", "data": "/text/ch/prompts.json"},
+"Brazilian_Portuguese": {"active": "yes", "menu": "Português do Brasi", "model": "pt-BR_BroadbandModel", "voice": "pt-BR_IsabelaVoice", "data": "/text/pt/prompts.json"}
+}

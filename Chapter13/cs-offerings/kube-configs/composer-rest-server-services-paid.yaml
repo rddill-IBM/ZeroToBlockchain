@@ -1,0 +1,20 @@
+---
+# The service to expose composer rest server
+apiVersion: v1
+kind: Service
+metadata:
+  name: composer-rest-server
+  annotations: 
+    service.kubernetes.io/ibm-load-balancer-cloud-provider-ip-type: public 
+  labels:
+    run: composer-rest-server
+spec:
+  type: LoadBalancer
+  selector:
+    name: composer-rest-server
+  ports:
+  - protocol: TCP
+    nodePort: 31090
+    targetPort: 3000
+    port: 31090
+    name: http

@@ -1,0 +1,23 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: composer-playground
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: composer-playground
+    spec:
+      volumes:
+      - name: composer-card-store
+        persistentVolumeClaim:
+          claimName: composer-pvc
+      containers:
+      - name: composer-playground
+        image: ibmblockchain/composer-playground:0.16.2
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: composer-card-store
+          mountPath: /home/composer/.composer

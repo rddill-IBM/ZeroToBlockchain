@@ -1,0 +1,17 @@
+---
+# The service to expose composer rest server
+apiVersion: v1
+kind: Service
+metadata:
+  name: composer-rest-server
+  labels:
+    run: composer-rest-server
+spec:
+  type: NodePort
+  selector:
+    name: composer-rest-server
+  ports:
+  - protocol: TCP
+    port: 3000
+    nodePort: 31090
+    name: http

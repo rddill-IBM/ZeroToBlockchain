@@ -1,0 +1,406 @@
+/**
+*
+rule AllAccess {
+  description: "AllAccess - grant everything to everybody"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+*/
+
+/**
+* Added to support V0.14 breaking changes
+*
+*/
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+/**
+* end of V0.14 additions
+*/
+
+/**
+*
+**/
+rule BuyerACLCreate {
+    description: "Enable Buyers to execute all actions on an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.CreateOrder"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLBuy {
+    description: "Enable a Buyer to update an Order from Create to Buy"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Buy"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLCancel {
+    description: "Enable a Buyer to CANCEL an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE, DELETE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.OrderCancel"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLDispute {
+    description: "Enable a Buyer to raise a DISPUTE on an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Dispute"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLResolve {
+    description: "Enable a Buyer to RESOLVE a DISPUTEd Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACLAuthorizePayment {
+    description: "Enable a Buyer to AuthorizePayment for an Order"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.AuthorizePayment"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule BuyerACL {
+    description: "Allow Buyer full access to any order where they are listed as Buyer"
+    participant(m): "org.acme.Z2BTestNetwork.Buyer"
+    operation: READ, CREATE, UPDATE, DELETE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: (v.buyer.buyerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessBuyer {
+  description: "Allow Buyers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+
+/**
+*
+**/
+rule SellerOrderFromSupplier {
+    description: "Enable a Seller to Submit an Order to a third party for fulfillment"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.OrderFromSupplier"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule SellerRequestPayment {
+    description: "Enable a Seller to request payment for a fulfilled order"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule SellerResolve {
+    description: "Enable a Seller to resolve a dispute"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule SellerRefund {
+    description: "Enable a Seller to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule SellerACL {
+    description: "Allow Seller full access to order where they are listed as seller and the order has been Submitted for Purchase"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.seller.sellerID == m.getIdentifier()) && (v.bought != ''))
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessSeller {
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Seller"
+  operation: READ, CREATE, UPDATE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderRequestShipping {
+    description: "Enable a Provider to initiate a shipping request for an order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestShipping"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderBackorder {
+    description: "Enable a Provider to issue a backorder status for an order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.BackOrder"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderPayRequest {
+    description: "Enable a Provider to issue a request for payment"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderResolve {
+    description: "Enable a Provider to resolve a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderRefund {
+    description: "Enable a Provider to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.provider.providerID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ProviderACL {
+    description: "Allow Provider read and update access to order where they are listed as seller and the order has been submitted to them to provide (Seller issues OrderFromSupplier transaction"
+    participant(m): "org.acme.Z2BTestNetwork.Provider"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.provider.providerID == m.getIdentifier()) && (v.ordered != ''))
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessProvider {
+  description: "Allow Providers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+/**
+*
+**/
+rule ShipperRefund {
+    description: "Enable a Shipper to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ShipperResolve {
+    description: "Enable a Shipper to resolve a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ShipperDelivering {
+    description: "Enable a Shipper to update delivery status on an order"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Delivering"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ShipperDelivered {
+    description: "Enable a Shipper to mark an order as delivered"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Deliver"
+    condition: (v.shipper.shipperID == m.getIdentifier())
+    action: ALLOW
+}
+
+/**
+*
+**/
+rule ShipperACL {
+    description: "Allow Shipper read, update access to order where they are listed as shiper and the order has been Submitted for delivery"
+    participant(m): "org.acme.Z2BTestNetwork.Shipper"
+    operation: READ, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: ((v.shipper.shipperID == m.getIdentifier()) && (v.requestShipment != ''))
+    action: ALLOW
+}
+
+/**
+*
+*/
+rule netAccessShipper {
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Shipper"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+/**
+*
+**/
+rule FinanceCoACL2 {
+    description: "Allow FinanceCo full access to all Orders"
+    participant: "org.acme.Z2BTestNetwork.FinanceCo"
+    operation: ALL
+    resource: "org.acme.Z2BTestNetwork.**"
+    action: ALLOW
+}
+/**
+*
+rule FinanceCoACL {
+    description: "Allow Finance Company full access to order where they are listed as shiper and the order has been Submitted for delivery"
+    participant(m): "org.acme.Z2BTestNetwork.FinanceCo"
+    operation: ALL
+    resource(v): "org.acme.Z2BTestNetwork.Order"
+    condition: (v.financeCo.financeCoID == m.getIdentifier()) 
+    action: ALLOW
+}
+**/
+
+/**
+*
+*/
+rule netAccessFinanceCo {
+  description: "Allow Finance Company access to the network"
+  participant: "org.acme.Z2BTestNetwork.FinanceCo"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}

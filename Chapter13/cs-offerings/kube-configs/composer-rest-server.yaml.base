@@ -1,0 +1,28 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: composer-rest-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: composer-rest-server
+    spec:
+      volumes:
+      - name: composer-card-store
+        persistentVolumeClaim:
+          claimName: composer-pvc
+      containers:
+      - name: composer-rest-server
+        image: ibmblockchain/composer-rest-server:0.16.2
+        imagePullPolicy: Always
+        env:
+        - name: COMPOSER_CARD
+          value: %COMPOSER_CARD%
+        - name: COMPOSER_NAMESPACES
+          value: never
+        volumeMounts:
+        - name: composer-card-store
+          mountPath: /home/composer/.composer
