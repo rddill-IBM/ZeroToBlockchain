@@ -31,6 +31,6 @@ Chapter 11 [Building the Unified User Experience](./Chapter11/README.md)
 
 Chapter 12 [Events](./Chapter12/README.md)
 
-Chapter 13 Deploying a demo on Bluemix/Kubernetes (available in late November)
+Chapter 13 [Deploying a demo on Bluemix/Kubernetes](./Chapter13/README.md)
 
-Chapter 14 Debugging HyperLedger Composer inside Docker (available in late November)
+Chapter 14 [Debugging HyperLedger Composer inside Docker](./Chapter14/README.md)
