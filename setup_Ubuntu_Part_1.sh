@@ -303,5 +303,7 @@ do
     installNodeDev
     showStep "Installing docker for Ubuntu"
     install_docker
+    showStep "installing ubuntu extras to get necessary fonts. Please accept the license agreements when prompted."
+    sudo apt-get install ubuntu-restricted-extras
     showStep "installation Part 1 complete"
     showStep "${RED} Reboot is required prior to executing step 2"
