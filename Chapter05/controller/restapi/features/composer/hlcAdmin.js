@@ -365,6 +365,7 @@ exports.update = function(req, res, next) {
         adminConnection.connect(config.composer.adminCard)
         .then(function(){
         // ========> Your Code Goes Here <=========
+        });
     });
 };
 
