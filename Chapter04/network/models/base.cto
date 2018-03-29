@@ -15,8 +15,152 @@
 /**
   * A library of standard reusable types
   */
-namespace composer.base
+namespace org.acme.Z2BTestNetwork
+/**
+import composer.base.*
+import composer.events.*
+*/
 
 abstract participant Member {
   o String companyName
+}
+
+participant Buyer identified by buyerID extends Member {
+  o String buyerID
+}
+
+participant Seller identified by sellerID extends Member {
+  o String sellerID
+}
+
+participant Provider identified by providerID extends Member {
+  o String providerID
+}
+
+participant Shipper identified by shipperID extends Member {
+  o String shipperID
+}
+
+participant FinanceCo identified by financeCoID extends Member {
+  o String financeCoID
+}
+
+asset Order identified by orderNumber {
+  o String orderNumber
+  o String[] items
+  o String status
+  o Integer amount
+  o String created
+  o String bought
+  o String ordered
+  o String dateBackordered
+  o String requestShipment
+  o String delivered
+  o String disputeOpened
+  o String disputeResolved
+  o String paymentRequested
+  o String orderRefunded
+  o String paid
+  o String[] vendors
+  o String dispute
+  o String resolve
+  o String backorder
+  o String refund
+  --> Buyer buyer
+  --> Seller seller
+  --> Provider provider
+  --> Shipper shipper
+  --> FinanceCo financeCo
+}
+
+transaction CreateOrder {
+  o Integer amount
+  --> Order order
+  --> Buyer buyer
+  --> Seller seller
+  --> FinanceCo financeCo
+}
+
+transaction Buy {
+  --> Order order
+  --> Buyer buyer
+  --> Seller seller
+}
+
+transaction OrderFromSupplier {
+  --> Order order
+  --> Provider provider
+  --> Seller seller
+}
+
+transaction RequestShipping {
+  --> Order order
+  --> Shipper shipper
+  --> Provider provider
+}
+
+transaction Deliver {
+  --> Order order
+  --> Shipper shipper
+}
+
+transaction BackOrder {
+  o String BackOrder
+  --> Order order
+  --> Provider provider
+}
+
+transaction Dispute {
+  o String dispute
+  --> Order Order
+  --> Buyer buyer
+  --> Seller seller
+  --> FinanceCo financeCo
+}
+
+transaction Resolve {
+  o String resolve
+  --> Order order
+  --> Buyer buyer
+  --> Seller seller
+  --> FinanceCo financeCo
+  --> Shipper shipper
+  --> Provider provider
+}
+
+transaction RequestPayment {
+  --> Order order
+  --> Seller seller
+  --> FinanceCo financeCo
+}
+
+transaction Pay {
+  --> Order order
+  --> FinanceCo financeCo
+  --> Seller seller
+}
+
+transaction Refund {
+  o String refund
+  --> Order order
+  --> Seller seller
+  --> FinanceCo financeCo
+}
+
+transaction OrderCancel {
+  --> Order order
+  --> Buyer buyer
+  --> Seller seller
+}
+
+transaction Delivering {
+  o String deliveryStatus
+  --> Order order
+  --> Shipper shipper
+}
+
+transaction AuthorizePayment {
+  --> Order order
+  --> FinanceCo financeCo
+  --> Buyer buyer
 }
