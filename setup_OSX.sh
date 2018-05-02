@@ -180,7 +180,7 @@ function install_hlf ()
 #
 # v 0.16
 #
-            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release/scripts/bootstrap-1.0.1.sh | bash
+            curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release-1.0/scripts/bootstrap-1.0.1.sh | bash
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             showStep "updating .bash_profile with new paths"
