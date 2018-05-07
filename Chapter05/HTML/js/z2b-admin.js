@@ -70,13 +70,8 @@ function displayProfileForm ()
 {
     let toLoad = 'createConnectionProfile.html';
     $.when($.get(toLoad)).done(function (page)
-        {$('#admin-forms').empty();
-        $('#admin-forms').append(page);
-        updatePage('createConnectionProfile');
-        let _cancel = $('#cancel');
-        let _submit = $('#submit');
-        _cancel.on('click', function (){$('#admin-forms').empty();});
-        _submit.on('click', function(){let _vals = getConnectForm(); createConnection(_vals);});
+        {
+        // ========> Your Code Goes Here <=========
     });
 }
 
@@ -112,11 +107,7 @@ function createConnection (_form)
     console.log(_form);
     $.when($.post('/composer/admin/createProfile', _form)).done(function(_results)
     {
-        let _str = '';
-        _str +='<h2>network profile creation request</h2>';
-        _str += '<h4>Creation request results: '+_results.profile+'</h4>';
-        $('#admin-forms').empty();
-        $('#admin-forms').append(_str);
+        // ========> Your Code Goes Here <=========
     });
 }
 
@@ -128,11 +119,7 @@ function getProfiles()
     $.when($.get('/composer/admin/getAllProfiles')).done(function (_profiles)
     {
         let _str = '';
-        // list cert URL & cert path
-        _str +='<h3>network connection profile list request</h3>';
-        _str += '<ul>';
-        for (let each in _profiles) {_str += displayProfile(_profiles[each], each);}
-        _str += '</ul>';
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
 
@@ -152,11 +139,8 @@ function listProfiles(_state)
         $('#admin-forms').append(page);
         updatePage('deleteConnectionProfile');
         $('#connection_profiles').on('change',function()
-        { let name = $('#connection_profiles').find(':selected').text();
-            let profile = connection_profiles[name];
-            let _str = displayProfile(profile,name);
-            $('#selected_profile').empty();
-            $('#selected_profile').append(_str);
+        {
+        // ========> Your Code Goes Here <=========
         });
         let connection_profiles = _profiles[0];
         for (let each in connection_profiles)
@@ -184,9 +168,9 @@ function networkDeploy()
     let options = {};
     options.myArchive = networkFile;
     $.when($.post('/composer/admin/deploy', options)).done(function (_results)
-    { let _str = '';
-        _str +='<h2>network deploy request for '+networkFile+'</h2>';
-        _str += '<h4>Network deploy results: '+_results.deploy+'</h4>';
+    { 
+        let _str = '';
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });
@@ -200,9 +184,9 @@ function networkInstall()
     let options = {};
     options.myArchive = networkFile;
     $.when($.post('/composer/admin/install', options)).done(function (_results)
-    { let _str = '';
-        _str +='<h2>network install request for '+networkFile+'</h2>';
-        _str += '<h4>Network install results: '+_results.install+'</h4>';
+    { 
+        let _str = '';
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });
@@ -216,9 +200,8 @@ function networkStart()
     let options = {};
     options.myArchive = networkName;
     $.when($.post('/composer/admin/start', options)).done(function (_results)
-    { let _str = '';
-        _str +='<h2>network start request for '+networkName+'</h2>';
-        _str += '<h4>Network start results: '+_results.start+'</h4>';
+    { 
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });
@@ -237,9 +220,8 @@ function deleteConnectionProfile(_name)
         $.when($.post('/composer/admin/deleteProfile', options)).done(function(_results)
         {
             let _str = '';
-            _str +='<h2>network profile delete request for '+_name+'</h2>';
-            _str += '<h4>Profile delete request results: '+_results.profile+'</h4>';
-            $('#admin-forms').empty();
+        // ========> Your Code Goes Here <=========
+        $('#admin-forms').empty();
             $('#admin-forms').append(_str);
         });
     } else
@@ -258,10 +240,7 @@ function ping()
     $.when($.post('/composer/admin/ping', options)).done(function (_results)
     {
         let _str = '';
-        _str +='<h2>network ping request to '+businessNetwork+'</h2>';
-        _str += '<h4>Ping request results: '+'</h4><table width="90%"><tr><th>Item</th><th width="65%">Value</th></tr>';
-        for (let each in _results.ping){(function(_idx, _arr){_str+='<tr><td>'+_idx+'</td><td>'+_arr[_idx]+'</td></tr>';})(each, _results.ping);}
-        _str+='</table>';
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });
@@ -279,9 +258,8 @@ function networkUndeploy()
         $.when($.post('/composer/admin/undeploy', options)).done(function(_results)
         {
             let _str = '';
-            _str +='<h2>Network undeploy request for '+businessNetwork+'</h2>';
-            _str += '<h4>Network Undeploy request results: '+_results.undeploy+'</h4>';
-            $('#admin-forms').empty();
+        // ========> Your Code Goes Here <=========
+        $('#admin-forms').empty();
             $('#admin-forms').append(_str);
         });
     } else
@@ -299,9 +277,9 @@ function networkUpdate()
     let options = {};
     options.myArchive = networkFile;
     $.when($.post('/composer/admin/update', options)).done(function (_results)
-    { let _str = '';
-        _str +='<h2>network update request for '+networkFile+'</h2>';
-        _str += '<h4>Network update results: '+_results.update+'</h4>';
+    { 
+        let _str = '';
+        // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });

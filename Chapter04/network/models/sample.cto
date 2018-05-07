@@ -52,80 +52,44 @@ asset Order identified by orderNumber {
 
 }
   transaction CreateOrder {
-    o Integer amount
-    --> Order order
-    --> Buyer buyer
-    --> Seller seller
-    --> FinanceCo financeCo
+
 }
   transaction OrderCancel {
-    --> Order order
-    --> Buyer buyer
-    --> Seller seller
+
 }
   transaction Buy {
-    --> Order order
-    --> Buyer buyer
-    --> Seller seller
+
 }
   transaction OrderFromSupplier {
-    --> Order order
-    --> Provider provider
-    --> Seller seller
+
 }
   transaction RequestShipping {
-    --> Order order
-    --> Shipper shipper
-    --> Provider provider
+
 }
   transaction Deliver {
-    --> Order order
-    --> Shipper shipper
+
 }
   transaction Delivering {
-    o String deliveryStatus
-    --> Order order
-    --> Shipper shipper
+
 }
   transaction BackOrder {
-    o String backorder
-    --> Order order
-    --> Provider provider
+
 }
   transaction Dispute {
-    o String dispute
-    --> Order order
-    --> Buyer buyer
-    --> Seller seller
-    --> FinanceCo financeCo
+
 }
   transaction Resolve {
-    o String resolve
-    --> Order order
-    --> Buyer buyer
-    --> Seller seller
-    --> Shipper shipper
-    --> Provider provider
-    --> FinanceCo financeCo
+
 }
   transaction RequestPayment {
-    --> Order order
-    --> Seller seller
-    --> FinanceCo financeCo
+
 }
   transaction AuthorizePayment {
-    --> Order order
-    --> Buyer buyer
-    --> FinanceCo financeCo
+
 }
   transaction Pay {
-    --> Order order
-    --> Seller seller
-    --> FinanceCo financeCo
+
 }
   transaction Refund {
-    o String refund
-    --> Order order
-    --> Seller seller
-    --> FinanceCo financeCo
+
 }

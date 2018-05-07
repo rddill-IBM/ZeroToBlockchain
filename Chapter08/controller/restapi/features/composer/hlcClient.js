@@ -190,10 +190,11 @@ exports.orderAction = function (req, res, next) {
                     updateOrder.resolve = req.body.reason;
                     break;
                 case 'Request Shipping':
+                    // ========> Your Code Goes Here <=========
 
                 break;
                 case 'BackOrder':
-
+                    // ========> Your Code Goes Here <=========
                 break;
                 case 'Authorize Payment':
                     console.log('Authorize Payment entered');
