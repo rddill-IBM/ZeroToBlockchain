@@ -17,7 +17,7 @@ The installation instructions have been tested in the following configurations:
  The end of this section covers getting your own personal copy of the full tutorial. 
 
 Install on OSX
-..............
+................
 
 The installation process for OSX has been automated and is designed to be invoked via a single command. You will need to be network connected for the duration of the installation process, which will take 15 minutes to a couple of hours, depending on your available network speed and capacity. 
 
