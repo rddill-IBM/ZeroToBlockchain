@@ -1,0 +1,23 @@
+Chapter 1: What is Blockchain? Concept and Architecture Overview 
+================================================================
+
+Introduction
+............
+Online, free tutorial on getting started with Blockchain and IBM Bluemix
+
+Objectives
+..........
+The tutorial will build a blockchain solution on IBM Bluemix using 
+ - HyperLedger Composer V 0.10 or higher.
+ - Hyperledger Fabric V1.0 or higher
+ - NodeJS
+ - HTML, CSS, Javascript
+
+Resources
+.........
+
+ - All code for the tutorial is in github:
+   - `Zero To Blockchain Git Repository <https://github.com/rddill-IBM/ZeroToBlockchain>`_   
+
+ - A basic introduction to coding for Bluemix, getting an id, setting up your workstation can be found in the popular ZeroToCognitive series: 
+   - `Zero To Cognitive YouTube Series <https://www.youtube.com/playlist?list=PLnJzIOiv6cVTaS8k90R3T9AlS_kf5XWmX>`_

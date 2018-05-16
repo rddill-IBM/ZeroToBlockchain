@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 13: Deploying your demo Blockchain to the IBM Cloud &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 14: Debugging Hyperledger Composer inside Docker Containers" href="C14.html" />
+    <link rel="prev" title="Chapter 12: Implementing Business Events" href="C12.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C14.html" title="Chapter 14: Debugging Hyperledger Composer inside Docker Containers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="C12.html" title="Chapter 12: Implementing Business Events"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#network-information">(1) network information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fabric-information">(2) fabric information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-sockets">(3) Web Sockets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ibm-cloud-application-start-up">(4) IBM Cloud application start-up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#server-code-changes">(5) Server Code Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#browser-code">Browser Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 13: Deploying your demo Blockchain to the IBM Cloud</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-13-deploying-your-demo-blockchain-to-the-ibm-cloud">
+<h1>Chapter 13: Deploying your demo Blockchain to the IBM Cloud<a class="headerlink" href="#chapter-13-deploying-your-demo-blockchain-to-the-ibm-cloud" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="network-information">
+<h2>(1) network information<a class="headerlink" href="#network-information" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Docker and the Kubernetes deploy use different names for the CA and for the channel<ul>
+<li>Docker
+CA: ca.example.org
+channel: composer</li>
+<li>Kubernetes
+CA: CA
+channel: channel1</li>
+</ul>
+</li>
+<li>The demo when running locally uses localhost:xxxx for all access
+- need to get the address of the kuberenetes cluster
+- and update the PeerAdmin.card with that address</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="fabric-information">
+<h2>(2) fabric information<a class="headerlink" href="#fabric-information" title="Permalink to this headline">¶</a></h2>
+<p>HyperLedger fabric always uses ~/.hfc-key-store to hold keys for direct access to the fabric.</p>
+<ul class="simple">
+<li>This means that this folder must also exist in the IBM Cloud deployment</li>
+<li>And must have keys made just for this deployment.</li>
+<li>That requires creating the PeerAdmin information and storing it for later load to ~/.hfc-key-store</li>
+<li>and then creating an exec to create that folder during deploy</li>
+<li>the same is required for PeerAdmin.card and admin.card, which have to be stored in appropriate sub-folders in ~/.composer</li>
+</ul>
+</div>
+<div class="section" id="web-sockets">
+<h2>(3) Web Sockets<a class="headerlink" href="#web-sockets" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>the web socket implementation was brute force for Chapters 1-12. In IBM Cloud, this approach does not work, as we cannot specify ports in the app.
+&#8211;&gt; Everything in the app must run through a single port.</li>
+<li>This requires that the port creation be done in index.js while setting up http server and then shared with other modules in app.<ul>
+<li>app.locals provides that sharing ability</li>
+</ul>
+</li>
+<li>Because multiple browsers can now attach to the app, must manage multiple client connect requests and keep them active until device departs.</li>
+<li>host_address for web socket connection from browser is no longer &#8216;localhost:xxx&#8217;, it is the URL for the bluemix app and needs to be dynamically acquired once the web app starts.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ibm-cloud-application-start-up">
+<h2>(4) IBM Cloud application start-up<a class="headerlink" href="#ibm-cloud-application-start-up" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Up until this point, any application we have loaded into bluemix has been started with a simple &#8216;node index&#8217; command.
+&#8211;&gt; When an application starts in IBM Cloud which will interact with Hyperledger and Composer, we need to set up two folders in the IBM Cloud for our app before it can run. Those folders are:</li>
+<li><dl class="first docutils">
+<dt>~/.hfc-key-store</dt>
+<dd>This folder will store the credential information necessary to gather blockchain events</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>~/.composer/cards</dt>
+<dd>This folder initially has the PeerAdmin and admin cards</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>~/.composer/client-data</dt>
+<dd>This folder initially has the credentials for the PeerAdmin and admin cards</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="server-code-changes">
+<h2>(5) Server Code Changes<a class="headerlink" href="#server-code-changes" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>index.js</strong>
+The web socket creation and management code is removed from Z2B_Services and implemented in index.js, as it must share the httpserver service. It is also necessary to implement better socket management, since this will now run with access for multiple concurrent browsers. Because we are managing communications with multiple browsers, we need a way to send messages to all of them, which is done through the clients array. We also need to remove clients from that array when the browser session ends. This is done through the on-close process using information provided to the application in the client browser url &amp; port.
+Because we want to use the message sending ability from any module in our application, we extend the support to use app.locals to share the processMessages function.</p>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">createServer</span><span class="p">();</span>
+<span class="n">let</span> <span class="n">clients</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+<span class="o">/**</span>
+<span class="o">*</span> <span class="n">WebSocket</span> <span class="n">server</span>
+<span class="o">*/</span>
+<span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">wsServer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ws</span><span class="p">({</span><span class="n">httpServer</span><span class="p">:</span> <span class="n">server</span><span class="p">});</span>
+<span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">wsServer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39; Connection from origin &#39;</span><span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">);</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">origin</span><span class="p">);</span>
+    <span class="o">//</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">know</span> <span class="n">client</span> <span class="n">index</span> <span class="n">to</span> <span class="n">remove</span> <span class="n">them</span> <span class="n">on</span> <span class="s1">&#39;close&#39;</span> <span class="n">event</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">clients</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;app.locals.index: &#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">index</span><span class="p">);</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39; Connection accepted.&#39;</span><span class="p">);</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39; Received Message: &#39;</span> <span class="o">+</span> <span class="n">message</span><span class="o">.</span><span class="n">utf8Data</span><span class="p">);</span>
+        <span class="n">let</span> <span class="n">obj</span> <span class="o">=</span>
+            <span class="p">{</span>
+                <span class="n">time</span><span class="p">:</span> <span class="p">(</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span><span class="o">.</span><span class="n">getTime</span><span class="p">(),</span>
+                <span class="n">text</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">utf8Data</span><span class="p">,</span>
+                <span class="n">author</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">color</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span>
+            <span class="p">};</span>
+        <span class="o">//</span> <span class="n">broadcast</span> <span class="n">message</span> <span class="n">to</span> <span class="nb">all</span> <span class="n">connected</span> <span class="n">clients</span>
+        <span class="n">let</span> <span class="n">json</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">stringify</span><span class="p">({</span> <span class="nb">type</span><span class="p">:</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">obj</span> <span class="p">});</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">processMessages</span><span class="p">(</span><span class="n">json</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="o">//</span> <span class="n">user</span> <span class="n">disconnected</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">_conn</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39; Peer &#39;</span><span class="o">+</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="o">+</span><span class="s1">&#39; disconnected with reason code: &quot;&#39;</span><span class="o">+</span><span class="n">_conn</span><span class="o">+</span><span class="s1">&#39;&quot;.&#39;</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">remove</span> <span class="n">user</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">connected</span> <span class="n">clients</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">let</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">clients</span><span class="p">)</span>
+            <span class="p">{(</span><span class="n">function</span><span class="p">(</span><span class="n">_idx</span><span class="p">,</span> <span class="n">_arr</span><span class="p">)</span>
+                <span class="p">{</span>   <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="o">+</span><span class="n">_idx</span><span class="o">+</span><span class="s1">&#39;] BEFORE has id: &#39;</span><span class="o">+</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span> <span class="o">===</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span> <span class="o">===</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+                    <span class="p">{</span>
+                    <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Match found!&#39;</span><span class="p">);</span>
+                    <span class="n">clients</span><span class="o">.</span><span class="n">splice</span><span class="p">(</span><span class="n">_idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+                    <span class="n">let</span> <span class="n">obj</span> <span class="o">=</span>
+                        <span class="p">{</span>
+                            <span class="n">time</span><span class="p">:</span> <span class="p">(</span><span class="n">new</span> <span class="n">Date</span><span class="p">())</span><span class="o">.</span><span class="n">getTime</span><span class="p">(),</span>
+                            <span class="n">text</span><span class="p">:</span> <span class="s1">&#39; I have left the meeting&#39;</span><span class="p">,</span>
+                            <span class="n">author</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                            <span class="n">color</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span>
+                        <span class="p">};</span>
+                    <span class="n">let</span> <span class="n">json</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">stringify</span><span class="p">({</span> <span class="nb">type</span><span class="p">:</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">obj</span> <span class="p">});</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">processMessages</span><span class="p">(</span><span class="n">json</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">})(</span><span class="n">each</span><span class="p">,</span> <span class="n">clients</span><span class="p">);}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">let</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">clients</span><span class="p">)</span>
+        <span class="p">{(</span><span class="n">function</span><span class="p">(</span><span class="n">_idx</span><span class="p">,</span> <span class="n">_arr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="o">+</span><span class="n">_idx</span><span class="o">+</span><span class="s1">&#39;] AFTER has id: &#39;</span><span class="o">+</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="n">_arr</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">_peername</span><span class="o">.</span><span class="n">port</span><span class="p">);</span>
+        <span class="p">})(</span><span class="n">each</span><span class="p">,</span> <span class="n">clients</span><span class="p">);}</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="o">/**</span>
+<span class="o">*</span> <span class="n">callable</span> <span class="n">function</span> <span class="n">to</span> <span class="n">send</span> <span class="n">messages</span> <span class="n">over</span> <span class="n">web</span> <span class="n">socket</span>
+<span class="o">*</span> <span class="nd">@param</span> <span class="p">{</span><span class="n">JSON</span><span class="p">}</span> <span class="n">_jsonMsg</span> <span class="o">-</span> <span class="n">json</span> <span class="n">formatted</span> <span class="n">content</span> <span class="n">to</span> <span class="n">be</span> <span class="n">sent</span> <span class="k">as</span> <span class="n">message</span> <span class="n">data</span>
+<span class="o">*/</span>
+<span class="n">function</span> <span class="n">processMessages</span> <span class="p">(</span><span class="n">_jsonMsg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">let</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">clients</span><span class="o">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="n">clients</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">JSON</span><span class="o">.</span><span class="n">stringify</span><span class="p">(</span><span class="n">_jsonMsg</span><span class="p">));}</span>
+<span class="p">}</span>
+<span class="n">app</span><span class="o">.</span><span class="n">locals</span><span class="o">.</span><span class="n">processMessages</span> <span class="o">=</span> <span class="n">processMessages</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Z2B_admin</strong>
+Administrative services are disabled so that the network is not accidentally taken off line.</p>
+</li>
+<li><p class="first"><strong>Z2B_Services</strong>
+Routines for creating and managing sockets are removed completely and replaced with a single, very short, function:</p>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">/**</span>
+<span class="o">*</span> <span class="n">New</span> <span class="n">code</span> <span class="n">to</span> <span class="n">support</span> <span class="n">sending</span> <span class="n">messages</span> <span class="n">to</span> <span class="n">socket</span> <span class="n">clients</span>
+<span class="o">*</span> <span class="nd">@param</span> <span class="p">{</span><span class="n">Object</span><span class="p">}</span> <span class="n">_locals</span> <span class="o">-</span> <span class="n">shared</span> <span class="n">variables</span> <span class="ow">and</span> <span class="n">functions</span> <span class="kn">from</span> <span class="nn">index.js</span>
+<span class="o">*</span> <span class="nd">@param</span> <span class="p">{</span><span class="n">String</span><span class="p">}</span> <span class="nb">type</span> <span class="o">-</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">event</span> <span class="n">message</span> <span class="n">to</span> <span class="n">put</span> <span class="n">on</span> <span class="n">channel</span>
+<span class="o">*</span> <span class="nd">@param</span> <span class="p">{</span><span class="n">Event</span><span class="p">}</span> <span class="n">event</span> <span class="o">-</span> <span class="n">event</span> <span class="n">message</span>
+<span class="o">*/</span>
+    <span class="n">send</span><span class="p">:</span> <span class="n">function</span> <span class="p">(</span><span class="n">_locals</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_locals</span><span class="o">.</span><span class="n">processMessages</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">event</span><span class="p">}</span> <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>autoLoad.js</strong>
+During member creation, profile information needs to be loaded so that the member is able to connect with the correct network. This data is now loaded from a new <code class="docutils literal"><span class="pre">connections.json</span></code> file which is generated during the new kubernetes-deploy.sh script execution. You&#8217;ll see this in line 126:</p>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">tempCard</span> <span class="o">=</span> <span class="n">new</span> <span class="n">hlc_idCard</span><span class="p">(</span><span class="n">_meta</span><span class="p">,</span> <span class="n">admin_connection</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>queryBlockchain.js</strong>
+getChainInfo is updated to pull the address of your kubernetes cluster and use that during the connection process.</p>
+</li>
+</ul>
+</div></blockquote>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span>   /**
+   * get chain info
+   * @param {express.req} req - the inbound request object from the client
+   * @param {express.res} res - the outbound response object for communicating back to client
+   * @param {express.next} next - an express service to enable post processing prior to responding to the client
+   * @function
+   */
+   exports.getChainInfo = function(req, res, next)
+   {
+       let channel = {};
+       let client = null;
+       let wallet_path = path.join(__dirname, &#39;creds&#39;);
+       Promise.resolve().then(() =&gt; {
+           //
+           // As of 9/28/2017 there is a known and unresolved bug in HyperLedger Fabric
+           // https://github.com/hyperledger/composer/issues/957
+           // this requires that the file location for the wallet for Fabric version 1.0 be in the following location:
+           // {HOME}/.hfc-key-store
+           // therefore the wallet location will be ignored and any private keys required to enroll a user in this process
+           // must be located in {HOME}/.hfc-key-store
+           // this is currently managed for you in the installation exec by copying the private key for PeerAdmin to this location
+           //
+           client = new hfc();
+           return hfc.newDefaultKeyValueStore({ path: wallet_path })
+           .then((wallet) =&gt; {
+               client.setStateStore(wallet);
+               // change PeerAdmin in following line to adminID
+               return client.getUserContext(config.composer.PeerAdmin, true);})
+               .then((user) =&gt; {
+                   if (user === null || user === undefined || user.isEnrolled() === false)
+                   { console.error(&#39;User not defined, or not enrolled - error&#39;);}
+                   channel = client.newChannel(hlf1_profile.channel);
+                   channel.addPeer(client.newPeer(hlf1_profile.peers[0].requestURL));
+                   channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));
+               })
+                   .then(() =&gt; {
+                       return channel.queryInfo()
+                       .then((blockchainInfo) =&gt; {
+                           if (blockchainInfo) {
+                               res.send({&#39;result&#39;: &#39;success&#39;, &#39;currentHash&#39;: blockchainInfo.currentBlockHash.toString(&#39;hex&#39;), blockchain: blockchainInfo});
+                           } else {
+                               console.log(&#39;response_payload is null&#39;);
+                               res.send({&#39;result&#39;: &#39;uncertain&#39;, &#39;message&#39;: &#39;response_payload is null&#39;});
+                           }
+                       })
+                       .catch((_err) =&gt; {
+                           console.log(&#39;queryInfo failed with _err = &#39;, _err);
+                           res.send({&#39;result&#39;: &#39;failed&#39;, &#39;message&#39;: _err.message});
+                       });
+                   });
+       });
+   };
+
+
+- **hlcClient**
+  function calls which previously included the web socket to be used now reference ``req.app.locals``, which is how we get to the processMessages function.
+</pre></div>
+</div>
+</div>
+<div class="section" id="browser-code">
+<h2>Browser Code<a class="headerlink" href="#browser-code" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>z2b_events</strong>
+Earlier chapters in the tutorial had a web socket connection being created for each of the 6 roles (admin + 5 participant types). In this cloud-compatible version, we only create a single socket and then parse out the content to each participant based on the inbound message type, of which there are three (Message, Alert, BlockChain):</li>
+</ul>
+</div></blockquote>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span>       /**
+       * connect to web socket
+       */
+       function wsConnect()
+       {    if (!window.WebSocket) {console.log(&#39;this browser does not support web sockets&#39;);}
+           let content = $(&#39;#body&#39;);
+           let blockchain = $(&#39;#blockchain&#39;);
+           wsSocket = new WebSocket(&#39;ws://&#39;+host_address);
+           wsSocket.onerror = function (error) {console.log(&#39;WebSocket error on wsSocket: &#39; + error);};
+           wsSocket.onopen = function ()
+           {console.log (&#39;connect.onOpen initiated to: &#39;+host_address); wsSocket.send(&#39;connected to client&#39;);};
+           wsSocket.onmessage = function (message)
+           {
+               let incoming
+               incoming = message.data;
+               while (incoming instanceof Object === false){incoming = JSON.parse(incoming);}
+               switch (incoming.type)
+               {
+               case &#39;Message&#39;:
+                   content.append(formatMessage(incoming.data));
+                   break;
+               case &#39;Alert&#39;:
+                   let event = JSON.parse(incoming.data);
+                   addNotification(event.type, event.ID, event.orderID);
+                   break;
+               case &#39;BlockChain&#39;:
+                   _blctr ++;
+                   if (incoming.data !== &#39;connected&#39;)
+                   {
+                       $(blockchain).append(&#39;&lt;span class=&quot;block&quot;&gt;block &#39;+incoming.data.header.number+&#39;&lt;br/&gt;Hash: &#39;+incoming.data.header.data_hash+&#39;&lt;/span&gt;&#39;);
+                       if (_blctr &gt; 4) {let leftPos = $(blockchain).scrollLeft(); $(blockchain).animate({scrollLeft: leftPos + 300}, 250);}
+                   }
+                   break;
+               default:
+                   console.log(&#39;Can Not Process message type: &#39;,incoming.type);
+               }
+           };
+       }
+
+- **z2b_buyer (and other participants)**
+
+  - all &#39;port&#39; information is removed from the code as it is no longer relevant
+  - calls to ``wsDisplay`` are removed as that service is now replaced by the ``wscConnect`` function displayed above.
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">Use the ./install-bx-cli.sh exec to perform the 2 following steps:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">Install kubectl on your local device:</a><ul>
+<li><a class="reference external" href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl">OSX:</a></li>
+<li><a class="reference external" href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl">Linux:</a></li>
+</ul>
+</li>
+<li>Install the Bluemix CLI and cluster support on your local system.</li>
+</ul>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">buildAndDeploy</span></code> replaced by <code class="docutils literal"><span class="pre">kuebernetes-deploy.sh</span></code></dt>
+<dd><p class="first last">kubernetes-deploy uses set up information from the [ibm-container-service](<a class="reference external" href="https://github.com/IBM-Blockchain/ibm-container-service">https://github.com/IBM-Blockchain/ibm-container-service</a>) git repo. This chapter includes the scripts from the cs-offerings folder in that repo.
+There are a number of functions which are used in the kubernetes-deploy.sh script built for the Zero To Blockchain tutorial:</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">./createArchive.sh</span></code> -n $NETWORK_NAME (this is the same version as before)</li>
+<li><code class="docutils literal"><span class="pre">getContext</span></code> (discovers your kube cluster ip address and sets the environment info)</li>
+<li><code class="docutils literal"><span class="pre">clearOldCards</span></code> (gets rid of now obsolete identity cards)</li>
+<li><code class="docutils literal"><span class="pre">setupCluster</span></code> (sets up the kube cluster - this is the code from ibm-containers-service)</li>
+<li><code class="docutils literal"><span class="pre">pauseForCard</span></code> (wait for you to access the automatically-loaded playground, launch it and then make a local copy of your PeerAdmin card)</li>
+<li><code class="docutils literal"><span class="pre">updateCard</span></code> (update the PeerAdmin card with the correct ip address)</li>
+<li><code class="docutils literal"><span class="pre">./getPEM.sh</span></code> (credential management)</li>
+<li><code class="docutils literal"><span class="pre">installNetwork</span></code> (using the PeerAdmin card, install your network into your new kube cluster)</li>
+</ul>
+</li>
+<li><p class="first">start-up in package.json (node index) replaced with (./init.sh)</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C12.html" title="previous chapter (use the left arrow)">Chapter 12: Implementing Business Events</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C14.html" title="next chapter (use the right arrow)">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C14.html" title="Chapter 14: Debugging Hyperledger Composer inside Docker Containers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="C12.html" title="Chapter 12: Implementing Business Events"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

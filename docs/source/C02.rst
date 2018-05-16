@@ -1,0 +1,25 @@
+Chapter 2: What's the Story we'll implement?
+============================================
+
+Introduction
+............
+
+ - Dispute resolution requires gathering and correlating facts from multiple parties. This is a slow and labor intensive effort, which ties up over $100M at any point in time. 
+ - In this example, those parties are: 
+   - The Finance Organization
+   - The Buyer
+   - The Seller
+   - The Provider
+   - The Shipper
+
+The Basic Stories
+.................
+
+ - As a Finance Organization, I want to see the finance related status of every order executed by my clients when they are using my credit services instantly and in real-time
+ - This will allow me to manage dispute resolution over the phone immediately rather than taking multiple weeks to resolve a dispute. 
+ - As a seller, I want to see the order, shipping and finance status of every sale in the system.
+ - As a buyer, I want to see the real-time status of every order. 
+ - As a buyer, I want to be able to initiate a dispute with the click of a single button and provide all required data automatically to my finance organization
+ - As a manufacturer, I want to be able to see all open orders and the shipment status on all orders.
+ - As a shipper, I want to be able to interact with this system with as little change as possible on my end. 
+

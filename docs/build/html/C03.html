@@ -1,0 +1,483 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 3: Creating the Blockchain Environment &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 4: Building your first Business Network" href="C04.html" />
+    <link rel="prev" title="Chapter 2: What’s the Story we’ll implement?" href="C02.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C04.html" title="Chapter 4: Building your first Business Network"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="C02.html" title="Chapter 2: What’s the Story we’ll implement?"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Creating the Blockchain Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-on-osx">Install on OSX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-on-ubuntu">Install on Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-on-windows-v7-or-v10-summary">Install on Windows V7 or V10 (summary)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-on-windows-v7-or-v10-details">Install on Windows V7 or V10 (details)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 3: Creating the Blockchain Environment</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-3-creating-the-blockchain-environment">
+<h1>Chapter 3: Creating the Blockchain Environment<a class="headerlink" href="#chapter-3-creating-the-blockchain-environment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The HyperLedger Fabric development environment, which is used as the foundation for HyperLedger Composer development, is only available for direct installation on OSX and on on Ubuntu V14 LTS and V16 LTS. Knowing that there are many Windows based developers, this chapter includes installation instructions for Windows as well as OSX and Ubuntu. We will use the free VirtualBox tool to install Ubuntu and then do our development there.</p>
+<p>The installation instructions have been tested in the following configurations:</p>
+<blockquote>
+<div><ul class="simple">
+<li>OSX Sierra, High Sierra</li>
+<li>Ubuntu 64bit (V16 LTS) Guest on OSX Sierra</li>
+<li>Ubuntu 64bit (V16 LTS) Native</li>
+<li>Ubuntu 64bit (V16 LTS) Guest on Windows 7</li>
+</ul>
+<p>The first section tells you how to install on OSX, Ubuntu or Windows.</p>
+<p>The end of this section covers getting your own personal copy of the full tutorial.</p>
+</div></blockquote>
+</div>
+<div class="section" id="install-on-osx">
+<h2>Install on OSX<a class="headerlink" href="#install-on-osx" title="Permalink to this headline">¶</a></h2>
+<p>The installation process for OSX has been automated and is designed to be invoked via a single command. You will need to be network connected for the duration of the installation process, which will take 15 minutes to a couple of hours, depending on your available network speed and capacity.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Open a terminal window and navigate to your github folder.</li>
+<li>Execute the following command on a single line:</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_OSX.sh <span class="p">|</span> bash
+</pre></div>
+</div>
+<ul class="simple">
+<li>This will download an installation exec from the ZeroToBlockchain repository and execute it on your system. This command will go through the following steps, informing you of each step in the process<ul>
+<li>Check for the presence of the Brew package manager and install it if it’s missing. If it’s present, execute the brew update and brew upgrade commands, install the dos2unix tool</li>
+<li>Check for the presence of git and install it if it’s missing</li>
+<li>Install GitHub Desktop V 2.33</li>
+<li>Check for the presence of nodeJS version 8 (Required for hyper ledger) and install it if it’s missing</li>
+<li>Install the nodejs SDK for hyper ledger composer</li>
+<li>Install the hyper ledger fabric docker images</li>
+<li>Install the fabric tools and update your .bash_profile</li>
+<li>Install hyper ledger  composer platform-specific binaries</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>If you do not want to automatically take all of these actions, then execute the following command, instead, to just download the file to your system:</dt>
+<dd><div class="first last highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_OSX.sh -o setup_OSX.sh
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>then type in: <code class="docutils literal"><span class="pre">dos2unix</span> <span class="pre">setup_OSX.sh</span></code>, which will ensure that this will now run correctly as a script file on your OSX operating system.</p>
+<p>You have the ability to turn off any of the installation services. This is dependent on using the Brew package manager to handle various installation requirements, so if you don&#8217;t want to use Brew, you&#8217;ll need to install each service manually.</p>
+<blockquote>
+<div><ul>
+<li><p class="first">To get help for the script, just type in <code class="docutils literal"><span class="pre">./setup_OSX.sh</span> <span class="pre">-h</span></code>, which will cause the following information to print out:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>   <span class="n">installation</span> <span class="n">script</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Zero</span> <span class="n">To</span> <span class="n">Blockchain</span> <span class="n">Series</span>
+   <span class="n">This</span> <span class="ow">is</span> <span class="k">for</span> <span class="n">Mac</span> <span class="n">OSX</span> <span class="n">ONLY</span>
+   <span class="n">This</span> <span class="n">script</span> <span class="n">will</span> <span class="n">check</span> <span class="n">to</span> <span class="n">see</span> <span class="k">if</span> <span class="n">HomeBrew</span> <span class="ow">is</span> <span class="n">installed</span>
+       <span class="ow">and</span> <span class="n">install</span> <span class="n">it</span> <span class="k">if</span> <span class="n">it</span><span class="s1">&#39;s not already present.</span>
+   <span class="n">It</span> <span class="n">will</span> <span class="n">then</span> <span class="n">execute</span> <span class="n">a</span> <span class="n">brew</span> <span class="n">update</span> <span class="ow">and</span> <span class="n">brew</span> <span class="n">upgrade</span> <span class="n">to</span> <span class="n">ensure</span>
+       <span class="n">that</span> <span class="n">you</span> <span class="n">are</span> <span class="n">at</span> <span class="n">the</span> <span class="n">latest</span> <span class="n">release</span> <span class="n">of</span> <span class="n">your</span> <span class="n">brew</span> <span class="n">installed</span> <span class="n">packages</span>
+   <span class="n">dos2unix</span> <span class="ow">is</span> <span class="n">installed</span> <span class="n">by</span> <span class="n">brew</span> <span class="n">to</span> <span class="n">correct</span> <span class="n">scripts</span> <span class="kn">from</span> <span class="nn">hyperledger</span> <span class="ow">and</span> <span class="n">composer</span>
+   <span class="n">The</span> <span class="n">exec</span> <span class="n">will</span> <span class="n">proceed</span> <span class="k">with</span> <span class="n">checking</span> <span class="n">to</span> <span class="n">ensure</span> <span class="n">you</span> <span class="n">are</span> <span class="n">at</span> <span class="n">Node</span> <span class="n">V6</span>
+       <span class="n">which</span> <span class="ow">is</span> <span class="n">required</span> <span class="k">for</span> <span class="n">working</span> <span class="k">with</span> <span class="n">HyperLedger</span> <span class="n">Composer</span>
+   <span class="n">The</span> <span class="n">script</span> <span class="n">will</span> <span class="n">then</span> <span class="n">install</span> <span class="n">the</span> <span class="n">nodejs</span> <span class="n">SDK</span> <span class="k">for</span> <span class="n">hyperledger</span> <span class="ow">and</span> <span class="n">composer</span>
+   <span class="n">The</span> <span class="n">script</span> <span class="n">will</span> <span class="n">finish</span> <span class="n">by</span> <span class="n">downloading</span> <span class="n">the</span> <span class="n">docker</span> <span class="n">images</span> <span class="k">for</span> <span class="n">hyperledger</span>
+
+<span class="n">options</span> <span class="k">for</span> <span class="n">this</span> <span class="n">exec</span> <span class="n">are</span><span class="p">:</span>
+   <span class="o">-</span><span class="n">h</span> <span class="n">Print</span> <span class="n">this</span> <span class="n">help</span> <span class="n">information</span>
+   <span class="o">-</span><span class="n">g</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">g</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">git</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">b</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">b</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">brew</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">n</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">n</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">node</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">s</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">s</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">node</span> <span class="n">SDK</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">d</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">d</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">hyperledger</span> <span class="n">node</span> <span class="n">images</span> <span class="n">verified</span>
+   <span class="o">-</span><span class="n">p</span> <span class="n">defaults</span> <span class="n">to</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">robertdill</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">tools</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">robertdill</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">preferred</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">here</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">install</span> <span class="n">hyperledger</span> <span class="n">fabric</span> <span class="n">tools</span> <span class="n">elsewhere</span><span class="o">.</span>
+       <span class="n">only</span> <span class="n">valid</span> <span class="k">with</span> <span class="o">-</span><span class="n">d</span> <span class="n">true</span><span class="p">,</span> <span class="n">ignored</span> <span class="n">otherwise</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">So if you want to install only the node services (that is, don&#8217;t install git or brew), then you would type in the following: <code class="docutils literal"><span class="pre">./setup_OSX.sh</span> <span class="pre">-g</span> <span class="pre">false</span> <span class="pre">-b</span> <span class="pre">false</span></code>, which turns off the installation options for git and brew.</p>
+</li>
+</ul>
+<p>Once you have run this exec, your development environment will be installed. Before you can run it, you&#8217;ll have to start Docker. Press CMD+spacebar and type in docker. Highlight Docker.app and press enter. On most OSX systems, Docker.app will automatically restart each time you start up, or restart OSX.</p>
+</div></blockquote>
+</div>
+<div class="section" id="install-on-ubuntu">
+<h2>Install on Ubuntu<a class="headerlink" href="#install-on-ubuntu" title="Permalink to this headline">¶</a></h2>
+<p>The installation process for Ubuntu has been automated and is designed to be invoked via a single command. You will need to be network connected for the duration of the installation process, which will take 15 minutes to a couple of hours, depending on your available network speed and capacity.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Open a terminal window and navigate to your github folder.</li>
+<li><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">update</span></code></li>
+<li><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">-y</span> <span class="pre">curl</span></code></li>
+<li>After curl has been installed, copy the following as a single line into a terminal window and press enter</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_1.sh <span class="p">|</span> bash
+</pre></div>
+</div>
+<ul class="simple">
+<li>This will install all required software up through docker. If you do not want to automatically install this software, then first download the the script and then use the available options to limit what it does.</li>
+<li>To download the script, execute the following command:</li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_1.sh -o setup_Ubuntu_Part_1.sh
+</pre></div>
+</div>
+</div></blockquote>
+<ul>
+<li><p class="first">The type in <code class="docutils literal"><span class="pre">dos2unix</span> <span class="pre">setup_Ubuntu_Part_1.sh</span></code></p>
+</li>
+<li><p class="first">Then type in <code class="docutils literal"><span class="pre">./setup_Ubuntu_Part_1.sh</span></code></p>
+</li>
+<li><p class="first">Then type in <code class="docutils literal"><span class="pre">./setup_Ubuntu_Part_1.sh</span> <span class="pre">-h</span></code>, which will print out the following information:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="n">installation</span> <span class="n">script</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Zero</span> <span class="n">To</span> <span class="n">Blockchain</span> <span class="n">Series</span>
+   <span class="n">This</span> <span class="ow">is</span> <span class="k">for</span> <span class="n">Linux</span> <span class="n">ONLY</span><span class="o">.</span> <span class="n">It</span> <span class="n">has</span> <span class="n">been</span> <span class="n">tested</span> <span class="n">only</span> <span class="n">on</span> <span class="n">Ubuntu</span> <span class="mf">16.04</span> <span class="n">LTS</span>
+   <span class="n">Other</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">Linux</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">supported</span> <span class="n">via</span> <span class="n">this</span> <span class="n">script</span><span class="o">.</span>
+   <span class="n">The</span> <span class="n">following</span> <span class="n">will</span> <span class="n">be</span> <span class="n">downloaded</span> <span class="n">by</span> <span class="n">this</span> <span class="n">script</span>
+   <span class="n">dos2unix</span><span class="p">,</span> <span class="n">to</span> <span class="n">correct</span> <span class="n">scripts</span> <span class="kn">from</span> <span class="nn">hyperledger</span> <span class="ow">and</span> <span class="n">composer</span>
+   <span class="n">docker</span> <span class="k">for</span> <span class="n">Ubuntu</span>
+   <span class="n">The</span> <span class="n">exec</span> <span class="n">will</span> <span class="n">proceed</span> <span class="k">with</span> <span class="n">checking</span> <span class="n">to</span> <span class="n">ensure</span> <span class="n">you</span> <span class="n">are</span> <span class="n">at</span> <span class="n">Node</span> <span class="n">V6</span>
+   <span class="n">which</span> <span class="ow">is</span> <span class="n">required</span> <span class="k">for</span> <span class="n">working</span> <span class="k">with</span> <span class="n">HyperLedger</span> <span class="n">Composer</span>
+   <span class="n">The</span> <span class="n">script</span> <span class="n">will</span> <span class="n">then</span> <span class="n">install</span> <span class="n">the</span> <span class="n">nodejs</span> <span class="n">SDK</span> <span class="k">for</span> <span class="n">hyperledger</span> <span class="ow">and</span> <span class="n">composer</span>
+   <span class="n">The</span> <span class="n">script</span> <span class="n">will</span> <span class="n">finish</span> <span class="n">by</span> <span class="n">requesting</span> <span class="n">that</span> <span class="n">you</span> <span class="n">reboot</span> <span class="n">your</span> <span class="n">system</span>
+
+
+<span class="n">options</span> <span class="k">for</span> <span class="n">this</span> <span class="n">exec</span> <span class="n">are</span><span class="p">:</span>
+   <span class="o">-</span><span class="n">h</span> <span class="n">Print</span> <span class="n">this</span> <span class="n">help</span> <span class="n">information</span>
+   <span class="o">-</span><span class="n">g</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">g</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">git</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">n</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">n</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">node</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">v</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">v</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">vscode</span> <span class="n">installed</span>
+   <span class="o">-</span><span class="n">s</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">s</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">node</span> <span class="n">SDK</span> <span class="n">installation</span> <span class="n">checked</span>
+   <span class="o">-</span><span class="n">d</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">d</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">docker</span> <span class="n">installed</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">type in ./setup_Ubuntu_Part_1.sh followed by any flag (e.g. -g) followed by the word false to disable the installation of that service.</p>
+</li>
+<li><p class="first"><strong>*You will then need to reboot your system prior to executing the following command:*</strong></p>
+</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_2.sh <span class="p">|</span> bash
+</pre></div>
+</div>
+<ul class="simple">
+<li>This will complete the installation of the hyper ledger images and the supporting tools.</li>
+<li>This command will go through the following steps, informing you of each step in the process<ul>
+<li>Update the apt-get repositories and upgrade current software</li>
+<li>Ensure that the base development environment is installed</li>
+<li>Check for the presence of git and install it if it’s missing</li>
+<li>Check for the presence of nodeJS version 8 (Required for hyper ledger) and install it if it’s missing</li>
+<li>Install the nodejs SDK for hyper ledger composer</li>
+<li>Install the VSCode editor</li>
+<li>Install the hyper ledger fabric docker images</li>
+<li>Install the fabric tools and update your .bash_profile</li>
+<li>Install hyper ledger  composer platform-specific binaries</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>If you do not want to automatically take all of these actions, then execute the following command, instead, to just download the file to your system:</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span></span> curl -H <span class="s1">&#39;Accept: application/vnd.github.v3.raw&#39;</span> https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_2.sh -o setup_Ubuntu_Part_2.sh
+
+- <span class="k">then</span> <span class="nb">type</span> in: <span class="sb">``</span>dos2unix setup_Ubuntu_Part_2.sh<span class="sb">``</span>, which will ensure that this will now run correctly as a script file on your √ operating system.
+</pre></div>
+</div>
+</div></blockquote>
+<p>You have the ability to turn off any of the installation services. This is dependent on using the Brew package manager to handle various installation requirements, so if you don&#8217;t want to use Brew, you&#8217;ll need to install each service manually.</p>
+<blockquote>
+<div><ul>
+<li><p class="first">To get help for the script, just type in <code class="docutils literal"><span class="pre">./setup_Ubuntu_Part_2.sh</span> <span class="pre">-h</span></code>, which will cause the following information to print out:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>   <span class="n">installation</span> <span class="n">script</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Zero</span> <span class="n">To</span> <span class="n">Blockchain</span> <span class="n">Series</span>
+   <span class="n">This</span> <span class="ow">is</span> <span class="k">for</span> <span class="n">Linux</span> <span class="n">ONLY</span><span class="o">.</span> <span class="n">It</span> <span class="n">has</span> <span class="n">been</span> <span class="n">tested</span> <span class="n">on</span> <span class="n">Ubuntu</span> <span class="mf">16.04</span> <span class="n">LTS</span>
+   <span class="n">Other</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">Linux</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">supported</span> <span class="n">via</span> <span class="n">this</span> <span class="n">script</span><span class="o">.</span>
+   <span class="n">The</span> <span class="n">following</span> <span class="n">will</span> <span class="n">be</span> <span class="n">downloaded</span> <span class="n">by</span> <span class="n">this</span> <span class="n">script</span>
+   <span class="n">The</span> <span class="n">script</span> <span class="n">will</span> <span class="n">finish</span> <span class="n">by</span> <span class="n">downloading</span> <span class="n">the</span> <span class="n">docker</span> <span class="n">images</span> <span class="k">for</span> <span class="n">hyperledger</span>
+
+
+<span class="n">options</span> <span class="k">for</span> <span class="n">this</span> <span class="n">exec</span> <span class="n">are</span><span class="p">:</span>
+   <span class="o">-</span><span class="n">h</span> <span class="n">Print</span> <span class="n">this</span> <span class="n">help</span> <span class="n">information</span>
+   <span class="o">-</span><span class="n">f</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">true</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">f</span> <span class="n">false</span> <span class="k">if</span> <span class="n">you</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">want</span> <span class="n">to</span> <span class="n">have</span> <span class="n">hypleledger</span> <span class="n">fabric</span> <span class="n">images</span> <span class="n">verified</span>
+   <span class="o">-</span><span class="n">p</span> <span class="n">defaults</span> <span class="n">to</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">robertdill</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">tools</span><span class="o">.</span> <span class="n">use</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">robertdill</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">preferred</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">here</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">install</span> <span class="n">hyperledger</span> <span class="n">fabric</span> <span class="n">tools</span> <span class="n">elsewhere</span><span class="o">.</span>
+   <span class="n">only</span> <span class="n">valid</span> <span class="k">with</span> <span class="o">-</span><span class="n">f</span> <span class="n">true</span><span class="p">,</span> <span class="n">ignored</span> <span class="n">otherwise</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Once you have run this exec, your development environment will be installed. Before you can run it, you&#8217;ll have to start Docker. Press CMD+spacebar and type in docker. Highlight Docker.app and press enter. On most OSX systems, Docker.app will automatically restart each time you start up, or restart Ubuntu.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="install-on-windows-v7-or-v10-summary">
+<h2>Install on Windows V7 or V10 (summary)<a class="headerlink" href="#install-on-windows-v7-or-v10-summary" title="Permalink to this headline">¶</a></h2>
+<p>Because HyperLedger Fabric does not yet support Windows Native installation, we will install an Ubuntu guest operating system on your Windows computer. The following installation instructions use VirtualBox to create an environment for Ubuntu. You can also use VMWare or any technology of your choice which will allow you to install the 64bit version of Ubuntu V16 LTS (Long Term Service).</p>
+<p>The installation process for Windows is:
+Step 1: download a 64-bit Ubuntu 16.04 image. The installation will fail if you install a 32-bit image</p>
+<blockquote>
+<div><ul class="simple">
+<li>Go here: <a class="reference external" href="https://www.ubuntu.com/download">https://www.ubuntu.com/download</a></li>
+<li>click on the Ubuntu Desktop option - this is a large download and will take 30+ minutes</li>
+</ul>
+</div></blockquote>
+<p>Step 2: download and install VirtualBox</p>
+<blockquote>
+<div><ul class="simple">
+<li>Go here: <a class="reference external" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
+<li>And click on Windows Hosts. This will start the download of the VirtualBox installer</li>
+</ul>
+</div></blockquote>
+<p>Step 3: Go to your downloads folder and run the VirtualBox …. .exe installer.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Take the defaults</li>
+</ul>
+</div></blockquote>
+<p>Step 4: Start Virtual Box</p>
+<blockquote>
+<div><ul class="simple">
+<li>Click on the “new” icon</li>
+<li>Take all the defaults EXCEPT memory.</li>
+<li>Give your virtual machine at least 2Gb rather than the 1Gb default. If you have sufficient memory, I recommend 4-8Gb.</li>
+</ul>
+</div></blockquote>
+<p>Step 5: Follow the steps for an Ubuntu installation on the following pages.</p>
+</div>
+<div class="section" id="install-on-windows-v7-or-v10-details">
+<h2>Install on Windows V7 or V10 (details)<a class="headerlink" href="#install-on-windows-v7-or-v10-details" title="Permalink to this headline">¶</a></h2>
+<p><strong>Step 1: download a 64-bit Ubuntu 16.04 image.</strong></p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>Go here: <a class="reference external" href="https://www.ubuntu.com/download">https://www.ubuntu.com/download</a></dt>
+<dd><img alt="_images/WindowsUbuntu1.png" class="first last" src="_images/WindowsUbuntu1.png" />
+</dd>
+</dl>
+</li>
+<li><p class="first">and download V16 of the Ubuntu Desktop, which provides a graphical UI similar to OSX and Windows.</p>
+</li>
+<li><p class="first">You may find that you have to choose between an Intel or I386 version and an AMD version. Regardless of what technology is on your computer, pick the AMD version. These are poorly named. AMD represents the 64bit version, which runs on Intel and AMD processors and the Intel or I386 version is the 32 bit version, which you do NOT want.</p>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Step 2: download and install VirtualBox</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">Go here: <a class="reference external" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></p>
+</li>
+<li><dl class="first docutils">
+<dt>And click on Windows Hosts. This will start the download of the VirtualBox installer</dt>
+<dd><img alt="_images/WindowsVirtualBox1.png" class="first last" src="_images/WindowsVirtualBox1.png" />
+</dd>
+</dl>
+</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>After the download completes, run the virtualbox exe which was placed in your download folder</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>Step 3: Go to your downloads folder and run the VirtualBox …. .exe installer</strong></p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>Now that Virtual Box has been installed, start it and select the &#8216;New&#8217; option:</dt>
+<dd><img alt="_images/WindowsVirtualBox2.png" class="first last" src="_images/WindowsVirtualBox2.png" />
+</dd>
+</dl>
+</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>Select Linux and Ubuntu 64 bit
+.. image:: ../../assets/WindowsVirtualBox3.png</li>
+<li>give yourself at least 2Gb of ram, more if you can afford it.
+.. image:: ../../assets/WindowsVirtualBox4.png</li>
+<li>Create a virtual drive
+.. image:: ../../assets/WindowsVirtualBox5.png</li>
+<li>and take the default VDI option
+.. image:: ../../assets/WindowsVirtualBox6.png</li>
+<li>Allocate storage dynamically
+.. image:: ../../assets/WindowsVirtualBox7.png</li>
+<li><strong>Give yourself at least 20Gb.</strong> This is the minimum for developing these applications
+.. image:: ../../assets/WindowsVirtualBox8.png</li>
+<li>Select Next
+.. image:: ../../assets/WindowsVirtualBox9.png</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>Step 4: Start Virtual Box</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">Select the image you downloaded
+.. image:: ../../assets/WindowsVirtualBox10.png</p>
+</li>
+<li><p class="first">After the machine starts, select the “Install Ubuntu Desktop” option
+.. image:: ../../assets/WindowsUbuntu2.png</p>
+</li>
+<li><p class="first">Select options to update the installation and to install 3rd party code
+.. image:: ../../assets/WindowsUbuntu3.png</p>
+<img alt="_images/WindowsUbuntu4.png" src="_images/WindowsUbuntu4.png" />
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Step 5: Follow the steps for an Ubuntu installation</strong></p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C02.html" title="previous chapter (use the left arrow)">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C04.html" title="next chapter (use the right arrow)">Chapter 4: Building your first Business Network</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C04.html" title="Chapter 4: Building your first Business Network"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="C02.html" title="Chapter 2: What’s the Story we’ll implement?"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

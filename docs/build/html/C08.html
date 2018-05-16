@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 8: Building the Provider Services and User Experience &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 9: Building the Shipper Services and User Experience" href="C09.html" />
+    <link rel="prev" title="Chapter 7: Building the Seller Services and User Experience" href="C07.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C09.html" title="Chapter 9: Building the Shipper Services and User Experience"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="C07.html" title="Chapter 7: Building the Seller Services and User Experience"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 8: Building the Provider Services and User Experience</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-server-code-unique-to-this-chapter">Web Server Code Unique to this Chapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-business-network">Defining the business network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-browser-code-unique-to-this-chapter">Web Browser Code Unique to this Chapter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 8: Building the Provider Services and User Experience</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-8-building-the-provider-services-and-user-experience">
+<h1>Chapter 8: Building the Provider Services and User Experience<a class="headerlink" href="#chapter-8-building-the-provider-services-and-user-experience" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter, we will create the (third party) Provider Company view and add server-side services to support it.  This runs on HyperLedger Fabric Version 1.0. The code that we will write is managed in this chapter and all the subsequent chapters in the following folder structure:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Chapter 08
+↳ controller
+    ↳restapi
+    router.js
+        ↳features
+        ↳composer
+            autoLoad.js
+            hlcAdmin.js
+            hlcClient.js
+            queryBlockChain.js
+            Z2B_Services.js
+            Z2B_Utilities.js
+        ↳ text
+            multi-lingual.js
+            resources.js
+↳ HTML
+    index.html
+    admin.html
+    buyer.html
+    ceateConnectionProfile.html
+    createMember.html
+    createOrder.html
+    deleteConnectionProfile.html
+    getMemberSecret.html
+    removeMember.html
+    provider.html
+    seller.html
+    ↳CSS
+    pageStyles.css
+    ↳js
+    z2b-admin.js
+    z2b-buyer.js
+    z2b-events.js
+    z2b-initiate.js
+    z2b-provider.js
+    z2b-seller.js
+    z2b-utilities.js
+↳ network
+permissions.acl
+queries.qry
+    ↳lib
+    sample.js
+    ↳models
+    base.cto
+    events.cto
+    sample.cto
+</pre></div>
+</div>
+<p>Two new files are introduced in this chapter and two existing files are updated:</p>
+</div>
+<div class="section" id="web-server-code-unique-to-this-chapter">
+<h2>Web Server Code Unique to this Chapter<a class="headerlink" href="#web-server-code-unique-to-this-chapter" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>hlcClient.js</strong>
+This file is update to support the provider interface on the server side</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="defining-the-business-network">
+<h2>Defining the business network<a class="headerlink" href="#defining-the-business-network" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>network/permissions.acl</strong>
+This file is <strong>*updated*</strong> to allow the provider to access Orders and to execute selected transactions.
+It determines precisely what transactions a member can execute and what assets a member can see. The basic rule is &#8220;If authority is not specifically granted in this file, then access is denied.&#8221;</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="web-browser-code-unique-to-this-chapter">
+<h2>Web Browser Code Unique to this Chapter<a class="headerlink" href="#web-browser-code-unique-to-this-chapter" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>z2b-provider.js</strong>
+This file contains all of the browser functional code to support the provider user experience</li>
+<li><strong>provider.html</strong>
+This contains the HTML framework for the provider experience. Content for this framework is generated by the functions in the z2b-provider.js file
+Text on this page is determined by the selected language (default is US English)</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C07.html" title="previous chapter (use the left arrow)">Chapter 7: Building the Seller Services and User Experience</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C09.html" title="next chapter (use the right arrow)">Chapter 9: Building the Shipper Services and User Experience</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C09.html" title="Chapter 9: Building the Shipper Services and User Experience"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="C07.html" title="Chapter 7: Building the Seller Services and User Experience"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

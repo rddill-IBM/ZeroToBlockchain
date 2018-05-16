@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 1: What is Blockchain? Concept and Architecture Overview &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 2: What’s the Story we’ll implement?" href="C02.html" />
+    <link rel="prev" title="Welcome to Zero To Blockchain documentation!" href="index.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C02.html" title="Chapter 2: What’s the Story we’ll implement?"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Zero To Blockchain documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 1: What is Blockchain? Concept and Architecture Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#objectives">Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 1: What is Blockchain? Concept and Architecture Overview</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-1-what-is-blockchain-concept-and-architecture-overview">
+<h1>Chapter 1: What is Blockchain? Concept and Architecture Overview<a class="headerlink" href="#chapter-1-what-is-blockchain-concept-and-architecture-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Online, free tutorial on getting started with Blockchain and IBM Bluemix</p>
+</div>
+<div class="section" id="objectives">
+<h2>Objectives<a class="headerlink" href="#objectives" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The tutorial will build a blockchain solution on IBM Bluemix using</dt>
+<dd><ul class="first last simple">
+<li>HyperLedger Composer V 0.10 or higher.</li>
+<li>Hyperledger Fabric V1.0 or higher</li>
+<li>NodeJS</li>
+<li>HTML, CSS, Javascript</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>All code for the tutorial is in github:
+- <a class="reference external" href="https://github.com/rddill-IBM/ZeroToBlockchain">Zero To Blockchain Git Repository</a></li>
+<li>A basic introduction to coding for Bluemix, getting an id, setting up your workstation can be found in the popular ZeroToCognitive series:
+- <a class="reference external" href="https://www.youtube.com/playlist?list=PLnJzIOiv6cVTaS8k90R3T9AlS_kf5XWmX">Zero To Cognitive YouTube Series</a></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="index.html" title="previous chapter (use the left arrow)">Welcome to Zero To Blockchain documentation!</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C02.html" title="next chapter (use the right arrow)">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C02.html" title="Chapter 2: What’s the Story we’ll implement?"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Zero To Blockchain documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

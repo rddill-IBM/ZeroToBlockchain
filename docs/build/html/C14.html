@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 14: Debugging Hyperledger Composer inside Docker Containers &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Chapter 13: Deploying your demo Blockchain to the IBM Cloud" href="C13.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C13.html" title="Chapter 13: Deploying your demo Blockchain to the IBM Cloud"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contents-of-the-docker-compose-yml-file">Contents of the docker-compose.yml file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-orderer-container">Create the orderer container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-peer0-container">Create the peer0 container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-couchdb-container">Create the couchdb container:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-debug-message">Add a Debug Message</a></li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 14: Debugging Hyperledger Composer inside Docker Containers</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-14-debugging-hyperledger-composer-inside-docker-containers">
+<h1>Chapter 14: Debugging Hyperledger Composer inside Docker Containers<a class="headerlink" href="#chapter-14-debugging-hyperledger-composer-inside-docker-containers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This is a high level tutorial on how HyperLedger Composer uses Docker. For a thorough introduction to Docker, I recommend [The Docker Book](<a class="reference external" href="https://www.dockerbook.com/">https://www.dockerbook.com/</a>).</p>
+<p>HyperLedger Composer v0.16 (the current version of this tutorial), creates 4 docker containers to run the local dev environment, one each for your network, the orderer, the peer, and one for couchdb (the noSQL database). This happens each time you run the <code class="docutils literal"><span class="pre">./buildAndDeploy</span></code> script, which calls <code class="docutils literal"><span class="pre">deployNetwork.sh</span></code>. During the execution of the deployNetwork script, the following information is displayed in your terminal window:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>ARCH=$ARCH docker-compose -f &quot;${DIR}&quot;/composer/docker-compose.yml down
+Stopping peer0.org1.example.com ... done
+Stopping ca.org1.example.com    ... done
+Stopping orderer.example.com    ... done
+Stopping couchdb                ... done
+Removing peer0.org1.example.com ... done
+Removing ca.org1.example.com    ... done
+Removing orderer.example.com    ... done
+Removing couchdb                ... done
+Removing network composer_default
+ARCH=$ARCH docker-compose -f &quot;${DIR}&quot;/composer/docker-compose.yml up -d
+Creating orderer.example.com ... done
+Creating peer0.org1.example.com ... done
+Creating couchdb ...
+Creating ca.org1.example.com ...
+Creating peer0.org1.example.com ...
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Three things are happening here:</dt>
+<dd><ol class="first last arabic simple">
+<li>If the network is up, each of the 4 Docker containers running are stopped.</li>
+<li>Then each container is removed from your computer</li>
+<li>Then each container is restarted.</li>
+</ol>
+</dd>
+</dl>
+<p>All of this is controlled by the docker-compose.yml file, which is located in the fabric-tools folder installed during the set up process. Specifically, the file is in the following path: <code class="docutils literal"><span class="pre">fabric-tools/fabric-scripts/hlfv1/composer</span></code>. The purpoe of the docker compose yaml file is to capture all of the commands and parameters required to start up a group of containers in a readable and consistent manner. While everything in the yaml file could be executed directly from the command line, the commands become very unwieldy, so Docker Compose was created to allow all of the parameters to be placed into a yaml file and allow all of the container starts to be in the same yaml file.
+what containers are created?
+............................</p>
+<p>You can discover this information by executing the following command: <code class="docutils literal"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code>, which displays the following for our network:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>                                                          <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                                            <span class="n">NAMES</span>
+<span class="mi">0386</span><span class="n">e33b66c5</span>        <span class="n">dev</span><span class="o">-</span><span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">zerotoblockchain</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="mf">0.16</span><span class="o">.</span><span class="mi">0</span><span class="o">-...</span> <span class="s2">&quot;chaincode -peer.add…&quot;</span>   <span class="mi">17</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>                                                        <span class="n">dev</span><span class="o">-</span><span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">zerotoblockchain</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="mf">0.16</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">fd0187712cfc</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">peer</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                           <span class="s2">&quot;peer node start --p…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7051</span><span class="o">-&gt;</span><span class="mi">7051</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7053</span><span class="o">-&gt;</span><span class="mi">7053</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">c6f532764faa</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">couchdb</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                        <span class="s2">&quot;tini -- /docker-ent…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mi">4369</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">9100</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">5984</span><span class="o">-&gt;</span><span class="mi">5984</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">couchdb</span>
+<span class="n">cf3608360871</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">orderer</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                        <span class="s2">&quot;orderer&quot;</span>                <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7050</span><span class="o">-&gt;</span><span class="mi">7050</span><span class="o">/</span><span class="n">tcp</span>                           <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="mi">346</span><span class="n">f77c65284</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">ca</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                             <span class="s2">&quot;sh -c &#39;fabric-ca-se…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7054</span><span class="o">-&gt;</span><span class="mi">7054</span><span class="o">/</span><span class="n">tcp</span>                           <span class="n">ca</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="contents-of-the-docker-compose-yml-file">
+<h2>Contents of the docker-compose.yml file<a class="headerlink" href="#contents-of-the-docker-compose-yml-file" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">yml</span>
+<span class="n">version</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span>
+
+<span class="n">services</span><span class="p">:</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>The file starts out simply.</dt>
+<dd><ul class="first last simple">
+<li>version refers to the version of docker-compose being used, in this case it&#8217;s version 2. This specifies both what can be put in the yaml file and how each term is to be grouped and specified.</li>
+<li>services refers to the set of docker containers which will be started by this yaml file.</li>
+</ul>
+</dd>
+</dl>
+<p>Each service (container) has a similar structure and we will look at all four:
+ca - Certificate Authority
+..........................</p>
+<blockquote>
+<div><ul>
+<li><div class="first highlight-default"><div class="highlight"><pre><span></span>ca.org1.example.com:
+    image: hyperledger/fabric-ca:$ARCH-1.0.4
+    environment:
+    - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+    - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+
+    ports:
+    - &quot;7054:7054&quot;
+    command: sh -c &#39;fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/19ab65abbb04807dad12e4c0a9aaa6649e70868e3abd0217a322d89e47e1a6ae_sk -b admin:adminpw -d&#39;
+    volumes:
+    - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.org1.example.com
+</pre></div>
+</div>
+</li>
+<li><p class="first">image refers to the docker container which is to be started. In this case, it&#8217;s owned by &#8216;hyperledger&#8217; and is shown here as the &#8216;fabric-ca:$ARCH-1.0.4&#8217; image where $ARCH is the architecture of your local operating system, which is retrieved and set in the startFabric.sh script. On my OSX laptop ARCH is set to x86_64, so the image to be retrieved would be: fabric-ca:x86_64-1.0.4 where fabric-ca is the image name and x86-64-1.0.4 is the version identifier.</p>
+</li>
+<li><p class="first">ENVIRONMENT sets environment variables inside the container. These variables are not visible to applications running on your host operating system.
+- The &#8216;#&#8217; sign makes everything that follows it a comment</p>
+</li>
+<li><p class="first">PORTS: identifies a port inside the container (left number) and links it to a port visible to your host operating system.</p>
+</li>
+<li><p class="first">COMMAND lists the command to be executed when the container starts. In this case, the shell is called to execute fabric-ca-server start command with 3 options</p>
+</li>
+<li><p class="first">VOLUMES links one or more specific folders on your local computer to a specific path inside the container. The &#8216;./&#8217; prefix means &#8216;start here&#8217;, where &#8216;here&#8217; is defined by the location of the docker-compose.yml file (shown earlier). This allows local information to be shared in a persistent manner with a docker container and, as needed, changed without having to rebuild the container.</p>
+</li>
+<li><p class="first">CONTAINER_NAME is the name that the container will display when docker ps is used.</p>
+</li>
+</ul>
+<p>You will observe an identical structure in each of the following services:</p>
+</div></blockquote>
+</div>
+<div class="section" id="create-the-orderer-container">
+<h2>Create the orderer container<a class="headerlink" href="#create-the-orderer-container" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>orderer.example.com:
+ container_name: orderer.example.com
+ image: hyperledger/fabric-orderer:$ARCH-1.0.4
+ environment:
+   - ORDERER_GENERAL_LOGLEVEL=critical
+   - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+   - ORDERER_GENERAL_GENESISMETHOD=file
+   - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/composer-genesis.block
+   - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+   - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+ working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+ command: orderer
+ ports:
+   - 7050:7050
+ volumes:
+     - ./:/etc/hyperledger/configtx
+     - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/etc/hyperledger/msp/orderer/msp
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-the-peer0-container">
+<h2>Create the peer0 container<a class="headerlink" href="#create-the-peer0-container" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>peer0.org1.example.com:
+  container_name: peer0.org1.example.com
+  image: hyperledger/fabric-peer:$ARCH-1.0.4
+  environment:
+    - CORE_LOGGING_PEER=critical
+    - CORE_CHAINCODE_LOGGING_LEVEL=critical
+    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    - CORE_PEER_ID=peer0.org1.example.com
+    - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+    - CORE_PEER_LOCALMSPID=Org1MSP
+    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+  working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+  command: peer node start --peer-defaultchain=false
+  ports:
+    - 7051:7051
+    - 7053:7053
+  volumes:
+      - /var/run/:/host/var/run/
+      - ./:/etc/hyperledger/configtx
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/peer/msp
+      - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
+  depends_on:
+    - orderer.example.com
+    - couchdb
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Here you see an additional parameter:</dt>
+<dd><ul class="first last simple">
+<li>DEPENDS_ON which, as you might guess, lists docker container names which must be running before this container will successfully start.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="create-the-couchdb-container">
+<h2>Create the couchdb container:<a class="headerlink" href="#create-the-couchdb-container" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>couchdb:
+ container_name: couchdb
+ image: hyperledger/fabric-couchdb:$ARCH-1.0.4
+ ports:
+   - 5984:5984
+ environment:
+   DB_URL: http://localhost:5984/member_db
+</pre></div>
+</div>
+<p>OK, so now we have the four base containers for our network, but we don&#8217;t yet have the network. These docker-compose commands are executed when the startFabric script runs:</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>ARCH=$ARCH docker-compose -f &quot;${DIR}&quot;/composer/docker-compose.yml down
+ARCH=$ARCH docker-compose -f &quot;${DIR}&quot;/composer/docker-compose.yml up -d
+
+# wait for Hyperledger Fabric to start
+# incase of errors when running later commands, issue export FABRIC_START_TIMEOUT=&lt;larger number&gt;
+echo ${FABRIC_START_TIMEOUT}
+sleep ${FABRIC_START_TIMEOUT}
+
+# Create the channel
+docker exec peer0.org1.example.com peer channel create -o orderer.example.com:7050 -c composerchannel -f /etc/hyperledger/configtx/composer-channel.tx
+
+# Join peer0.org1.example.com to the channel.
+docker exec -e &quot;CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp&quot; peer0.org1.example.com peer channel join -b composerchannel.block
+</pre></div>
+</div>
+<p>The script first takes down the network and then restarts it in detached (that&#8217;s the -d) mode. The script then pauses for 15 seconds (timeout default) and then creates the peer0 channel (remember the depends_on) which connects peer0 to the orderer and records that connection in the couchdb database. We are missing a container. The one with our network and the first one in the docker ps -a list. That&#8217;s created by the deployNetwork.sh script when the</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>composer network start -c PeerAdmin@hlfv1 -A admin -S adminpw -a $NETWORK_NAME.bna --file networkadmin.card
+</pre></div>
+</div>
+<p>script is executed.</p>
+<p>So where does the oher network come from? The one with our business network? That is created when the deployNetwork.sh script is run at the end of buildAndDeploy. Each time you run the buildAndDeploy script, it stops, removes, and rebuilds all 5 containers. The first 4 are built based on the docker-compose.yml file, the last one, with your network, is created in the deploy script. You could do the same thing in the admin console by using the create and install network services. If you do that, please be sure to use a different network name.</p>
+<p>OK, so, now we want to test and debug. The part of the docker environment where our code will run is in the 5th container - the one named: <strong>dev-peer0.org1.example.com-zerotoblockchain-network-0.16.0</strong></p>
+<p>In much of the code we&#8217;ve written, we will often use console.log to display what&#8217;s going on. This works in all of our nodeJS code EXCEPT for the code in the Chapterxx/network/lib folder. For some reason, those console.log messaegs never print out. Well, actually, they do.</p>
+<p>We&#8217;re going to start by going to any chapter between Chapter5 and Chapter 12 where you&#8217;ve completed your coding. We&#8217;ll run the buildAndDeploy script to create a clean instance of the network and then we&#8217;re going to start following the log for our business network. We&#8217;ll need two terminal windows open at the same time. One will show the log output in real time from our business network container, the other will show the log output from our nodejs application. The examples in this script were created using Chapter 6.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>go to <code class="docutils literal"><span class="pre">ZeroToBlockChain\Chaper06</span></code></li>
+<li>run <code class="docutils literal"><span class="pre">./buildAndDeploy</span></code></li>
+<li>run <code class="docutils literal"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> which will return something like the following:</li>
+</ol>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>                                                          <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                                            <span class="n">NAMES</span>
+<span class="mi">0386</span><span class="n">e33b66c5</span>        <span class="n">dev</span><span class="o">-</span><span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">zerotoblockchain</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="mf">0.16</span><span class="o">.</span><span class="mi">0</span><span class="o">-...</span> <span class="s2">&quot;chaincode -peer.add…&quot;</span>   <span class="mi">17</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>                                                        <span class="n">dev</span><span class="o">-</span><span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">zerotoblockchain</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="mf">0.16</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">fd0187712cfc</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">peer</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                           <span class="s2">&quot;peer node start --p…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7051</span><span class="o">-&gt;</span><span class="mi">7051</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7053</span><span class="o">-&gt;</span><span class="mi">7053</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">c6f532764faa</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">couchdb</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                        <span class="s2">&quot;tini -- /docker-ent…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mi">4369</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">9100</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">5984</span><span class="o">-&gt;</span><span class="mi">5984</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">couchdb</span>
+<span class="n">cf3608360871</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">orderer</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                        <span class="s2">&quot;orderer&quot;</span>                <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7050</span><span class="o">-&gt;</span><span class="mi">7050</span><span class="o">/</span><span class="n">tcp</span>                           <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<span class="mi">346</span><span class="n">f77c65284</span>        <span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">-</span><span class="n">ca</span><span class="p">:</span><span class="n">x86_64</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">4</span>                             <span class="s2">&quot;sh -c &#39;fabric-ca-se…&quot;</span>   <span class="mi">18</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">18</span> <span class="n">minutes</span>       <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">7054</span><span class="o">-&gt;</span><span class="mi">7054</span><span class="o">/</span><span class="n">tcp</span>                           <span class="n">ca</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li>run <code class="docutils literal"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">dev-peer0.org1.example.com-zerotoblockchain-network-0.16.0</span> <span class="pre">-f</span></code></li>
+<li>open a new terminal window and go to <code class="docutils literal"><span class="pre">ZeroToBlockChain\Chaper06</span></code></li>
+<li>run <code class="docutils literal"><span class="pre">npm</span> <span class="pre">start</span></code></li>
+</ol>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">zerotoblockchain</span><span class="o">-</span><span class="n">network</span><span class="nd">@0</span><span class="o">.</span><span class="mf">1.6</span> <span class="n">start</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">rddill</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span><span class="n">GitHub</span><span class="o">/</span><span class="n">Z2B_Master</span><span class="o">/</span><span class="n">Chapter06</span>
+<span class="o">&gt;</span> <span class="n">node</span> <span class="n">index</span>
+
+<span class="n">Listening</span> <span class="n">locally</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">6002</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li>go to your browser and connect to localhost:PORT where PORT is the number displayed after npm start - 6002 in this example</li>
+<li>Select Admin &#8211;&gt; Preload Network</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>When you do this, you&#8217;ll see messages starting to scroll in both windows. You&#8217;ll see that everytime the ERROR message appears in the npm start window, a similar message appears in the docker logs window. OK, boring, but nice to see the consistency.</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="add-a-debug-message">
+<h2>Add a Debug Message<a class="headerlink" href="#add-a-debug-message" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Now let&#8217;s add a console message to the sample.js file in <code class="docutils literal"><span class="pre">Chapter06/network/lib</span></code> - one we&#8217;ve tried before and never been able to see.</dt>
+<dd><ol class="first last arabic simple" start="9">
+<li>press CTRL-c in both terminal windows to stop both the logging process and the nodejs server</li>
+<li>In your favorite editor, open the sample.js file and update the CreateOrder function by adding this line to it:</li>
+</ol>
+</dd>
+</dl>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span>     <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Order for &#39;</span><span class="o">+</span><span class="n">purchase</span><span class="o">.</span><span class="n">buyer</span><span class="o">+</span><span class="s1">&#39; created wih amount: &#39;</span><span class="o">+</span><span class="n">purchase</span><span class="o">.</span><span class="n">amount</span><span class="p">);</span>
+
+<span class="o">-</span> <span class="n">your</span> <span class="n">CreateOrder</span> <span class="n">function</span> <span class="n">should</span> <span class="n">now</span> <span class="n">look</span> <span class="n">like</span> <span class="n">this</span><span class="p">:</span>
+</pre></div>
+</div>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">CreateOrder</span><span class="p">(</span><span class="n">purchase</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">buyer</span> <span class="o">=</span> <span class="n">purchase</span><span class="o">.</span><span class="n">buyer</span><span class="p">;</span>
+    <span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">purchase</span><span class="o">.</span><span class="n">amount</span><span class="p">;</span>
+    <span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">financeCo</span> <span class="o">=</span> <span class="n">purchase</span><span class="o">.</span><span class="n">financeCo</span><span class="p">;</span>
+    <span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">created</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Date</span><span class="p">()</span><span class="o">.</span><span class="n">toISOString</span><span class="p">();</span>
+    <span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="n">stringify</span><span class="p">(</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">Created</span><span class="p">);</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Order for &#39;</span><span class="o">+</span><span class="n">purchase</span><span class="o">.</span><span class="n">buyer</span><span class="o">+</span><span class="s1">&#39; created wih amount: &#39;</span><span class="o">+</span><span class="n">purchase</span><span class="o">.</span><span class="n">amount</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">getAssetRegistry</span><span class="p">(</span><span class="s1">&#39;org.acme.Z2BTestNetwork.Order&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">function</span> <span class="p">(</span><span class="n">assetRegistry</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">assetRegistry</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">purchase</span><span class="o">.</span><span class="n">order</span><span class="p">);</span>
+        <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="11">
+<li>Save your updated sample.js file</li>
+<li>run <code class="docutils literal"><span class="pre">./buildAndDeploy</span></code></li>
+<li>when complete, run <code class="docutils literal"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">dev-peer0.org1.example.com-zerotoblockchain-network-0.16.0</span> <span class="pre">-f</span></code></li>
+<li>go to your 2nd terminal window and run <code class="docutils literal"><span class="pre">npm</span> <span class="pre">start</span></code></li>
+<li>go to your browser and load/reload the browser page for localhost:PORT</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>please note, the port number changes sometimes</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="16">
+<li>select Admin &#8211;&gt; Preload Network and watch the logs.</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><strong>*WOOHOO*</strong> Our messages now show up in the log listing from docker:<ul>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#eric&#37;&#52;&#48;bornonthecloudinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#eric<span>&#64;</span>bornonthecloudinc<span>&#46;</span>com</a>} created wih amount: 6055</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#yes&#37;&#52;&#48;softwaresolutionsinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#yes<span>&#64;</span>softwaresolutionsinc<span>&#46;</span>com</a>} created wih amount: 9125</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#yes&#37;&#52;&#48;softwaresolutionsinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#yes<span>&#64;</span>softwaresolutionsinc<span>&#46;</span>com</a>} created wih amount: 38800</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#yes&#37;&#52;&#48;softwaresolutionsinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#yes<span>&#64;</span>softwaresolutionsinc<span>&#46;</span>com</a>} created wih amount: 6055</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#yes&#37;&#52;&#48;softwaresolutionsinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#yes<span>&#64;</span>softwaresolutionsinc<span>&#46;</span>com</a>} created wih amount: 9125</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#yes&#37;&#52;&#48;softwaresolutionsinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#yes<span>&#64;</span>softwaresolutionsinc<span>&#46;</span>com</a>} created wih amount: 6055</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#eric&#37;&#52;&#48;bornonthecloudinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#eric<span>&#64;</span>bornonthecloudinc<span>&#46;</span>com</a>} created wih amount: 38800</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#eric&#37;&#52;&#48;bornonthecloudinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#eric<span>&#64;</span>bornonthecloudinc<span>&#46;</span>com</a>} created wih amount: 9125</li>
+<li>Order for Resource <a class="reference external" href="mailto:{id=org&#46;acme&#46;Z2BTestNetwork&#46;Buyer#eric&#37;&#52;&#48;bornonthecloudinc&#46;com">{id=org<span>&#46;</span>acme<span>&#46;</span>Z2BTestNetwork<span>&#46;</span>Buyer#eric<span>&#64;</span>bornonthecloudinc<span>&#46;</span>com</a>} created wih amount: 38800</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>## Congratulations</p>
+<p>You now have the ability to debug not only your code in your browser and in the nodejs server, you now, also, have the ability to trace and debug your chaincode running in the docker container!</p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C13.html" title="previous chapter (use the left arrow)">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a>
+      </div>
+    
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C13.html" title="Chapter 13: Deploying your demo Blockchain to the IBM Cloud"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

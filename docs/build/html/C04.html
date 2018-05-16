@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 4: Building your first Business Network &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 5: Building the Admin Services and User Experience" href="C05.html" />
+    <link rel="prev" title="Chapter 3: Creating the Blockchain Environment" href="C03.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C05.html" title="Chapter 5: Building the Admin Services and User Experience"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="C03.html" title="Chapter 3: Creating the Blockchain Environment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 4: Building your first Business Network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-files">Key Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-code">Installing the code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C05.html">Chapter 5: Building the Admin Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 4: Building your first Business Network</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-4-building-your-first-business-network">
+<h1>Chapter 4: Building your first Business Network<a class="headerlink" href="#chapter-4-building-your-first-business-network" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter focuses on the following files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Chapter 04
+↳ network
+permissions.acl
+queries.qry
+    ↳lib
+    sample.js
+    ↳models
+    base.cto
+    events.cto
+    sample.cto
+    ↳test
+    sample.js
+</pre></div>
+</div>
+</div>
+<div class="section" id="key-files">
+<h2>Key Files<a class="headerlink" href="#key-files" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Key files:</dt>
+<dd><ul class="first last simple">
+<li><strong>models/sample.cto</strong>
+- This is the &#8216;model&#8217; file, which defines the types of members and assets in a business network and also establishes the speicif transactions which can be executed in a network.</li>
+<li><strong>lib/sample.js</strong>
+- The sample.js file in the lib folder contains all of the code to implement each transaction defined in the sample.cto file.</li>
+<li><strong>test/sample.js</strong>
+- This file provides the unit tests for the network.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="installing-the-code">
+<h2>Installing the code<a class="headerlink" href="#installing-the-code" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">run this command from a terminal window: <code class="docutils literal"><span class="pre">`npm</span> <span class="pre">install`</span></code>
+- when you run <code class="docutils literal"><span class="pre">`npm</span> <span class="pre">install`</span></code> command, you will get the following error, which you can ignore. The error is caused by the installation process for the SDK tooling, which searches for all instances of files ending in <code class="docutils literal"><span class="pre">`.cto`</span></code> . Because we have those files in the answers folder, as well as in the (correctly placed) network/models folder, npm install gets confused. It&#8217;s ok, the process will still work correctly.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Looking for package.json of Business Network Definition
+    Input directory: /Users/robertdill/Documents/GitHub/Z2B_Master/Chapter04
+    Error: namespace already exists
+        at ModelManager.addModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/modelmanager.js:241:31)
+        at Function._processModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:457:43)
+        at Promise.resolve.then (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:620:18)
+        at process._tickCallback (internal/process/next_tick.js:109:7)
+        at Module.runMain (module.js:606:11)
+        at run (bootstrap_node.js:383:7)
+        at startup (bootstrap_node.js:149:9)
+        at bootstrap_node.js:496:3
+    Error: namespace already exists
+        at ModelManager.addModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/modelmanager.js:241:31)
+        at Function._processModelFiles (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:457:43)
+        at Promise.resolve.then (/usr/local/lib/node_modules/composer-cli/node_modules/composer-common/lib/businessnetworkdefinition.js:620:18)
+        at process._tickCallback (internal/process/next_tick.js:109:7)
+        at Module.runMain (module.js:606:11)
+        at run (bootstrap_node.js:383:7)
+        at startup (bootstrap_node.js:149:9)
+        at bootstrap_node.js:496:3 ```
+</pre></div>
+</div>
+</li>
+<li><p class="first">then run <code class="docutils literal"><span class="pre">`buildAndDeploy`</span></code> (yes, case is important)</p>
+</li>
+<li><p class="first">then run <code class="docutils literal"><span class="pre">`npm</span> <span class="pre">run</span> <span class="pre">test`</span></code></p>
+</li>
+<li><p class="first">this should deliver the following result:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Finance Network
+    #createOrder
+    ✓ should be able to create an order (134ms)
+    #issueBuyRequest
+    ✓ should be able to issue a buy request (76ms)
+    #issueOrderFromSupplier
+    ✓ should be able to issue a supplier order (64ms)
+    #issueRequestShipment
+    ✓ should be able to issue a request to ship product (51ms)
+    #issueDelivery
+    ✓ should be able to record a product delivery
+    #issueRequestPayment
+    ✓ should be able to issue a request to request payment for a product (58ms)
+    #issuePayment
+    ✓ should be able to record a product payment
+    #issueDispute
+    ✓ should be able to record a product dispute
+    #issueResolution
+    ✓ should be able to record a dispute resolution (41ms)
+    #issueBackorder
+    ✓ should be able to record a product backorder
+
+
+10 passing (2s)
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>The business network definitions are contained in the <strong>sample.cto</strong> file, which includes the <em>base.cto</em> and the <em>events.cto</em> file.</p>
+<p>## Participant
+- <cite>Buyer</cite>
+- <cite>Seller</cite>
+- <cite>Provider</cite>
+- <cite>Shipper</cite>
+- <cite>FinanceCo</cite></p>
+<p>## Asset
+- <cite>Order</cite></p>
+<ul class="simple">
+<li><cite>CreateOrder</cite></li>
+<li><cite>Buy</cite></li>
+<li><cite>OrderFromSupplier</cite></li>
+<li><cite>RequestShipping</cite></li>
+<li><cite>Deliver</cite></li>
+<li><cite>RequestPayment</cite></li>
+<li><cite>Pay</cite></li>
+<li><cite>Dispute</cite></li>
+<li><cite>Resolve</cite></li>
+<li><cite>Backorder</cite></li>
+</ul>
+<p>## Event
+- <cite>(none yet)</cite></p>
+<p>Orders are created by Buyers and executed by Sellers, who may work with a 3rd part (Provider) to fulfill the order. Either Sellers or Providers can RequestShipment, which is fulfilled by a Shipper who executes a Deliver transaction when complete. Orders can be Disputed. Disputed Orders can be resolved. Payments are made against either Delivered or Resolved Orders.</p>
+<p>To test this Business Network Definition in the <strong>Test</strong> tab:</p>
+<p>Create an <cite>Order</cite> asset:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">asset</span> <span class="n">Order</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">orderNumber</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">orderNumber</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">status</span>
+    <span class="n">o</span> <span class="n">Integer</span> <span class="n">amount</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">created</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">bought</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">ordered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">dateBackordered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">requestShipment</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">delivered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">disputeOpened</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">disputeResolved</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">paymentRequested</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">orderRefunded</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">paid</span>
+    <span class="n">o</span> <span class="n">String</span><span class="p">[]</span> <span class="n">vendors</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">dispute</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">resolve</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">backorder</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">refund</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+</pre></div>
+</div>
+<p>Create a participant:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">participant</span> <span class="n">Buyer</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">buyerID</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">buyerID</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">companyName</span>
+<span class="p">}</span>
+<span class="n">participant</span> <span class="n">Seller</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">sellerID</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">sellerID</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">companyName</span>
+<span class="p">}</span>
+
+<span class="n">asset</span> <span class="n">Order</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">orderNumber</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">orderNumber</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">status</span>
+    <span class="n">o</span> <span class="n">Integer</span> <span class="n">amount</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">created</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">bought</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">ordered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">dateBackordered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">requestShipment</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">delivered</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">disputeOpened</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">disputeResolved</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">paymentRequested</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">orderRefunded</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">paid</span>
+    <span class="n">o</span> <span class="n">String</span><span class="p">[]</span> <span class="n">vendors</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">dispute</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">resolve</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">backorder</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">refund</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+
+<span class="p">}</span>
+<span class="n">participant</span> <span class="n">Shipper</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">shipperID</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">shipperID</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">companyName</span>
+<span class="p">}</span>
+<span class="n">participant</span> <span class="n">Provider</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">providerID</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">providerID</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">companyName</span>
+<span class="p">}</span>
+<span class="n">participant</span> <span class="n">FinanceCo</span> <span class="n">identified</span> <span class="n">by</span> <span class="n">financeCoID</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">financeCoID</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">companyName</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Submit a  transaction:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">transaction</span> <span class="n">CreateOrder</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">Integer</span> <span class="n">amount</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Buy</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">OrderFromSupplier</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Provider</span> <span class="n">provider</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">RequestShipping</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Shipper</span> <span class="n">shipper</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Deliver</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Shipper</span> <span class="n">shipper</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">BackOrder</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">backorder</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Provider</span> <span class="n">provider</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Dispute</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">dispute</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+    <span class="o">--&gt;</span> <span class="n">FinanceCo</span> <span class="n">financeCo</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Resolve</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">resolve</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+    <span class="o">--&gt;</span> <span class="n">FinanceCo</span> <span class="n">financeCo</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">RequestPayment</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+    <span class="o">--&gt;</span> <span class="n">FinanceCo</span> <span class="n">financeCo</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Pay</span> <span class="p">{</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+    <span class="o">--&gt;</span> <span class="n">FinanceCo</span> <span class="n">financeCo</span>
+<span class="p">}</span>
+<span class="n">transaction</span> <span class="n">Refund</span> <span class="p">{</span>
+    <span class="n">o</span> <span class="n">String</span> <span class="n">refund</span>
+    <span class="o">--&gt;</span> <span class="n">Order</span> <span class="n">order</span>
+    <span class="o">--&gt;</span> <span class="n">Buyer</span> <span class="n">buyer</span>
+    <span class="o">--&gt;</span> <span class="n">Seller</span> <span class="n">seller</span>
+    <span class="o">--&gt;</span> <span class="n">FinanceCo</span> <span class="n">financeCo</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C03.html" title="previous chapter (use the left arrow)">Chapter 3: Creating the Blockchain Environment</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C05.html" title="next chapter (use the right arrow)">Chapter 5: Building the Admin Services and User Experience</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C05.html" title="Chapter 5: Building the Admin Services and User Experience"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="C03.html" title="Chapter 3: Creating the Blockchain Environment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

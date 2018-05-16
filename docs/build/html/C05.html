@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Chapter 5: Building the Admin Services and User Experience &#8212; Zero To Blockchain 1.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chapter 6: Building the Buyer Services and User Experience" href="C06.html" />
+    <link rel="prev" title="Chapter 4: Building your first Business Network" href="C04.html" />
+  
+   
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="C06.html" title="Chapter 6: Building the Buyer Services and User Experience"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="C04.html" title="Chapter 4: Building your first Business Network"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+        <a href="
+    index.html" class="text-logo">Zero To Blockchain</a>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="C01.html">Chapter 1: What is Blockchain? Concept and Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C02.html">Chapter 2: What&#8217;s the Story we&#8217;ll implement?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C03.html">Chapter 3: Creating the Blockchain Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C04.html">Chapter 4: Building your first Business Network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 5: Building the Admin Services and User Experience</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-web-server-code">Common Web Server Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-web-browser-code">Common Web Browser code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-server-code-unique-to-this-chapter">Web Server Code Unique to this Chapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-business-network">Defining the business network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-browser-code-unique-to-this-chapter">Web Browser Code Unique to this Chapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#where-are-the-answers">Where are the Answers?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-do-i-get-everything-started-once-i-ve-updated-all-the-code">How do I get everything started once I&#8217;ve updated all the code?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="C06.html">Chapter 6: Building the Buyer Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C07.html">Chapter 7: Building the Seller Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C08.html">Chapter 8: Building the Provider Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C09.html">Chapter 9: Building the Shipper Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C10.html">Chapter 10: Building the Cinance Company Services and User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C11.html">Chapter 11: Building the Unified User Experience</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C12.html">Chapter 12: Implementing Business Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C13.html">Chapter 13: Deploying your demo Blockchain to the IBM Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C14.html">Chapter 14: Debugging Hyperledger Composer inside Docker Containers</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Chapter 5: Building the Admin Services and User Experience</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="chapter-5-building-the-admin-services-and-user-experience">
+<h1>Chapter 5: Building the Admin Services and User Experience<a class="headerlink" href="#chapter-5-building-the-admin-services-and-user-experience" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter, we will build a nodeJS web server which will interact with the HyperLedger Composer defined Blockchain and create an administrative interface for the network. This runs on HyperLedger Fabric Version 1.0. The code that we will write is managed in this chapter and all the subsequent chapters in the following folder structure:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Chapter 05
+↳ controller
+    ↳restapi
+    router.js
+        ↳features
+        ↳composer
+            autoLoad.js
+            hlcAdmin.js
+            queryBlockChain.js
+            Z2B_Services.js
+            Z2B_Utilities.js
+        ↳ text
+            multi-lingual.js
+            resources.js
+↳ HTML
+    ↳CSS
+    pageStyles.css
+    ↳js
+    z2b-admin.js
+    z2b-events.js
+    z2b-initiate.js
+    z2b-utilities.js
+↳ network
+permissions.acl
+queries.qry
+    ↳lib
+    sample.js
+    ↳models
+    base.cto
+    events.cto
+    sample.cto
+</pre></div>
+</div>
+</div>
+<div class="section" id="common-web-server-code">
+<h2>Common Web Server Code<a class="headerlink" href="#common-web-server-code" title="Permalink to this headline">¶</a></h2>
+<p>Some of these files are used by all chapters and some are specific to this chapter. Code explanations are embedded in the javascript files. Those files are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>index.js</strong></dt>
+<dd>this is the master, or controller, file for the web server. It loads a file called &#8216;router.js&#8217;  to implement all business functionality.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>autoload.js</strong></dt>
+<dd>sometimes it helps to have members and assets preloaded into the business network. This module loads that data from a file called memberList.json in the /startup folder</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>queryBlockchain.js</strong></dt>
+<dd>As you are running the autoloader exec and working with chapters 5-12, you will see blocks being created. This modules listens to the blockchain events and sends that data to the browser.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Z2B_Services.js</strong></dt>
+<dd>This module contains transaction management routines which are called either by the autoLoader.js module or hlcClient.js module.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Z2B_Utilities.js</strong></dt>
+<dd>This module contains utility services, including socket creation, which are called by autoLoader, hlcClient, hlcAdmin, queryBlockChain modules</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>multi-lingual.js</strong></dt>
+<dd>This module contains services to support multiple languages on the browser. Language text is provided in subfolders in the composer/text folder. Which languages are available is managed in the languages.json file.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="common-web-browser-code">
+<h2>Common Web Browser code<a class="headerlink" href="#common-web-browser-code" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>z2b-utilities.js</strong>
+This file contains routines which are used by the browser javascript.</li>
+<li><strong>z2b-initiate.js</strong>
+This file contains the code necessary to start up the web application.
+This is where the default starting language is specified</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="web-server-code-unique-to-this-chapter">
+<h2>Web Server Code Unique to this Chapter<a class="headerlink" href="#web-server-code-unique-to-this-chapter" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>hlcAdmin.js</strong>
+This contains all code to support the administrative interface on the server side</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="defining-the-business-network">
+<h2>Defining the business network<a class="headerlink" href="#defining-the-business-network" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>network/model/sample.cto</strong>
+The CTO file contains the network description and includes member (buyer, seller, provider, shipper, financeCo), asset (Order) and transaction definitions. The sample.cto file uses two other files as it&#8217;s foundation: <strong>base.cto</strong> and <strong>events.cto</strong></li>
+<li><strong>network/lib/sample.js</strong>
+This contains the transaction code which will be deployed to the blockchain. Although normally written in GO, hyperledger composer allows us to write all of the blockchain code in javascript and then uses a plug-in called DukTape to enable the javascript to be executed within the GO environment. This file must implement transactions as defined in the sample.cto file and is one of the places where we ensure that members have the authority to execute the requested transaction.</li>
+<li><strong>network/permissions.acl</strong>
+This file determines precisely what transactions a member can execute and what assets a member can see. The basic rule is &#8220;If authority is not specifically granted in this file, then access is denied.&#8221;</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="web-browser-code-unique-to-this-chapter">
+<h2>Web Browser Code Unique to this Chapter<a class="headerlink" href="#web-browser-code-unique-to-this-chapter" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>z2b-admin.js</strong>
+This file contains all of the browser functional code to support the administrative interface
+<strong>Please Note</strong> that with the update to hyperledger-composer v0.15, composer has transitioned from using connection profiles to using idCards. This means that the connection profile creation work is no longer required to connect to the network.</li>
+<li><strong>index.html</strong>
+This file is the initial web page loaded by the application.
+Text on this page is determined by the selected language (default is US English)</li>
+<li><strong>admin.html</strong>
+Contains the HTML to manage the admin interface
+Text on this page is determined by the selected language
+<strong>Please Note</strong> that with the update to hyperledger-composer v0.15, composer has transitioned from using connection profiles to using idCards. This means that the connection profile creation work is no longer required to connect to the network. Therefore, these items now show a yellow strike-through in this chapter and will not be in chapters 6-12.</li>
+<li><strong>createConnectionProfile.html</strong>
+Contains the HTML to manage profile creation
+Text on this page is determined by the selected language</li>
+<li><strong>createMember.html</strong>
+contains the HTML to manage member creation
+Text on this page is determined by the selected language</li>
+<li><strong>deleteConnectionProfile.html</strong>
+contains the HTML to manage connection deletion
+Text on this page is determined by the selected language</li>
+<li><strong>getMemberSecret.html</strong>
+contains the HTML to manage and display member secrets
+Text on this page is determined by the selected language</li>
+<li><strong>removeMember.html</strong>
+contains the HTML to remove a member
+Text on this page is determined by the selected language</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="where-are-the-answers">
+<h2>Where are the Answers?<a class="headerlink" href="#where-are-the-answers" title="Permalink to this headline">¶</a></h2>
+<p><strong>Chapterxx/Documentation/answers</strong></p>
+<ul class="simple">
+<li>all answers for each chapter are in the <cite>Documentation/answers</cite> folder in that chapter.</li>
+<li>The naming conventions used are:</li>
+<li><dl class="first docutils">
+<dt><strong>*Folder Names:*</strong></dt>
+<dd><ul class="first last">
+<li>composer: these files are the answers to files located in  the following path within each chapter: <code class="docutils literal"><span class="pre">controller/restapi/features/composer/</span></code></li>
+<li>cto: <code class="docutils literal"><span class="pre">network/model</span></code></li>
+<li>CSS: <code class="docutils literal"><span class="pre">HTML/CSS</span></code></li>
+<li>HTML: <code class="docutils literal"><span class="pre">/HTML/</span></code></li>
+<li>js: <code class="docutils literal"><span class="pre">HTML/js/</span></code></li>
+<li>lib: <code class="docutils literal"><span class="pre">network/lib</span></code></li>
+<li>test: <code class="docutils literal"><span class="pre">network/test</span></code></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>*File Name:*</strong></dt>
+<dd><ul class="first last">
+<li>each file has the same prefix in the answers and in the target folder. The answers folder adds &#8216;_complete&#8217; to the end of the first part of the file name. For example:</li>
+<li>the server code for administration is in the <strong>*controller/restapi/features/composer*</strong> folder and is called: hlcAdmin.js. The completed code for that file (in this chapter) is in the <strong>*Documentation/answers/composer*</strong> folder and is called hlcAdmin_complete.js</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="how-do-i-get-everything-started-once-i-ve-updated-all-the-code">
+<h2>How do I get everything started once I&#8217;ve updated all the code?<a class="headerlink" href="#how-do-i-get-everything-started-once-i-ve-updated-all-the-code" title="Permalink to this headline">¶</a></h2>
+<p>You need to run the following command <strong>once</strong> for each chapter: <code class="docutils literal"><span class="pre">npm</span> <span class="pre">install</span></code>. This installs all of the node modules required to run your program.</p>
+<dl class="docutils">
+<dt><strong>Each time you restart your system</strong>, restart Docker, or bring your system back from a &#8216;suspend&#8217; state, you need to run the following two commands in this order:</dt>
+<dd><ul class="first last simple">
+<li>buildAndDeploy (OSX) ... or ... ./buildAndDeploy (Ubuntu)</li>
+<li>npm start (or npm index)</li>
+</ul>
+</dd>
+</dl>
+<p>The <code class="docutils literal"><span class="pre">buildAndDeploy</span></code> command creates the business archive, stops and restarts the docker containers and then deploys your network into those containers.</p>
+<p>The <code class="docutils literal"><span class="pre">npm</span> <span class="pre">start</span></code> command loads and starts to execute the index.js file in your chapterxx folder. This, in turn, loads all of the services in the controller folder structure.</p>
+<p># Why All The Changes?
+<strong>HyperLedger Composer has gone through two significant changes in 4Q2017.</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>The first, Version 0.14, changed how security worked and clarified the difference between the business network administrator (admin) and the fabric Administrator (PeerAdmin). While this had little effect on what the Admin user interface could do, it did change significantly how the underlying code worked in the hlcAdmin.js file and in the autoLoad.js file. The biggest code change is that the autoLoad process started issuing Identities instead of just adding members to the registry. The other significant change required adding two statements to the permissions.acl file.</li>
+<li>Then Version 0.15 was released and the entire access structure was changed from connection profile + username/password (which is why we had the getSecret() method) to idCards. This necessitated changes in some of the scripts we use (buildAndDeploy, startup.sh, deployNetwork.sh), required a complete rewrite for how the test code loads and connects to the network and also required changes in the admin interface. You&#8217;ll see a number of items which have a &#8211;&gt;yellow strikethrough&lt;&#8211;, indicating that they are no longer available.</li>
+<li>We aren&#8217;t using connection profiles any more as part of the log in process, so that whole section is no longer useful. Because we&#8217;re using cards, we don&#8217;t need to use, nor do we need to capture, the user secrets associated with each Member. so that is deactivated.</li>
+</ul>
+</div></blockquote>
+<p><strong>We do, however, need more capability for Members.</strong> Along with the Add Member function, which we&#8217;ve had all along, we now need the ability to issue an Identity for that Member and then to create an idCard for that member. You&#8217;ll see those new functions in the Resource Management part of the administrative user interface, along with a feature which will check to see if an idCard already exists for a specific member.</p>
+<p>An Identity can only be issued for an existing Member, so the process is to:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Add a Member</li>
+<li>Issue an Identity</li>
+<li>Create an idCard</li>
+</ul>
+</div></blockquote>
+<p>Creating an idCard requires the password, or secret, which was generated during the issue Identity process. Each of these functions has been implemented individually. It would be a great idea to combine the issue Identity process with the Create idCard process, so that you don&#8217;t have to remember to copy the generated secret and type it into the createCard page.</p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="C04.html" title="previous chapter (use the left arrow)">Chapter 4: Building your first Business Network</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="C06.html" title="next chapter (use the right arrow)">Chapter 6: Building the Buyer Services and User Experience</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="C06.html" title="Chapter 6: Building the Buyer Services and User Experience"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="C04.html" title="Chapter 4: Building your first Business Network"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Zero To Blockchain 1.3.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2018, Bob Dill. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>
