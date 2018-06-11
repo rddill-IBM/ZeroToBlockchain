@@ -33,7 +33,7 @@ CARD_SOURCE=~/.composer
 CARD_TARGET=cards
 IP_ADDRESS="0.0.0.0"
 
- while getopts "h:n:" opt; 
+ while getopts "h:c:k:n:" opt; 
 do
     case "$opt" in
         h|\?)
