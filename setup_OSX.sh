@@ -1,6 +1,4 @@
 #!/bin/bash
-
- #!/bin/bash
  
  YELLOW='\033[1;33m'
  RED='\033[1;31m'
@@ -32,6 +30,14 @@ function getCurrent()
         echo "DIR in getCurrent is: ${DIR}"
         THIS_SCRIPT=`basename "$0"`
         showStep "Running '${THIS_SCRIPT}'"
+        showStep "Checking to make sure Docker daemon is available"
+        docker_up=$(pgrep -f com.docker.supervisor)
+        if [[ ${docker_up} = "" ]]; then
+            showStep "${RED}Docker daemon is not running, please start it before running this script${RESET}"
+            exit -1
+        else
+            showStep "Docker daemon is running"
+        fi
     }
 
 # check to see if Brew is installed. Install it if it's not already present
@@ -53,6 +59,7 @@ function check4Brew ()
         brew update
         showStep "upgrading your installed brew packages"
         brew upgrade
+        brew cleanup
         brew install dos2unix
     }
 
@@ -64,13 +71,20 @@ function check4node ()
             if [ "$?" -ne 0 ]; then
                 showStep "${RED}node not installed. installing Node V8"
                 brew install node@8
+                brew link --overwrite --force node@8
+                brew postinstall node@8
+                npm i npm@latest -g
             else            
-                if [[ `brew search /node@6/` != "node@8" ]]; then
+                if [[ `brew search /node@8/` != "node@8" ]]; then
                 showStep "${RED}found node $? installed, but not V8. installing Node V8"
                 brew install node@8
+                brew link --overwrite --force node@8
+                brew postinstall node@8
+                npm i npm@latest -g
                 echo "PATH=/usr/local/opt/node@8/bin:"'$PATH' >>~/.bash_profile
                 else
                     showStep "${GREEN}Node V8 already installed"
+                    npm i npm@latest -g
                 fi
             fi
         else   
@@ -91,7 +105,18 @@ function check4git ()
                 showStep "${RED}git not installed. installing git"
                 brew install git
             else
-                showStep "${GREEN}git already installed"
+                git_version=$(git --version | awk '{print $3}')
+                IFS=. components=(${git_version##*-})
+                version=${components[0]}
+                major=${components[1]}
+                if ((($version < 2)) || ((major<18))); then
+                    showStep "${YELLOW}Upgrading git"
+                    brew install git
+                    brew link --force git
+                    brew unlink git && brew link git
+                else
+                showStep "${GREEN}git already installed and current"
+                fi                
             fi
             showStep "downloading GitHub Desktop for OSX"
             curl -O https://mac-installer.github.com/mac/GitHub%20Desktop%20223.zip
@@ -186,7 +211,7 @@ function install_hlf ()
             showStep "updating .bash_profile with new paths"
             # ensure that the following lines start with a new line
             echo "  "  >>~/.bash_profile
-            echo 'export FABRIC_VERSION=hlfv1' >>~/.bash_profile
+            echo "export FABRIC_VERSION=hlfv1" >>~/.bash_profile
             echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
             echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
         else   
@@ -216,6 +241,9 @@ function printHeader ()
     echo ""
     echo -e "${YELLOW}installation script for the Zero To Blockchain Series" | indent
     echo -e "${RED}This is for Mac OSX ONLY" | indent
+    echo -e "${RED}Please ensure that you have already installed Docker on your system before running this script" | indent
+    echo -e "${YELLOW}Docker for OSX can be found here: https://www.docker.com/community-edition#/download${RESET}" | indent
+    read -n1 -r -p "Press enter to continue or press CTRL-C to cancel if you need to install Docker" key
     echo -e "${YELLOW}This script will check to see if HomeBrew is installed" | indent
     echo -e "${YELLOW}   and install it if it's not already present. " | indent
     echo -e "${YELLOW}It will then execute a brew update and brew upgrade to ensure" | indent
