@@ -70,7 +70,7 @@ function getContext ()
     echo "IP Address is $IP_ADDRESS"
 
     showStep "updating env.json for $OS"
-    if [[ $OS == "Darwin" ]]; then
+    if [[ $OS == "Darwin" ]] || [[ $OS == "darwin" ]]; then
         echo "updating for OSX"
         cat controller/env.json |  sed -i '.bak' 's/\"kube_address":".*"/"kube_address":"'$IP_ADDRESS'"/' controller/env.json
     else
