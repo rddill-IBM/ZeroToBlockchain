@@ -31,8 +31,8 @@ else
 fi
 
 echo "Deleting Existing Composer Rest Server pod"
-echo "Running: kubectl delete -f ../kube-configs/composer-rest-server.yaml"
-kubectl delete -f ../kube-configs/composer-rest-server.yaml
+echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/composer-rest-server.yaml"
+kubectl delete -f ${KUBECONFIG_FOLDER}/composer-rest-server.yaml
 
 while [ "$(kubectl get deployments | grep composer-rest-server | wc -l | awk '{print $1}')" != "0" ]; do
 	echo "Waiting for composer rest server to be deleted"

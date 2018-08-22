@@ -68,15 +68,15 @@ echo "Creating chaincodeinstantiate pod"
 echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_instantiate.yaml"
 kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_instantiate.yaml
 
-while [ "$(kubectl get pod -a chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" != "Completed" ]; do
+while [ "$(kubectl get pod chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" != "Completed" ]; do
     echo "Waiting for chaincodeinstantiate container to be Completed"
     sleep 1;
 done
 
-if [ "$(kubectl get pod -a chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" == "Completed" ]; then
+if [ "$(kubectl get pod chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" == "Completed" ]; then
 	echo "Instantiate Chaincode Completed Successfully"
 fi
 
-if [ "$(kubectl get pod -a chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" != "Completed" ]; then
+if [ "$(kubectl get pod chaincodeinstantiate | grep chaincodeinstantiate | awk '{print $3}')" != "Completed" ]; then
 	echo "Instantiate Chaincode Failed"
 fi

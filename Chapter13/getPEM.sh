@@ -25,6 +25,7 @@ function getPEM ()
     cp -v ~/.composer/client-data/PeerAdmin@hlfv1/* $CA_TARGET
     cp -v ~/.composer/client-data/PeerAdmin@hlfv1/* ~/.hfc-key-store
     KEY_PREFIX=$(cat $CA_TARGET/PeerAdmin | sed -e 's/[}"]*\(.\)[{"]*/\1/g;y/,/\n/' | grep 'signingIdentity:' | sed 's/^.*://')
+
     cp $CA_TARGET/$KEY_PREFIX"-priv" $CA_TARGET/$KEY_PREFIX"_sk"
 
     showStep "Please enter your root password for this O/S now"

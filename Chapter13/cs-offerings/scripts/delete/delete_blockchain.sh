@@ -47,7 +47,7 @@ else
 fi
 
 echo "Deleting blockchain deployments"
-if [ "$(kubectl get pods -a | grep couchdb | wc -l | awk '{print $1}')" != "0" ]; then
+if [ "$(kubectl get pods | grep couchdb | wc -l | awk '{print $1}')" != "0" ]; then
     # Use the yaml file with couchdb
     echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb.yaml"
     kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb.yaml

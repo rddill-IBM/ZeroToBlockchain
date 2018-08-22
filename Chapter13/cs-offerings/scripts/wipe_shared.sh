@@ -9,7 +9,7 @@ else
 	kubectl create -f ../kube-configs/wipe_shared.yaml	
 fi
 
-while [ "$(kubectl get pod -a wipeshared | grep wipeshared | awk '{print $3}')" != "Completed" ]; do
+while [ "$(kubectl get pod wipeshared | grep wipeshared | awk '{print $3}')" != "Completed" ]; do
     echo "Waiting for the shared folder to be erased"
     sleep 1;
 done

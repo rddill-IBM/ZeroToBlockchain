@@ -32,8 +32,11 @@ PEERADMIN_CARD=PeerAdmin.card
 CARD_SOURCE=~/.composer
 CARD_TARGET=cards
 IP_ADDRESS="0.0.0.0"
+ENV_ADDRESS="0.0.0.0"
+COMPOSER_ADDRESS="0.0.0.0"
+PAID='false'
 
- while getopts "h:c:k:n:" opt; 
+ while getopts "h:c:k:n:p:" opt; 
 do
     case "$opt" in
         h|\?)
@@ -55,27 +58,45 @@ do
                 CLUSTER_NAME=$OPTARG 
             fi
         ;;
+        p)  showStep "option passed for PAID is: '$OPTARG'" 
+            if [[ $OPTARG != "" ]]; then 
+                PAID=$OPTARG 
+            fi
+        ;;
     esac
  done
 
 function getContext ()
 {
-    showStep "Retrieving Cluster configuration"
+    showStep "Retrieving Cluster configuration for $CLUSTER_NAME"
     KUBECONFIG=$(bx cs cluster-config $CLUSTER_NAME | grep 'KUBECONFIG' | awk '{print $2}')
     echo "KUBECONFIG to export is $KUBECONFIG"
     export "$KUBECONFIG"
 
-    showStep "Retrieving Kube IP Address"
-    IP_ADDRESS=$(bx cs workers $CLUSTER_NAME | grep 'kube' | awk '{print $2}')
-    echo "IP Address is $IP_ADDRESS"
+    if [[ $PAID == 'false' ]]; then
+        showStep "Retrieving Kube IP Address for FREE cluster"
+        IP_ADDRESS=$(bx cs workers $CLUSTER_NAME | grep 'kube' | awk '{print $2}')
+        ENV_ADDRESS=$IP_ADDRESS
+        COMPOSER_ADDRESS=$IP_ADDRESS
+        echo "IP Address is $IP_ADDRESS"
+    else
+        showStep "Retrieving CA and COMPOSER IP Addresses for PAID cluster"
+        # CA_ADDRESS=$(kubectl get pods -o wide | grep 'blockchain-ca' | awk '{print $6}')
+        COMPOSER_ADDRESS=$(bx cs workers Z2B | grep 'kube' | awk '{print $2}' | head -n1) 
+        CA_ADDRESS=$COMPOSER_ADDRESS
+        echo "IP Address for CA is $CA_ADDRESS"
+        echo "IP Address for COMPOSER is $COMPOSER_ADDRESS"
+        ENV_ADDRESS=$CA_ADDRESS
+    fi
 
     showStep "updating env.json for $OS"
     if [[ $OS == "Darwin" ]] || [[ $OS == "darwin" ]]; then
         echo "updating for OSX"
-        cat controller/env.json |  sed -i '.bak' 's/\"kube_address":".*"/"kube_address":"'$IP_ADDRESS'"/' controller/env.json
+        pwd
+        cat controller/env.json |  sed -i '.bak' 's/\"kube_address":".*"/"kube_address":"'$ENV_ADDRESS'"/' controller/env.json
     else
         echo "updating for Linux"
-        cat controller/env.json |  sed -i 's/\"kube_address":".*"/"kube_address":"'$IP_ADDRESS'"/' controller/env.json
+        cat controller/env.json |  sed -i 's/\"kube_address":".*"/"kube_address":"'$ENV_ADDRESS'"/' controller/env.json
     fi
 }
 
@@ -114,7 +135,7 @@ function pauseForCard ()
 {
     CURRENT=$(pwd)
     echo -e "${RESET} pausing while you go to composer playground and download the PeerAdmin card."
-    echo -e "${GREEN}You can access the playground at ==> http://$IP_ADDRESS:31080${RESET}"
+    echo -e "${GREEN}You can access the playground at ==> http://$COMPOSER_ADDRESS:31080${RESET}"
     echo -e "Click on ${GREEN}Launch Now${RESET} and then ${GREEN}export the PeerAdmin card ${RESET}"
     echo -e "after downloading the PeerAdmin card, ${GREEN}please copy it into your $CURRENT folder.${RESET}"
 
@@ -125,9 +146,9 @@ function pauseForCard ()
     fi 
     while [ ! -f $PEERADMIN_CARD ]; do
         if [ $(which xdg-open | grep 'xdg-open' -c ) -eq 0 ]; then
-            open http://$IP_ADDRESS:31080
+            open http://$COMPOSER_ADDRESS:31080
         else 
-            xdg-open http://$IP_ADDRESS:31080
+            xdg-open http://$COMPOSER_ADDRESS:31080
         fi
     read -n1 -r -p "And then press any key to continue..." key
     done
@@ -137,7 +158,7 @@ function updateCard ()
 {
     showStep "updating $CURRENT/$PEERADMIN_CARD"
     pushd ./cs-offerings/scripts/connection-profile
-    ./update_card.sh -c $CURRENT/$PEERADMIN_CARD -a $IP_ADDRESS
+    ./update_card.sh -c $CURRENT/$PEERADMIN_CARD -a $COMPOSER_ADDRESS
     popd
     composer card import --file $PEERADMIN_CARD
     composer card list
