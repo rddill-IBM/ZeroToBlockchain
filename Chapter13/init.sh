@@ -5,6 +5,7 @@ SOURCE_DIR=controller/restapi/features/composer/creds
 TARGET_DIR=~/.hfc-key-store
 CARD_TARGET=~/.composer
 CARD_SOURCE=cards
+CLIENT_DATA=client-data
 
 
 if [ -d $TARGET_DIR ]; then
@@ -16,7 +17,7 @@ else
     mkdir $TARGET_DIR
 fi
 
-ls -AlH $TARGET_DIR
+#ls -AlH $TARGET_DIR
 
 # copy cards to ~.hfc-key-store
 
@@ -25,8 +26,8 @@ cp $SOURCE_DIR/* $TARGET_DIR
 
 # list contents in ~/.hfc-key-store
 
-echo "listing contents of $TARGET_DIR"
-ls -AlH $TARGET_DIR
+#echo "listing contents of $TARGET_DIR"
+#ls -AlH $TARGET_DIR
 
 # copy cards to ~/.composer
 
@@ -39,10 +40,10 @@ else
     echo "$CARD_TARGET does not exist"
     mkdir $CARD_TARGET
 fi
-echo "copying $CARD_SOURCE/* to $CARD_TARGET/"
-cp -r $CARD_SOURCE/* $CARD_TARGET
-echo "attempting to list contents of $CARD_TARGET"
-ls -AlH $CARD_TARGET
+echo "copying $SOURCE_DIR/$CARD_SOURCE/ to $CARD_TARGET/$CARD_SOURCE/"
+cp -r $SOURCE_DIR/$CARD_SOURCE/ $CARD_TARGET/$CARD_SOURCE/
+cp -r $SOURCE_DIR/$CLIENT_DATA/ $CARD_TARGET/$CLIENT_DATA/
+echo "attempting to list contents of $CARD_TARGET/$CARD_SOURCE"
 
 # start nodejs index.js
 

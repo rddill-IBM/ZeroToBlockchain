@@ -114,7 +114,7 @@ exports.getChainEvents = function(req, res, next) {
                         channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
                         // change Admin in following line to admin
                         var pemPath = path.join(__dirname,'creds','admin@org.hyperledger.composer.system-cert.pem');
-                        var adminPEM = fs.readFileSync(pemPath);
+                        var adminPEM = fs.readFileSync(pemPath).toString();
                         var bcEvents = new hfcEH(client);
                         bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
                         bcEvents.connect();

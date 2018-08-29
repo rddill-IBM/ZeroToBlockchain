@@ -84,7 +84,7 @@ app.locals.wsServer.on('request', function(request)
     app.locals.connection.on('message', function(message)
     {   let obj ={ime: (new Date()).getTime(),text: message.utf8Data};
         // broadcast message to all connected clients
-        let json = JSON.stringify({ type:'message', data: obj });
+        let json = JSON.stringify({ type:'Message', data: obj });
         app.locals.processMessages(json);
     });
 

@@ -12,6 +12,8 @@ function printHelp ()
     echo -e "\t\tyou will have to ensure that the name you use here is also the name you use in BOTH package.json files and in your application code" | indent
     echo -e "${GREEN}-c ${RESET}defaults to ${GREEN}PeerAdmin.card${RESET}. use ${YELLOW}-c your-PEERADMIN.card-name ${RESET}if you are using a different PeerAdmin card"  | indent
     echo -e "${GREEN}-k ${RESET}defaults to ${GREEN}Z2B${RESET}. use ${YELLOW}-k your-IBM Cloud Cluster Name ${RESET}if you are using a different Cluster name"  | indent
+    echo -e "${GREEN}-p ${RESET}defaults to ${GREEN}false${RESET}. use ${YELLOW}-p true ${RESET}if you are using a PAID IBM Cluster"  | indent
+    echo -e "${GREEN}-s ${RESET}defaults to ${GREEN}false${RESET}. use ${YELLOW}-s true ${RESET}if you are want to skip the delete process (no hyperledger pods in your cluster)"  | indent
     echo ""
     echo ""
 }
@@ -29,14 +31,17 @@ function printHeader ()
 NETWORK_NAME="zerotoblockchain-network"
 CLUSTER_NAME="Z2B"
 PEERADMIN_CARD=PeerAdmin.card
-CARD_SOURCE=~/.composer
+CARD_SOURCE=$HOME/.composer
 CARD_TARGET=cards
+SOURCE_DIR='controller/restapi/features/composer/creds'
+CLIENT_DATA=client-data
 IP_ADDRESS="0.0.0.0"
 ENV_ADDRESS="0.0.0.0"
 COMPOSER_ADDRESS="0.0.0.0"
-PAID='false'
+PAID="false"
+SKIP_DELETE="false"
 
- while getopts "h:c:k:n:p:" opt; 
+ while getopts "h:c:k:n:p:s:" opt; 
 do
     case "$opt" in
         h|\?)
@@ -63,6 +68,11 @@ do
                 PAID=$OPTARG 
             fi
         ;;
+        s)  showStep "option passed for SKIP_DELETE is: '$OPTARG'" 
+            if [[ $OPTARG != "" ]]; then 
+                SKIP_DELETE=$OPTARG 
+            fi
+        ;;
     esac
  done
 
@@ -73,7 +83,7 @@ function getContext ()
     echo "KUBECONFIG to export is $KUBECONFIG"
     export "$KUBECONFIG"
 
-    if [[ $PAID == 'false' ]]; then
+    if [[ $PAID == "false" ]]; then
         showStep "Retrieving Kube IP Address for FREE cluster"
         IP_ADDRESS=$(bx cs workers $CLUSTER_NAME | grep 'kube' | awk '{print $2}')
         ENV_ADDRESS=$IP_ADDRESS
@@ -103,8 +113,8 @@ function getContext ()
 function clearOldCards ()
 {
     showStep "Clearing old cards"
-    if [ -d ~/.composer/cards ]; then
-        rm -r ~/.composer/cards 
+    if [ -d $CARD_SOURCE/$CARD_TARGET ]; then
+        rm -r $CARD_SOURCE/$CARD_TARGET 
     fi
     if [ -d $CARD_TARGET ]; then
         rm -r $CARD_TARGET 
@@ -122,11 +132,30 @@ function clearOldCards ()
 
 function setupCluster ()
 {
-    showStep "deleting current fabric containers"
     pushd ./cs-offerings/scripts/
-    ./delete_all.sh
-    showStep "creating new fabric containers"
-    ./create_all.sh --with-couchdb
+    if [[ $PAID == "false" ]]; then
+        if [[ $SKIP_DELETE == "false" ]]; then
+            showStep "deleting current fabric containers in FREE cluster"
+            ./delete_all.sh --with-couchdb
+        else
+            showStep "Skipping delete current fabric containers in FREE cluster"
+        fi
+        showStep "pausing 15 seconds to let the delete settle"
+        sleep 15
+        showStep "creating new fabric containers for FREE cluster"
+        ./create_all.sh --with-couchdb
+    else
+        if [[ $SKIP_DELETE == "false" ]]; then
+            showStep "deleting current fabric containers in PAID cluster"
+            ./delete_all.sh --with-couchdb --paid
+        else
+            showStep "Skipping delete current fabric containers in PAID cluster"
+        fi
+        showStep "pausing 15 seconds to let the delete settle"
+        sleep 15
+        showStep "creating new fabric containers for PAID cluster"
+        ./create_all.sh --with-couchdb --paid
+    fi
     popd
 
 }
@@ -187,19 +216,36 @@ function installNetwork()
     composer network ping -c admin@$NETWORK_NAME
     showStep "extracting connection profile"
     unzip admin.card
-    rm -r ./credentials
-    rm metadata.json
-    mv -y connection.json ../../controller
+    mv connection.json ../../controller
     rm connection.json
     showStep "clean up installation"
-    rm admin.card
-    rm admin.card.orig
+    if [ -e credentials ]; then
+        rm -r ./credentials
+    fi
+    if [ -e metadata.json ]; then
+        rm metadata.json
+    fi
+    if [ -e admin.card ]; then
+        rm admin.card
+    fi
+    if [ -e admin.card.orig ]; then
+        rm admin.card.orig
+    fi
     popd
     composer card list
-    showStep "saving cards in $CARD_SOURCE to $CARD_TARGET"
-    cp -r $CARD_SOURCE $CARD_TARGET
-    showStep "listing $CARD_TARGET"
-    ls $CARD_TARGET
+    showStep "preserving admin cards for npm start processing"
+    BIZ_ADMIN='admin@zerotoblockchain-network'
+    NET_ADMIN='PeerAdmin@hlfv1'
+    if [[ ! -d $SOURCE_DIR/$CARD_TARGET ]]; then
+        mkdir $SOURCE_DIR/$CARD_TARGET
+    fi
+    if [[ ! -d $SOURCE_DIR/$CLIENT_DATA ]]; then
+        mkdir $SOURCE_DIR/$CLIENT_DATA
+    fi
+    cp -r $CARD_SOURCE/$CARD_TARGET/$BIZ_ADMIN/ $SOURCE_DIR/$CARD_TARGET/$BIZ_ADMIN/
+    cp -r $CARD_SOURCE/$CARD_TARGET/$NET_ADMIN/ $SOURCE_DIR/$CARD_TARGET/$NET_ADMIN/
+    cp -r $CARD_SOURCE/$CLIENT_DATA/$BIZ_ADMIN/ $SOURCE_DIR/$CLIENT_DATA/$BIZ_ADMIN/
+    cp -r $CARD_SOURCE/$CLIENT_DATA/$NET_ADMIN/ $SOURCE_DIR/$CLIENT_DATA/$NET_ADMIN/
     showStep "installNetwork complete"
 }
 
@@ -213,3 +259,4 @@ function installNetwork()
     updateCard
     ./getPEM.sh
     installNetwork
+

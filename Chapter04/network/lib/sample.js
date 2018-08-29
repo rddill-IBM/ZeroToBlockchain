@@ -180,7 +180,6 @@ function Dispute(purchase) {
         /*
         ** Your Code Goes Here
         */
-    }
 }
  /**
  * Resolve a seller initiated dispute

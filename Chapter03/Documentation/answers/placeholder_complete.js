@@ -13,12 +13,14 @@
  */
 
 
- var extend = require('extend');
+var extend = require('extend');
 var watson = require('watson-developer-cloud');
 var vcapServices = require('vcap_services');
 
 var config = require('../../env.json');
 
 exports.placeholder = function(req, res) {
-
+/**
+ * This file is a placeholder to ensure a consistent folder structure and is not used in any of the tutorial sections. 
+ */
 }

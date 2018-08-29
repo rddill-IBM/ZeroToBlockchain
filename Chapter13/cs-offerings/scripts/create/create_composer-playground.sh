@@ -46,10 +46,15 @@ fi
 if [ "$(kubectl get pod composer-card-import | grep composer-card-import | awk '{print $3}')" != "Completed" ]; then
 	echo "Composer Card Import Failed"
 fi
-
+echo "listing persistent volumes after running composer-card-import"
+kubectl get pv
+kubectl get pvc
 echo "Deleting composer-card-import pod"
 echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/composer-card-import.yaml"
 kubectl delete -f ${KUBECONFIG_FOLDER}/composer-card-import.yaml
+echo "listing persistent volumes after deleting composer-card-import"
+kubectl get pv
+kubectl get pvc
 
 while [ "$(kubectl get svc | grep composer-card-import | wc -l | awk '{print $1}')" != "0" ]; do
 	echo "Waiting for composer-card-import pod to be deleted"

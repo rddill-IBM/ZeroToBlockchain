@@ -42,6 +42,8 @@ let chainEvents = false;
  */
 exports.getChainInfo = function(req, res, next)
 {
+    let method='getChainInfo';
+    let HOST_NAME = req.headers.host;
     let channel = {};
     let client = null;
     let wallet_path = path.join(__dirname, 'creds');
@@ -62,11 +64,28 @@ exports.getChainInfo = function(req, res, next)
             // change PeerAdmin in following line to adminID
             return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
+                // This routine as written will only work with the kubernetes deployed blockchain. It will not work with the docker image. 
+                // adding a check for localhost only tells you that the nodejs portion is running on your local system. This does not 
+                // also tell you that the blockchain is/is not running in your local docker environment. 
+                // To support switching between local docker and remote kubernetes on cluster, an extra config element would be required. 
+                // The logical place for this is in the env.json file. If you do that, then the code in this routine will need to be updated so that each
+                // place where the remote addresseses are loaded (from hlf1_profile) will need to be replaced with the local profiles. 
+                // You will find the local profile definitions in the env.json file and use of these definitions can be found in Chapter 12 of this tutorial
                 if (user === null || user === undefined || user.isEnrolled() === false)
                 { console.error('User not defined, or not enrolled - error');}
-                channel = client.newChannel(hlf1_profile.channel);
-                channel.addPeer(client.newPeer(hlf1_profile.peers[0].requestURL));
-                channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));
+                if (HOST_NAME.slice(0,9) === 'localhost')
+                {
+                    console.log(method+" running locally");
+                    channel = client.newChannel(config.fabric.channelName);
+                    channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
+                    channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
+                }else
+                {
+                    console.log(method+" running locally");
+                    channel = client.newChannel(hlf1_profile.channel);
+                    channel.addPeer(client.newPeer(hlf1_profile.peers[0].requestURL));
+                    channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));    
+                }
             })
                 .then(() => {
                     return channel.queryInfo()
@@ -96,6 +115,7 @@ exports.getChainInfo = function(req, res, next)
 exports.getChainEvents = function(req, res, next)
 {
     let method = 'getChainEvents';
+    let HOST_NAME = req.headers.host;
     if (chainEvents) {res.send({'port': svc.cs_socketAddr});}
     else
     {
@@ -113,7 +133,14 @@ exports.getChainEvents = function(req, res, next)
             })
             .then((user) => {
                 if (user === null || user === undefined || user.isEnrolled() === false)
-                {console.error(method+': User not defined, or not enrolled - error');}
+                    {console.error(method+': User not defined, or not enrolled - error');}
+                // This routine as written will only work with the kubernetes deployed blockchain. It will not work with the docker image. 
+                // adding a check for localhost only tells you that the nodejs portion is running on your local system. This does not 
+                // also tell you that the blockchain is/is not running in your local docker environment. 
+                // To support switching between local docker and remote kubernetes on cluster, an extra config element would be required. 
+                // The logical place for this is in the env.json file. If you do that, then the code in this routine will need to be updated so that each
+                // place where the remote addresseses are loaded (from hlf1_profile) will need to be replaced with the local profiles. 
+                // You will find the local profile definitions in the env.json file and use of these definitions can be found in Chapter 12 of this tutorial
                 // get the channel name
                 channel = client.newChannel(hlf1_profile.channel);
                 //get the request URL for the Peer0 container
@@ -121,9 +148,9 @@ exports.getChainEvents = function(req, res, next)
                 // get the orderer URL 
                 channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));
                 // change Admin in following line to admin
-                let pemPath = path.join(__dirname,'creds','ca.pem');
-                let adminPEM = fs.readFileSync(pemPath);
-                let bcEvents = new hfcEH(client);
+                var pemPath = path.join(__dirname,'creds','ca.pem');
+                var adminPEM = fs.readFileSync(pemPath).toString();
+                var bcEvents = new hfcEH(client);
                 bcEvents.setPeerAddr(hlf1_profile.peers[0].eventURL, {pem: adminPEM});
                 bcEvents.registerBlockEvent(
                     function(event){svc.send(req.app.locals, 'BlockChain', event);},

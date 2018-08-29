@@ -11,10 +11,12 @@ fi
 echo ""
 echo "=> CREATE_ALL: Creating storage"
 create/create_storage.sh $@
+sleep 10
 
 echo ""
 echo "=> CREATE_ALL: Creating blockchain"
 create/create_blockchain.sh $@
+sleep 10
 
 echo ""
 echo "=> CREATE_ALL: Running Create Channel"

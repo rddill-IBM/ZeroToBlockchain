@@ -145,7 +145,7 @@ function goEventInitialize()
  */
 function addNotification(_event, _id, _orderID)
 {
-    let method = 'showNotification';
+    let method = 'addNotification';
     console.log(method+' _event'+_event+' id: '+_id+' orderID: '+_orderID);
     let type = getSubscriber(_id);
     if (type === 'none') {return;}
@@ -237,17 +237,27 @@ function notifyMe (_alerts, _id)
  * connect to web socket
  */
 function wsConnect()
-{    if (!window.WebSocket) {console.log('this browser does not support web sockets');}
+{
+    let method = 'wsConnect';
+    if (!window.WebSocket) {console.log('this browser does not support web sockets');}
     let content = $('#body');
     let blockchain = $('#blockchain');
-    wsSocket = new WebSocket('ws://'+host_address);
-    wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ' + error);};
+    // updated from ws: to wss: to support access over https
+    if (host_address.slice(0,9) === 'localhost')
+    {
+        wsSocket = new WebSocket('ws://'+host_address);
+    }else
+    {
+        wsSocket = new WebSocket('wss://'+host_address);
+    }
+    wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ', error);};
     wsSocket.onopen = function ()
     {console.log ('connect.onOpen initiated to: '+host_address); wsSocket.send('connected to client');};
     wsSocket.onmessage = function (message)
     {
         let incoming
         incoming = message.data;
+        // console.log(method+ ' incoming is: '+incoming);
         while (incoming instanceof Object === false){incoming = JSON.parse(incoming);}
         switch (incoming.type)
         {

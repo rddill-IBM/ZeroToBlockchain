@@ -7,7 +7,15 @@ elif [ "${PWD##*/}" == "scripts" ]; then
 else
     echo "Please run the script from 'scripts' or 'scripts/create' folder"
 fi
-
+echo " "
+echo "==========================================="
+echo "PEER_ADDRESS is '$PEER_ADDRESS'"
+echo "PEER_MSPID is '$PEER_MSPID'"
+echo "CHANNEL_NAME is '$CHANNEL_NAME'"
+echo "MSP_CONFIGPATH is '$MSP_CONFIGPATH'"
+echo "KUBECONFIG_FOLDER is '$KUBECONFIG_FOLDER'"
+echo "==========================================="
+echo " "
 # Default to peer 1's address if not defined
 if [ -z "${PEER_ADDRESS}" ]; then
 	echo "PEER_ADDRESS not defined. I will use \"blockchain-org1peer1:30110\"."

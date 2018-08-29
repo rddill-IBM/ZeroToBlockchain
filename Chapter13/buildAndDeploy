@@ -52,3 +52,17 @@ showStep "starting network"
 ./startup.sh
 showStep "deploying network"
 ./deployNetwork.sh -n $NETWORK_NAME
+showStep "preserving admin cards for npm start processing"
+SOURCE_DIR='controller/restapi/features/composer/creds'
+BIZ_ADMIN='admin@zerotoblockchain-network'
+NET_ADMIN='PeerAdmin@hlfv1'
+if [[ ! -d $SOURCE_DIR/cards ]]; then
+    mkdir $SOURCE_DIR/cards
+fi
+if [[ ! -d $SOURCE_DIR/client-data ]]; then
+    mkdir $SOURCE_DIR/client-data
+fi
+cp -r $HOME/.composer/cards/$BIZ_ADMIN/ $SOURCE_DIR/cards/$BIZ_ADMIN/
+cp -r $HOME/.composer/cards/$NET_ADMIN/ $SOURCE_DIR/cards/$NET_ADMIN/
+cp -r $HOME/.composer/client-data/$BIZ_ADMIN/ $SOURCE_DIR/client-data/$BIZ_ADMIN/
+cp -r $HOME/.composer/client-data/$NET_ADMIN/ $SOURCE_DIR/client-data/$NET_ADMIN/

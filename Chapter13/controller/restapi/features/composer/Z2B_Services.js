@@ -129,7 +129,7 @@ let  Z2Blockchain  = {
         return businessNetworkConnection.submitTransaction(_item)
         .then(() => {
             console.log(method+': order '+_id+' successfully added ');
-            this.send(_con, ': order '+_id+' successfully added');
+            this.send(_con, 'Message', 'Order '+_id+' successfully added');
         })
         .catch((error) => {
             if (error.message.search('MVCC_READ_CONFLICT') !== -1)

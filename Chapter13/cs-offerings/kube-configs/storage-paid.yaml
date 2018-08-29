@@ -7,7 +7,7 @@ metadata:
     #ibmc-file-bronze: 2 IOPS per GB.
     #ibmc-file-silver: 4 IOPS per GB.
     #ibmc-file-gold: 10 IOPS per GB.
-    volume.beta.kubernetes.io/storage-class: "ibmc-file-silver"
+    volume.beta.kubernetes.io/storage-class: "ibmc-file-bronze"
 spec:
   accessModes:
     - ReadWriteMany
@@ -24,7 +24,7 @@ metadata:
     #ibmc-file-bronze: 2 IOPS per GB.
     #ibmc-file-silver: 4 IOPS per GB.
     #ibmc-file-gold: 10 IOPS per GB.
-    volume.beta.kubernetes.io/storage-class: "ibmc-file-silver"
+    volume.beta.kubernetes.io/storage-class: "ibmc-file-bronze"
 spec:
   accessModes:
     - ReadWriteMany

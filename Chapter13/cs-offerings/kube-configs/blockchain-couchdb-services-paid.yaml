@@ -13,8 +13,9 @@ spec:
     name: ca
   ports:
   - protocol: TCP
-    port: 7054
     nodePort: 30054
+    targetPort: 7054
+    port: 30054
     name: grpc
 ---
 apiVersion: v1
@@ -31,8 +32,9 @@ spec:
     name: orderer
   ports:
   - protocol: TCP
-    port: 31010
     nodePort: 31010
+    targetPort: 31010
+    port: 31010
     name: grpc
 ---
 apiVersion: v1
@@ -49,12 +51,14 @@ spec:
     name: org1peer1
   ports:
   - protocol: TCP
-    port: 30110
     nodePort: 30110
+    targetPort: 30110
+    port: 30110
     name: grpc
   - protocol: TCP
-    port: 30111
     nodePort: 30111
+    targetPort: 30111
+    port: 30111
     name: events
 ---
 apiVersion: v1
@@ -71,12 +75,14 @@ spec:
     name: org2peer1
   ports:
   - protocol: TCP
-    port: 30210
     nodePort: 30210
+    targetPort: 30210
+    port: 30210
     name: grpc
   - protocol: TCP
-    port: 30211
     nodePort: 30211
+    targetPort: 30211
+    port: 30211
     name: events
 ---
 apiVersion: v1
@@ -93,7 +99,8 @@ spec:
     name: couchdb1
   ports:
   - protocol: TCP
-    port: 5984
+    port: 30984
+    targetPort: 5984
     nodePort: 30984
     name: couchdb1
 ---
@@ -111,6 +118,7 @@ spec:
     name: couchdb2
   ports:
   - protocol: TCP
-    port: 5984
+    port: 31984
+    targetPort: 5984
     nodePort: 31984
     name: couchdb2

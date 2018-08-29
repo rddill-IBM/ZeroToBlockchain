@@ -44,7 +44,7 @@ else
     echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services-${OFFERING}.yaml"
     kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services-${OFFERING}.yaml
 fi
-
+sleep 20
 
 echo "Creating new Deployment"
 if [ "${WITH_COUCHDB}" == "true" ]; then
@@ -55,6 +55,7 @@ else
     echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain.yaml"
     kubectl create -f ${KUBECONFIG_FOLDER}/blockchain.yaml
 fi
+sleep 15
 
 echo "Checking if all deployments are ready"
 
