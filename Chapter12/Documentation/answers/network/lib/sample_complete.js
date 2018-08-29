@@ -58,7 +58,7 @@ function CreateOrder(purchase) {
  * @transaction
  */
 function Buy(purchase) {
-    if (purchase.order.status = JSON.stringify(orderStatus.Created))
+    if (purchase.order.status == JSON.stringify(orderStatus.Created))
     {
         purchase.order.buyer = purchase.buyer;
         purchase.order.seller = purchase.seller;
@@ -81,7 +81,7 @@ function Buy(purchase) {
  * @transaction
  */
 function OrderCancel(purchase) {
-    if ((purchase.order.status = JSON.stringify(orderStatus.Created)) || (purchase.order.status = JSON.stringify(orderStatus.Bought)))
+    if ((purchase.order.status == JSON.stringify(orderStatus.Created)) || (purchase.order.status == JSON.stringify(orderStatus.Bought)))
     {
         purchase.order.buyer = purchase.buyer;
         purchase.order.seller = purchase.seller;
@@ -104,7 +104,7 @@ function OrderCancel(purchase) {
  * @transaction
  */
 function OrderFromSupplier(purchase) {
-    if (purchase.order.status = JSON.stringify(orderStatus.Bought))
+    if (purchase.order.status == JSON.stringify(orderStatus.Bought))
     {
         purchase.order.provider = purchase.provider;
         purchase.order.ordered = new Date().toISOString();
@@ -126,7 +126,7 @@ function OrderFromSupplier(purchase) {
  * @transaction
  */
 function RequestShipping(purchase) {
-    if (purchase.order.status = JSON.stringify(orderStatus.Ordered))
+    if (purchase.order.status == JSON.stringify(orderStatus.Ordered))
     {
         purchase.order.shipper = purchase.shipper;
         purchase.order.requestShipment = new Date().toISOString();
@@ -148,7 +148,7 @@ function RequestShipping(purchase) {
  * @transaction
  */
 function Delivering(purchase) {
-    if ((purchase.order.status = JSON.stringify(orderStatus.ShipRequest)) || (JSON.parse(purchase.order.status).code = orderStatus.Delivering.code))
+    if ((purchase.order.status == JSON.stringify(orderStatus.ShipRequest)) || (JSON.parse(purchase.order.status).code == orderStatus.Delivering.code))
     {
         purchase.order.delivering = new Date().toISOString();
         var _status = orderStatus.Delivering;
@@ -171,7 +171,7 @@ function Delivering(purchase) {
  * @transaction
  */
 function Deliver(purchase) {
-    if ((purchase.order.status = JSON.stringify(orderStatus.ShipRequest)) || (JSON.parse(purchase.order.status).code = orderStatus.Delivering.code))
+    if ((purchase.order.status == JSON.stringify(orderStatus.ShipRequest)) || (JSON.parse(purchase.order.status).code == orderStatus.Delivering.code))
     {
         purchase.order.delivered = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.Delivered);

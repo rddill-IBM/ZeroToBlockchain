@@ -19,6 +19,7 @@ function getCurrent()
     {
         showStep "getting current directory"
         DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+        echo "DIR in startup.sh is $DIR"
         THIS_SCRIPT=`basename "$0"`
         showStep "Running '${THIS_SCRIPT}'"
     }
@@ -30,7 +31,8 @@ function showStep ()
         echo -e "${RESET}-----> $*" | indent
         echo -e "${YELLOW}=====================================================${RESET}" | indent
     }
-
+showStep "running getCurrent"
+getCurrent
 showStep "using execs from previous installation, stored in ${HLF_INSTALL_PATH}"
 cd "${HLF_INSTALL_PATH}"
 showStep "starting fabric"
@@ -42,5 +44,18 @@ showStep "starting fabric"
 #
 showStep "creating new PeerAdmin card (required with each restart)"
 ./createPeerAdminCard.sh 
+showStep "copying admin card to ~/.hfc-key-store"
+CA_PEM_SOURCE="$DIR/controller/restapi/features/composer/creds"
+PEER_SOURCE="$HOME/.composer/client-data/PeerAdmin@hlfv1/*"
+HFC_KEY_STORE="$HOME/.hfc-key-store"
+echo "CA_PEM_SOURCE is: $CA_PEM_SOURCE"
+echo "PEER_SOURCE is: $PEER_SOURCE"
+echo "HFC_KEY_STORE is: $HFC_KEY_STORE"
+rm -R $HFC_KEY_STORE/
+mkdir $HFC_KEY_STORE
+cp  -Rv ${CA_PEM_SOURCE}/ca.pem ${HFC_KEY_STORE}/
+cp  -Rv ${PEER_SOURCE} ${HFC_KEY_STORE}/
+cp  -Rv ${PEER_SOURCE} ${CA_PEM_SOURCE}/
+showStep 'Listing current cards'
 composer card list --name PeerAdmin@hlfv1
 showStep "start up complete"
