@@ -26,23 +26,21 @@ let s_id;
 function loadSellerUX ()
 {
     let toLoad = 'seller.html';
-    getPort();
     if (buyers.length === 0) 
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupSeller(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+    {setupSeller(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupSeller(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupSeller(page);});
     }
 }
 
 /**
  * load the administration User Experience
  * @param {String} page - page to load
- * @param {Integer} port - web socket port to use
  */
-function setupSeller(page, port)
+function setupSeller(page)
 {
     $('#sellerbody').empty();
     $('#sellerbody').append(page);
@@ -50,8 +48,6 @@ function setupSeller(page, port)
     {$(s_notify).removeClass('on'); $(s_notify).addClass('off'); }
     else {$(s_notify).removeClass('off'); $(s_notify).addClass('on'); }
     updatePage('seller');
-    msgPort = port.port;
-    wsDisplay('seller_messages', msgPort);
     let _clear = $('#seller_clear');
     let _list = $('#sellerOrderStatus');
     let _orderDiv = $('#'+sellerOrderDiv);

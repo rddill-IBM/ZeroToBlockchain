@@ -104,7 +104,7 @@ function OrderFromSupplier(purchase) {
  * @transaction
  */
 function RequestShipping(purchase) {
-    if (purchase.order.status == JSON.stringify(orderStatus.Ordered))
+    if ((purchase.order.status == JSON.stringify(orderStatus.Ordered)) || (purchase.order.status == JSON.stringify(orderStatus.Backordered)))
     {
         purchase.order.shipper = purchase.shipper;
         purchase.order.requestShipment = new Date().toISOString();

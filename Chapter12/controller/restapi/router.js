@@ -32,11 +32,7 @@ router.get('/fabric/getChainEvents', hlcFabric.getChainEvents);
 router.get('/fabric/getHistory', hlcAdmin.getHistory);
 
 router.post('/setup/autoLoad*', setup.autoLoad);
-router.get('/setup/getPort*', setup.getPort);
 router.get('/composer/client/initEventRegistry*', hlcClient.init_z2bEvents);
-
-router.get('/setup/getAlertPort*', setup.getAlertPort);
-router.get('/setup/getFinanceAlertPort*', setup.getFinanceAlertPort);
 
 module.exports = router;
 let count = 0;
@@ -77,6 +73,7 @@ router.get('/composer/admin/getAllProfiles*', hlcAdmin.getAllProfiles);
 router.get('/composer/admin/listAsAdmin*', hlcAdmin.listAsAdmin);
 router.get('/composer/admin/getRegistries*', hlcAdmin.getRegistries);
 
+
 router.post('/composer/admin/createProfile*', hlcAdmin.createProfile);
 router.post('/composer/admin/deleteProfile*', hlcAdmin.deleteProfile);
 router.post('/composer/admin/deploy*', hlcAdmin.deploy);
@@ -95,6 +92,7 @@ router.post('/composer/admin/getSecret*', setup.getMemberSecret);
 router.post('/composer/admin/checkCard*', hlcAdmin.checkCard);
 router.post('/composer/admin/createCard*', hlcAdmin.createCard);
 router.post('/composer/admin/issueIdentity*', hlcAdmin.issueIdentity);
+
 
 // router requests specific to the Buyer
 router.get('/composer/client/getItemTable*', hlcClient.getItemTable);

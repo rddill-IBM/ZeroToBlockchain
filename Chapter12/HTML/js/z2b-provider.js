@@ -28,23 +28,21 @@ let p_id;
 function loadProviderUX ()
 {
     let toLoad = 'provider.html';
-    getPort();
     if (buyers.length === 0)
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-      {setupProvider(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+      {setupProvider(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupProvider(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupProvider(page);});
     }
 }
 
 /**
  * load the Provider User Experience
  * @param {String} page - the name of the page to load
- * @param {Integer} port - the port number to use
  */
-function setupProvider(page, port)
+function setupProvider(page)
   {
     $('#providerbody').empty();
     $('#providerbody').append(page);
@@ -52,9 +50,6 @@ function setupProvider(page, port)
     {$(p_notify).removeClass('on'); $(p_notify).addClass('off'); }
     else {$(p_notify).removeClass('off'); $(p_notify).addClass('on'); }
     updatePage('provider');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('provider_messages', msgPort);
     let _clear = $('#provider_clear');
     let _list = $('#providerOrderStatus');
     let _orderDiv = $('#'+providerOrderDiv);

@@ -31,22 +31,19 @@ let f_alerts;
 function loadFinanceCoUX ()
 {
     let toLoad = 'financeCo.html';
-    // get the FinanceAlert Port
-    getFinanceAlertPort();
     if (buyers.length === 0)
-        { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-        {setupFinanceCo(page[0], port[0]);});
+        { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {setupFinanceCo(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupFinanceCo(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupFinanceCo(page);});
     }
 }
 /**
  * @param {String} page HTML page to load
- * @param {Integer} port Websocket port to use
  */
-function setupFinanceCo(page, port)
+function setupFinanceCo(page)
 {
     $('#body').empty();
     $('#body').append(page);
@@ -56,9 +53,6 @@ function setupFinanceCo(page, port)
     else
       {$(f_notify).removeClass('off'); $(f_notify).addClass('on'); }
     updatePage( 'financeCo');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('finance_messages', msgPort);
     let _clear = $('#financeCOclear');
     let _list = $('#financeCOorderStatus');
     let _orderDiv = $('#'+financeCOorderDiv);

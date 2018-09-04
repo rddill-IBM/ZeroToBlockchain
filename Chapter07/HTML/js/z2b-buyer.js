@@ -15,6 +15,10 @@
 // z2c-buyer.js
 
 'use strict';
+let b_notify = '#buyer_notify';
+let b_count = '#buyer_count';
+let b_id = '';
+let b_alerts;
 
 let orderDiv = 'orderDiv';
 let itemTable = {};
@@ -28,31 +32,37 @@ function loadBuyerUX ()
 {
     // get the html page to load
     let toLoad = 'buyer.html';
-    // get the port to use for web socket communications with the server
-    getPort();
     // if (buyers.length === 0) then autoLoad() was not successfully run before this web app starts, so the sie of the buyer list is zero
     // assume user has run autoLoad and rebuild member list
     // if autoLoad not yet run, then member list length will still be zero
     if ((typeof(buyers) === 'undefined') || (buyers === null) || (buyers.length === 0))
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupBuyer(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {
+            setupBuyer(page);
+        });
     }
-    else{
-      $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-      {setupBuyer(page[0], port[0]);});
+    else
+    {
+        $.when($.get(toLoad)).done(function (page)
+        {
+            setupBuyer(page);
+        });
     }
 }
-
-function setupBuyer(page, port)
-{
+    
+    function setupBuyer(page)
+    {
     // empty the hetml element that will hold this page
     $('#body').empty();
     $('#body').append(page);
-    // update the text on the page using the prompt data for the selected language
+    // empty the buyer alerts array
+    b_alerts = [];
+    // if there are no alerts, then remove the 'on' class and add the 'off' class
+    if (b_alerts.length === 0)
+    {$(b_notify).removeClass('on'); $(b_notify).addClass('off'); }
+    else {$(b_notify).removeClass('off'); $(b_notify).addClass('on'); }
+      // update the text on the page using the prompt data for the selected language
     updatePage('buyer');
-    msgPort = port.port;
-    // connect to the web socket and tell the web socket where to display messages
-    wsDisplay('buyer_messages', msgPort);
     // enable the buttons to process an onClick event
     let _create = $('#newOrder');
     let _list = $('#orderStatus');
@@ -67,8 +77,21 @@ function setupBuyer(page, port)
     }
     // display the name of the current buyer
     $('#company')[0].innerText = buyers[0].companyName;
-    // create a function to execute when the user selects a different buyer
-    $('#buyer').on('change', function() { _orderDiv.empty(); $('#buyer_messages').empty(); $('#company')[0].innerText = findMember($('#buyer').find(':selected').text(),buyers).companyName; });
+    // save the current buyer id as b_id
+    b_id = buyers[0].id;
+    // subscribe to events
+    z2bSubscribe('Buyer', b_id);
+      // create a function to execute when the user selects a different buyer
+    $('#buyer').on('change', function() 
+    { _orderDiv.empty(); $('#buyer_messages').empty(); 
+        $('#company')[0].innerText = findMember($('#buyer').find(':selected').text(),buyers).companyName; 
+        // unsubscribe the current buyer
+        z2bUnSubscribe(b_id);
+        // get the new buyer id
+        b_id = findMember($('#buyer').find(':selected').text(),buyers).id;
+        // subscribe the new buyer
+        z2bSubscribe('Buyer', b_id);
+    });
 
 }
 /**
@@ -97,7 +120,7 @@ function displayOrderForm()
         $('#amount').append('$'+totalAmount+'.00');
         // build a select list for the items
         let _str = '';
-        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>'})(each, itemTable)}
+        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>';})(each, itemTable);}
         $('#items').empty();
         $('#items').append(_str);
         $('#cancelNewOrder').on('click', function (){_orderDiv.empty();});
@@ -185,8 +208,8 @@ function listOrders()
  * used by the listOrders() function
  * formats the orders for a buyer. Orders to be formatted are provided in the _orders array
  * output replaces the current contents of the html element identified by _target
- * @param _target - string with div id prefaced by #
- * @param _orders - array with order objects
+ * @param {String} _target - string with div id prefaced by #
+ * @param {Array} _orders - array with order objects
  */
 function formatOrders(_target, _orders)
 {
@@ -267,7 +290,7 @@ function formatOrders(_target, _orders)
         _action += '</select>';
         if (_idx > 0) {_str += '<div class="spacer"></div>';}
         _str += '<table class="wide"><tr><th>'+textPrompts.orderProcess.orderno+'</th><th>'+textPrompts.orderProcess.status+'</th><th class="right">'+textPrompts.orderProcess.total+'</th><th colspan="3" class="right message">'+textPrompts.orderProcess.seller+findMember(_arr[_idx].seller.split('#')[1],sellers).companyName+'</th></tr>';
-        _str += '<tr><th id ="b_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+r_string+_button+'</tr></table>';
+        _str += '<tr><th id ="b_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%" id="b_status'+_idx+'">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+r_string+_button+'</tr></table>';
         _str+= '<table class="wide"><tr align="center"><th>'+textPrompts.orderProcess.itemno+'</th><th>'+textPrompts.orderProcess.description+'</th><th>'+textPrompts.orderProcess.qty+'</th><th>'+textPrompts.orderProcess.price+'</th></tr>'
         for (let every in _arr[_idx].items)
         {
@@ -286,18 +309,26 @@ function formatOrders(_target, _orders)
     // iterate through the page and make all of the different parts of the page active.
     //
     for (let each in _orders)
-      {(function(_idx, _arr)
-        { $('#b_btn_'+_idx).on('click', function ()
-          {
-            let options = {};
-            options.action = $('#b_action'+_idx).find(':selected').text();
-            options.orderNo = $('#b_order'+_idx).text();
-            options.participant = $('#buyer').val();
-            if ((options.action === 'Dispute') || (options.action === 'Resolve'))  {options.reason = $('#b_reason'+_idx).val();}
-            $('#buyer_messages').prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)+options.orderNo));
-            $.when($.post('/composer/client/orderAction', options)).done(function (_results)
-            { $('#buyer_messages').prepend(formatMessage(_results.result)); });
-        });
-      })(each, _orders)
+        {(function(_idx, _arr)
+            { $('#b_btn_'+_idx).on('click', function ()
+                {
+                let options = {};
+                options.action = $('#b_action'+_idx).find(':selected').text();
+                options.orderNo = $('#b_order'+_idx).text();
+                options.participant = $('#buyer').val();
+                if ((options.action === 'Dispute') || (options.action === 'Resolve'))
+                {options.reason = $('#b_reason'+_idx).val();}
+                $('#buyer_messages').prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)+options.orderNo));
+                $.when($.post('/composer/client/orderAction', options)).done(function (_results)
+                { $('#buyer_messages').prepend(formatMessage(_results.result)); });
+            });
+            // use the notifyMe function to determine if this order is in the alert array. 
+            // if it is, the highlight the $('#b_status'+_idx) html element by adding the 'highlight' class
+            if (notifyMe(b_alerts, _arr[_idx].id)) {$('#b_status'+_idx).addClass('highlight'); }
+        })(each, _orders);
     }
+    // reset the b_alerts array to a new array
+    b_alerts = new Array();
+    // call the toggleAlerts function to reset the alert icon
+    toggleAlert($('#buyer_notify'), b_alerts, b_alerts.length);
 }

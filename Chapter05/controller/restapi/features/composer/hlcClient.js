@@ -18,11 +18,12 @@ let fs = require('fs');
 let path = require('path');
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
-// const config = require('../../../env.json');
+const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
 let itemTable = null;
 const svc = require('./Z2B_Services');
 const financeCoID = 'easymoney@easymoneyinc.com';
+let bRegistered = false;
 
 /**
  * get orders for buyer with ID =  _id
@@ -244,7 +245,7 @@ exports.orderAction = function (req, res, next) {
                 .catch((error) => {
                     if (error.message.search('MVCC_READ_CONFLICT') !== -1)
                         {console.log(' retrying assetRegistry.update for: '+req.body.orderNo);
-                        svc.loadTransaction(svc.m_connection, updateOrder, req.body.orderNo, businessNetworkConnection);
+                        svc.loadTransaction(req.app.locals, updateOrder, req.body.orderNo, businessNetworkConnection);
                     }
                     else
                     {console.log(req.body.orderNo+' submitTransaction to update status to '+req.body.action+' failed with text: ',error.message);}
@@ -329,7 +330,7 @@ exports.addOrder = function (req, res, next) {
                     .catch((error) => {
                         if (error.message.search('MVCC_READ_CONFLICT') !== -1)
                             {console.log(orderNo+' retrying assetRegistry.add for: '+orderNo);
-                            svc.loadTransaction(createNew, orderNo, businessNetworkConnection);
+                            svc.loadTransaction(req.app.locals, createNew, orderNo, businessNetworkConnection);
                         }
                         else
                         {console.log(orderNo+' submitTransaction failed with text: ',error.message);}
@@ -338,7 +339,7 @@ exports.addOrder = function (req, res, next) {
                 .catch((error) => {
                     if (error.message.search('MVCC_READ_CONFLICT') !== -1)
                         {console.log(orderNo+' retrying assetRegistry.add for: '+orderNo);
-                        svc.loadTransaction(createNew, orderNo, businessNetworkConnection);
+                        svc.loadTransaction(req.app.locals, createNew, orderNo, businessNetworkConnection);
                     }
                     else
                     {
@@ -353,7 +354,121 @@ exports.addOrder = function (req, res, next) {
         });
     })
     .catch((error) => {
-        console.log(orderNo+' business network connection failed: text',error.message);
+        console.log(method + ' : '+orderNo+' business network connection failed: text',error.message);
         res.send({'result': 'failed', 'error':' order '+orderNo+' add failed on on business network connection '+error.message});
     });
+};
+/**
+ * _monitor
+ * @param {WebSocket} _conn - web socket to use for member event posting
+ * @param {WebSocket} _f_conn - web sockect to use for FinanceCo event posting
+ * @param {Event} _event - the event just emitted
+ *
+ */
+function _monitor(locals, _event)
+{
+    let method = '_monitor';
+    console.log(method+ ' _event received: '+_event.$type+' for Order: '+_event.orderID);
+    // create an event object and give it the event type, the orderID, the buyer id and the eventID
+    // send that event back to the requestor
+    let event = {};
+    event.type = _event.$type;
+    event.orderID = _event.orderID;
+    event.ID = _event.buyerID;
+    svc.send(locals, 'Alert',JSON.stringify(event));
+
+    // using switch/case logic, send events back to each participant who should be notified. 
+    // for example, when a seller requests payment, they should be notified when the transaction has completed
+    // and the financeCo should be notified at the same time. 
+    // so you would use the _conn connection to notify the seller and the 
+    // _f_conn connection to notify the financeCo
+
+    switch (_event.$type)
+    {
+    case 'Created':
+        break;
+    case 'Bought':
+    case 'PaymentRequested':
+        event.ID = _event.sellerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.financeCoID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        break;
+    case 'Ordered':
+    case 'Cancelled':
+    case 'Backordered':
+        event.ID = _event.sellerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.providerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        break;
+    case 'ShipRequest':
+    case 'DeliveryStarted':
+    case 'DeliveryCompleted':
+        event.ID = _event.sellerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.providerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.shipperID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        break;
+    case 'DisputeOpened':
+    case 'Resolved':
+    case 'Refunded':
+    case 'Paid':
+        event.ID = _event.sellerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.providerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.shipperID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.financeCoID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        break;
+    case 'PaymentAuthorized':
+        event.ID = _event.sellerID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        event.ID = _event.financeCoID;
+        svc.send(locals, 'Alert',JSON.stringify(event));
+        break;
+    default:
+        break;
+    }
+
+}
+
+/**
+ * Register for all of the available Z2BEvents
+ * @param {express.req} req - the inbound request object from the client
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ * @returns {Object} - returns are via res.send
+*/
+exports.init_z2bEvents = function (req, res, next)
+{
+    let method = 'init_z2bEvents';
+    if (bRegistered) {res.send('Already Registered');}
+    else{
+        bRegistered = true;
+//        svc.createAlertSocket();
+        let businessNetworkConnection;
+        businessNetworkConnection = new BusinessNetworkConnection();
+        businessNetworkConnection.setMaxListeners(50);
+        //
+        // v0.14
+        // return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+        //
+        // v0.15
+        return businessNetworkConnection.connect(config.composer.adminCard)
+        .then(() => {
+            // using the businessNetworkConnection, start monitoring for events.
+            // when an event is provided, call the _monitor function, passing in the al_connection, f_connection and event information
+            businessNetworkConnection.on('event', (event) => {_monitor(req.app.locals, event); });
+            res.send('event registration complete');
+        }).catch((error) => {
+            // if an error is encountered, log the error and send it back to the requestor
+            console.log(method+' business network connection failed'+error.message);
+            res.send(method+' business network connection failed'+error.message);
+        });
+    }
 };

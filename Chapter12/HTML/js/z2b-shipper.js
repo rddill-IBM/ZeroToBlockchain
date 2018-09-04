@@ -28,22 +28,20 @@ let sh_id;
 function loadShipperUX ()
 {
     let toLoad = 'shipper.html';
-    getPort();
     if (buyers.length === 0)
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupShipper(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+    {setupShipper(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupShipper(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupShipper(page);});
     }
 }
 /**
  *
  * @param {String} page - the page to load
- * @param {Integer} port - the web socket to use
  */
-function setupShipper(page, port)
+function setupShipper(page)
 {
     $('#shipperbody').empty();
     $('#shipperbody').append(page);
@@ -51,9 +49,6 @@ function setupShipper(page, port)
     {$(sh_notify).removeClass('on'); $(sh_notify).addClass('off'); }
     else {$(sh_notify).removeClass('off'); $(sh_notify).addClass('on'); }
     updatePage('shipper');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('shipper_messages', msgPort);
     let _clear = $('#shipper_clear');
     let _list = $('#shipperOrderStatus');
     let _orderDiv = $('#'+shipperOrderDiv);

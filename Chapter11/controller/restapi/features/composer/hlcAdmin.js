@@ -24,8 +24,7 @@ const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefi
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
-// const svc = require('./Z2B_Services');
-// const mod = 'hlcAdmin.js';
+
 
 /**
  * display the admin and network info

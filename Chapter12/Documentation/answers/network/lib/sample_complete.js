@@ -81,7 +81,7 @@ function Buy(purchase) {
  * @transaction
  */
 function OrderCancel(purchase) {
-    if ((purchase.order.status == JSON.stringify(orderStatus.Created)) || (purchase.order.status == JSON.stringify(orderStatus.Bought)))
+    if ((purchase.order.status == JSON.stringify(orderStatus.Created)) || (purchase.order.status == JSON.stringify(orderStatus.Bought)) || (purchase.order.status == JSON.stringify(orderStatus.Backordered)))
     {
         purchase.order.buyer = purchase.buyer;
         purchase.order.seller = purchase.seller;
@@ -126,7 +126,7 @@ function OrderFromSupplier(purchase) {
  * @transaction
  */
 function RequestShipping(purchase) {
-    if (purchase.order.status == JSON.stringify(orderStatus.Ordered))
+    if ((purchase.order.status == JSON.stringify(orderStatus.Ordered)) || (purchase.order.status == JSON.stringify(orderStatus.Backordered)))
     {
         purchase.order.shipper = purchase.shipper;
         purchase.order.requestShipment = new Date().toISOString();

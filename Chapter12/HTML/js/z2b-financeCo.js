@@ -31,22 +31,19 @@ let f_alerts;
 function loadFinanceCoUX ()
 {
     let toLoad = 'financeCo.html';
-    // get the FinanceAlert Port
-    getFinanceAlertPort();
     if (buyers.length === 0)
-        { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-        {setupFinanceCo(page[0], port[0]);});
+        { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {setupFinanceCo(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupFinanceCo(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupFinanceCo(page);});
     }
 }
 /**
  * @param {String} page HTML page to load
- * @param {Integer} port Websocket port to use
  */
-function setupFinanceCo(page, port)
+function setupFinanceCo(page)
 {
     $('#body').empty();
     $('#body').append(page);
@@ -56,9 +53,6 @@ function setupFinanceCo(page, port)
     else
       {$(f_notify).removeClass('off'); $(f_notify).addClass('on'); }
     updatePage( 'financeCo');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('finance_messages', msgPort);
     let _clear = $('#financeCOclear');
     let _list = $('#financeCOorderStatus');
     let _orderDiv = $('#'+financeCOorderDiv);
@@ -157,7 +151,9 @@ function formatFinanceOrders(_target, _orders)
         let _button = '<th><button id="f_btn_'+_idx+'">Execute</button></th>'
         _action += '</select>';
         if (_idx > 0) {_str += '<div class="spacer"></div>';}
-        _str += '<div class="acc_header off" id="order'+_idx+'_h" target="order'+_idx+'_b"><table class="wide"><tr><th>Order #</th><th>Status</th><th class="right">Total</th><th colspan="3" class="right message">Buyer: '+findMember(_arr[_idx].buyer,buyers).companyName+'</th></tr>';
+        let _len = 'resource:org.acme.Z2BTestNetwork.Buyer#'.length;
+        let _buyer = _arr[_idx].buyer.substring(_len, _arr[_idx].buyer.length);
+        _str += '<div class="acc_header off" id="order'+_idx+'_h" target="order'+_idx+'_b"><table class="wide"><tr><th>Order #</th><th>Status</th><th class="right">Total</th><th colspan="3" class="right message">Buyer: '+findMember(_buyer,buyers).companyName+'</th></tr>';
         _str += '<tr><th id ="f_order'+_idx+'" class="showFocus" width="20%">'+_arr[_idx].id+'</th><th width="50%" id="f_status'+_idx+'">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+'</th>'+_button+'</tr></table></div>';
         _str+= formatDetail(_idx, _arr[_idx]);
     })(each, _orders);

@@ -20,6 +20,8 @@ let connectionProfileName = 'z2b-test-profile';
 let networkFile = 'zerotoblockchain-network.bna';
 let businessNetwork = 'zerotoblockchain-network';
 
+let host_address = window.location.host;
+
 let buyers = new Array();
 let sellers= new Array();
 let providers= new Array();
@@ -58,7 +60,5 @@ function initPage ()
     // goChainEvents creates a web socket connection with the server and initiates blockchain event monitoring
     getChainEvents();
     // get the asynch port
-    getPort();
-    // get the Alert Port
-    getAlertPort();
+    wsConnect();
 }
