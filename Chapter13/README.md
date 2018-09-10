@@ -2,6 +2,10 @@
 
 [Return to Table of Contents](../README.md)
 
+## c13-database branch
+ - This branch is to replace the file folder based persistence in for member cards with a database approach
+ - Potentially required to address Cloud-Foundry based restarts of application, which causes the current folder to be deleted and recreated. 
+
 ## (1) network information
  - Docker and the Kubernetes deploy use different names for the CA and for the channel 
    - Docker
