@@ -59,6 +59,8 @@ function initPage ()
         console.log('looking for kubernetes at: '+_addr);
         // goMultiLingual() establishes what languages are available for this web app, populates the header with available languages and sets the default language to US_English
         goMultiLingual('US_English', 'index');
+        // get the timestamp for when the network was last loaded
+        $.when($.get('/setup/getLastRestart')).done(function(_res) { $('#lastUpdate').append(_res.timeStamp); })
         // singleUX loads the members already present in the network
         memberLoad();
         // goChainEvents creates a web socket connection with the server and initiates blockchain event monitoring

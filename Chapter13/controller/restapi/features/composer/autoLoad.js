@@ -26,23 +26,46 @@ const fs = require('fs');
 const path = require('path');
 const _home = require('os').homedir();
 const hlc_idCard = require('composer-common').IdCard;
+const request = require('request');
 
 const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const financeCoID = 'easymoney@easymoneyinc.com';
-
+const cfenv = require('cfenv');
 
 const svc = require('./Z2B_Services');
 const config = require('../../../env.json');
-const admin_connection = require('../../../connection.json');
+// 9/12/18 change to read connection.json from PeerAdmin@hlfv1 card
+const admin_connection = require('./creds/cards/PeerAdmin@hlfv1/connection.json');
 admin_connection.keyValStore = _home+config.keyValStore;
-
+const memberDB = 'z2b_members';
+const homedir = require('os').homedir();
+const CLIENT_DATA = 'client-data'
+const basePath = homedir+'/.composer/'+CLIENT_DATA+'/';
+let protocolToUse;
+if (cfenv.getAppEnv().isLocal)
+    { protocolToUse = "http";  }
+else
+    { protocolToUse = "https"; }
 /**
  * itemTable and memberTable are used by the server to reduce load time requests
  * for member secrets and item information
  */
 let itemTable = new Array();
 let memberTable = new Array();
+/**
+ * getLastRestart retrieves a timestamp for the last time the system was restarted
+ * @param {express.req} req - the inbound request object from the client
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ */
+exports.getLastRestart = function( req, res, next)
+{
+    let methodName = 'getLastRestart';
+    const _id = 'noop@dummyProvider';
+    svc.getThisMember(req.app.locals, memberDB, _id, req.headers.host)
+    .then((_res) => {res.send({result: 'success', timeStamp: JSON.parse(_res).lastUpdated}); });
+}
 /**
  * autoLoad reads the memberList.json file from the Startup folder and adds members,
  * executes the identity process, and then loads orders
@@ -54,156 +77,216 @@ let memberTable = new Array();
  * @function
  */
 exports.autoLoad = function(req, res, next) {
-    // get the autoload file
-    let newFile = path.join(path.dirname(require.main.filename),'startup','memberList.json');
-    let startupFile = JSON.parse(fs.readFileSync(newFile));
-    // connect to the network
-    let businessNetworkConnection;
-    let factory; let participant;
-//     svc.createMessageSocket();
-//     socketAddr = svc.m_socketAddr;
-    let adminConnection = new AdminConnection();
-    // connection prior to V0.15
-    //    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
-    // connection in v0.15
-    adminConnection.connect(config.composer.adminCard)
-    .then(() => {
-        // a businessNetworkConnection is required to add members
-        businessNetworkConnection = new BusinessNetworkConnection();
+    let methodName = 'autoLoad';
+    // connect to the member table
+    svc.connectToDB(memberDB, req.headers.host)
+    .then((_conn_res) => {
+        // get the autoload file
+        let newFile = path.join(path.dirname(require.main.filename),'startup','memberList.json');
+        let startupFile = JSON.parse(fs.readFileSync(newFile));
+        // connect to the network
+        let businessNetworkConnection;
+        let factory; let participant;
+    //     svc.createMessageSocket();
+    //     socketAddr = svc.m_socketAddr;
+        let adminConnection = new AdminConnection();
         // connection prior to V0.15
-        // return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+        //    adminConnection.connect(config.composer.connectionProfile, config.composer.adminID, config.composer.adminPW)
         // connection in v0.15
-        return businessNetworkConnection.connect(config.composer.adminCard)
+        adminConnection.connect(config.composer.adminCard)
         .then(() => {
-            // a factory is required to build the member object
-            factory = businessNetworkConnection.getBusinessNetwork().getFactory();
-            //iterate through the list of members in the memberList.json file and
-            // first add the member to the network, then create an identity for
-            // them. This generates the memberList.txt file later used for
-            // retrieving member secrets.
-            for (let each in startupFile.members)
-                {(function(_idx, _arr)
-                    {
-                    // the participant registry is where member information is first stored
-                    // there are individual registries for each type of participant, or member.
-                    // In our case, that is Buyer, Seller, Provider, Shipper, FinanceCo
-                    return businessNetworkConnection.getParticipantRegistry(config.composer.NS+'.'+_arr[_idx].type)
-                    .then(function(participantRegistry){
-                        return participantRegistry.get(_arr[_idx].id)
-                        .then((_res) => {
-                            console.log('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
-                            svc.send(req.app.locals, 'Message', '['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
-                        })
-                        .catch((error) => {
-                            participant = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
-                            participant.companyName = _arr[_idx].companyName;
-                            participantRegistry.add(participant)
-                            .then(() => {
-                                console.log('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
-                                svc.send(req.app.locals, 'Message', '['+_idx+'] '+_arr[_idx].companyName+' successfully added');
-                            })
-                            .then(() => {
-                                // an identity is required before a member can take action in the network.
-                                // V0.14
-                                // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
-                                // V0.15
-                                console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
-                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id)
-                                .then((result) => {
-                                    console.log('_arr[_idx].id: '+_arr[_idx].id);
-                                    console.log('result.userID: '+result.userID);
-                                    let _mem = _arr[_idx];
-                                    _mem.secret = result.userSecret;
-                                    _mem.userID = result.userID;
-                                    memberTable.push(_mem);
-                                    // svc.saveMemberTable(memberTable);
+            // a businessNetworkConnection is required to add members
+            businessNetworkConnection = new BusinessNetworkConnection();
+            // connection prior to V0.15
+            // return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
+            // connection in v0.15
+            return businessNetworkConnection.connect(config.composer.adminCard)
+            .then(() => {
+                // a factory is required to build the member object
+                factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+                //iterate through the list of members in the memberList.json file and
+                // first add the member to the network, then create an identity for
+                // them. This generates the memberList.txt file later used for
+                // retrieving member secrets.
+                for (let each in startupFile.members)
+                    {(function(_idx, _arr)
+                        {
+                        // the participant registry is where member information is first stored
+                        // there are individual registries for each type of participant, or member.
+                        // In our case, that is Buyer, Seller, Provider, Shipper, FinanceCo
+                        return businessNetworkConnection.getParticipantRegistry(config.composer.NS+'.'+_arr[_idx].type)
+                        .then(function(participantRegistry){
+                            return participantRegistry.get(_arr[_idx].id)
+                            .then((_res) => {
+                                svc.getThisMember(req.app.locals, memberDB, _arr[_idx].id, req.headers.host)
+                                .then((_res) => {
+                                    console.log(methodName+' svc.getThisMember('+_arr[_idx].id+') _res: ', _res);
+                                    let member = JSON.parse(_res);
+                                    let options = {};
+                                    options.registry = member.type;
                                     let _meta = {};
                                     for (each in config.composer.metaData)
                                     {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.composer.metaData); }
                                     _meta.businessNetwork = config.composer.network;
-                                    _meta.userName = result.userID;
-                                    _meta.enrollmentSecret = result.userSecret;
+                                    _meta.userName = member.id;
+                                    _meta.enrollmentSecret = member.secret;
+                                    console.log(methodName+' svc.getThisMember('+_arr[_idx].id+') _meta: ', _meta);
                                     let tempCard = new hlc_idCard(_meta, admin_connection);
-                                    return adminConnection.importCard(result.userID, tempCard)
+                                    return adminConnection.importCard(member.id, tempCard)
+                                    .then(() => {
+                                        let currentMemberPath = path.join(basePath,member.id);
+                                        fs.mkdirSync(currentMemberPath);
+                                        for (let i=0; i<3; i++)
+                                        {(function(_idx)
+                                            {console.log(methodName+' looping on ['+_idx+'] is: '+member[CLIENT_DATA+_idx].name);
+                                            let _path = path.join(basePath,member.id,member[CLIENT_DATA+_idx].name);
+                                            fs.writeFileSync(_path, member[CLIENT_DATA+_idx].file);
+                                            })(i)
+                                        }
+                                    })
+                                    .catch((error) => {console.log(methodName+' adminConnection.importCard for '+member.id+' failed with error: ', error);})
+                                })
+                                .catch((_error) => {
+                                    console.log(methodName+' error: ',_error);
+                                });
+                            })
+                            .catch((error) => {
+                                participant = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
+                                participant.companyName = _arr[_idx].companyName;
+                                participantRegistry.add(participant)
+                                .then(() => {
+                                    console.log('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
+                                    svc.send(req.app.locals, 'Message', '['+_idx+'] '+_arr[_idx].companyName+' successfully added');
+                                })
+                                .then(() => {
+                                    // an identity is required before a member can take action in the network.
+                                    // V0.14
+                                    // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
+                                    // V0.15
+                                    console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
+                                    return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id)
+                                    .then((result) => {
+                                        console.log('_arr[_idx].id: '+_arr[_idx].id);
+                                        console.log('result.userID: '+result.userID);
+                                        let _mem = _arr[_idx];
+                                        _mem.secret = result.userSecret;
+                                        _mem.userID = result.userID;
+                                        memberTable.push(_mem);
+                                        //svc.saveToDB(memberDB, _mem, result.userID, req.headers.host);
+                                        //svc.saveMemberTable(memberTable);
+                                        let _meta = {};
+                                        for (each in config.composer.metaData)
+                                        {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.composer.metaData); }
+                                        _meta.businessNetwork = config.composer.network;
+                                        _meta.userName = result.userID;
+                                        _meta.enrollmentSecret = result.userSecret;
+                                        let tempCard = new hlc_idCard(_meta, admin_connection);
+                                        return adminConnection.importCard(result.userID, tempCard)
                                         .then ((_res) => {
-                                            if (_res) {console.log('card updated');} else {console.log('card imported');}
+                                            if (_res) 
+                                            {console.log(methodName+' '+result.userID+' card updated');} 
+                                            else {console.log(methodName+' '+result.userID+' card imported');}
+                                            let bnc = new BusinessNetworkConnection();
+                                            return bnc.connect(_arr[_idx].id)
+                                            .then(() => {
+                                                console.log(methodName+' businessNetworkConnection.connect() succeeded');
+                                                return bnc.ping()
+                                                .then((_msg) => {
+                                                    console.log(methodName+' businessNetworkConnection.ping() succeeded');
+                                                    // retrieve CLIENT_DATA info and preserve it
+                                                    let currentMemberPath = path.join(basePath,result.userID);
+                                                    let fileList = fs.readdirSync(currentMemberPath);
+                                                    for (each in fileList)
+                                                    {(function(_each, _files)
+                                                        {console.log(methodName+' looping on _files['+_each+'] is: '+_files[_each]);
+                                                        let _path = path.join(basePath,result.userID,_files[_each]);
+                                                        let _file=fs.readFileSync(_path, 'utf8');
+                                                        _mem[CLIENT_DATA+_each]={'name': _files[_each], 'file': _file};})(each, fileList)
+                                                    }
+                                                    svc.saveToDB(memberDB, _mem, result.userID, req.headers.host);
+                                                })
+                                                .catch((error) => { console.log(methodName+' businessNetworkConnection.ping() failed. error: ',error); bnc.disconnect(); });
+                                            })
+                                            .catch((error) => { console.log(methodName+' businessNetworkConnection.connect() failed. error: ',error); bnc.disconnect(); });
                                         })
                                         .catch((error) => {
                                             console.error('adminConnection.importCard failed. ',error.message);
                                         });
+                                    })
+                                    .catch((error) => {
+                                        console.error('create id for '+_arr[_idx].id+'failed. ',error.message);
+                                    });
                                 })
-                                .catch((error) => {
-                                    console.error('create id for '+_arr[_idx].id+'failed. ',error.message);
-                                });
-                            })
-                        .catch((error) => {console.log(_arr[_idx].companyName+' add failed',error.message);});
-                        });
-                    })
-                .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
-                })(each, startupFile.members);
-            }
-            // iterate through the order objects in the memberList.json file.
-            for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items);}
-            svc.saveItemTable(itemTable);
-            for (let each in startupFile.assets)
-                {(function(_idx, _arr)
-                    {
-                    // each type of asset, like each member, gets it's own registry. Our application
-                    // has only one type of asset: 'Order'
-                    return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+_arr[_idx].type)
-                    .then((assetRegistry) => {
-                        return assetRegistry.get(_arr[_idx].id)
-                        .then((_res) => {
-                            console.log('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
-                            svc.send(req.app.locals, 'Message', '['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
+                            .catch((error) => {console.log(_arr[_idx].companyName+' add failed',error.message);});
+                            });
                         })
-                        .catch((error) => {
-                            // first, an Order Object is created
-                            let order = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
-                            order = svc.createOrderTemplate(order);
-                            let _tmp = svc.addItems(_arr[_idx], itemTable);
-                            order.items = _tmp.items;
-                            order.amount = _tmp.amount;
-                            order.orderNumber = _arr[_idx].id;
-                            // then the buy transaction is created
-                            const createNew = factory.newTransaction(config.composer.NS, 'CreateOrder');
-                            order.buyer = factory.newRelationship(config.composer.NS, 'Buyer', _arr[_idx].buyer);
-                            order.seller = factory.newRelationship(config.composer.NS, 'Seller', _arr[_idx].seller);
-                            order.provider = factory.newRelationship(config.composer.NS, 'Provider', 'noop@dummyProvider');
-                            order.shipper = factory.newRelationship(config.composer.NS, 'Shipper', 'noop@dummyShipper');
-                            order.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
-                            createNew.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
-                            createNew.order = factory.newRelationship(config.composer.NS, 'Order', order.$identifier);
-                            createNew.buyer = factory.newRelationship(config.composer.NS, 'Buyer', _arr[_idx].buyer);
-                            createNew.seller = factory.newRelationship(config.composer.NS, 'Seller', _arr[_idx].seller);
-                            createNew.amount = order.amount;
-                            // then the order is added to the asset registry.
-                            return assetRegistry.add(order)
-                            .then(() => {
-                                // then a createOrder transaction is processed which uses the chaincode
-                                // establish the order with it's initial transaction state.
-                                svc.loadTransaction(req.app.locals, createNew, order.orderNumber, businessNetworkConnection);
+                    .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
+                    })(each, startupFile.members);
+                }
+                // iterate through the order objects in the memberList.json file.
+                for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items);}
+                svc.saveItemTable(itemTable);
+                for (let each in startupFile.assets)
+                    {(function(_idx, _arr)
+                        {
+                        // each type of asset, like each member, gets it's own registry. Our application
+                        // has only one type of asset: 'Order'
+                        return businessNetworkConnection.getAssetRegistry(config.composer.NS+'.'+_arr[_idx].type)
+                        .then((assetRegistry) => {
+                            return assetRegistry.get(_arr[_idx].id)
+                            .then((_res) => {
+                                console.log('['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
+                                svc.send(req.app.locals, 'Message', '['+_idx+'] order with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
                             })
                             .catch((error) => {
-                                // in the development environment, because of how timing is set up, it is normal to
-                                // encounter the MVCC_READ_CONFLICT error. This is a database timing error, not a
-                                // logical transaction error.
-                                if (error.message.search('MVCC_READ_CONFLICT') !== -1)
-                                {console.log('AL: '+_arr[_idx].id+' retrying assetRegistry.add for: '+_arr[_idx].id);
-                                    svc.addOrder(req.app.locals, order, assetRegistry, createNew, businessNetworkConnection);
-                                }
-                                else {console.log('error with assetRegistry.add', error.message);}
+                                // first, an Order Object is created
+                                let order = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
+                                order = svc.createOrderTemplate(order);
+                                let _tmp = svc.addItems(_arr[_idx], itemTable);
+                                order.items = _tmp.items;
+                                order.amount = _tmp.amount;
+                                order.orderNumber = _arr[_idx].id;
+                                // then the buy transaction is created
+                                const createNew = factory.newTransaction(config.composer.NS, 'CreateOrder');
+                                order.buyer = factory.newRelationship(config.composer.NS, 'Buyer', _arr[_idx].buyer);
+                                order.seller = factory.newRelationship(config.composer.NS, 'Seller', _arr[_idx].seller);
+                                order.provider = factory.newRelationship(config.composer.NS, 'Provider', 'noop@dummyProvider');
+                                order.shipper = factory.newRelationship(config.composer.NS, 'Shipper', 'noop@dummyShipper');
+                                order.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
+                                createNew.financeCo = factory.newRelationship(config.composer.NS, 'FinanceCo', financeCoID);
+                                createNew.order = factory.newRelationship(config.composer.NS, 'Order', order.$identifier);
+                                createNew.buyer = factory.newRelationship(config.composer.NS, 'Buyer', _arr[_idx].buyer);
+                                createNew.seller = factory.newRelationship(config.composer.NS, 'Seller', _arr[_idx].seller);
+                                createNew.amount = order.amount;
+                                // then the order is added to the asset registry.
+                                return assetRegistry.add(order)
+                                .then(() => {
+                                    // then a createOrder transaction is processed which uses the chaincode
+                                    // establish the order with it's initial transaction state.
+                                    svc.loadTransaction(req.app.locals, createNew, order.orderNumber, businessNetworkConnection);
+                                })
+                                .catch((error) => {
+                                    // in the development environment, because of how timing is set up, it is normal to
+                                    // encounter the MVCC_READ_CONFLICT error. This is a database timing error, not a
+                                    // logical transaction error.
+                                    if (error.message.search('MVCC_READ_CONFLICT') !== -1)
+                                    {console.log('AL: '+_arr[_idx].id+' retrying assetRegistry.add for: '+_arr[_idx].id);
+                                        svc.addOrder(req.app.locals, order, assetRegistry, createNew, businessNetworkConnection);
+                                    }
+                                    else {console.log('error with assetRegistry.add', error.message);}
+                                });
                             });
-                        });
-                    })
-                    .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
-                })(each, startupFile.assets);
-            }
+                        })
+                        .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
+                    })(each, startupFile.assets);
+                }
+            })
+        .catch((error) => {console.log('error with business network Connect', error.message);});
         })
-    .catch((error) => {console.log('error with business network Connect', error.message);});
+        .catch((error) => {console.log('error with adminConnect', error.message);});
+        res.send({'result': 'Success'});
     })
-    .catch((error) => {console.log('error with adminConnect', error.message);});
-    res.send({'result': 'Success'});
+    .catch((error) => {console.log(methodName+' svc.connectToDB('+memberDB+', req.headers.host); failed with error: ', error);});
 };
 
 /**

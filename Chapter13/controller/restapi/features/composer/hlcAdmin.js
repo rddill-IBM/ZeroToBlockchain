@@ -24,7 +24,9 @@ const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefi
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
-const admin_connection = require('../../../connection.json');
+// 9/12/18 change to read connection.json from PeerAdmin@hlfv1 card
+const admin_connection = require('./creds/cards/PeerAdmin@hlfv1/connection.json');
+// const admin_connection = require('../../../connection.json');
 admin_connection.keyValStore = _home+config.keyValStore;
 
 /**
@@ -422,6 +424,8 @@ exports.checkCard = function(req, res, next) {
  * @function
  */
 exports.createCard = function(req, res, next) {
+    let methodName = 'createCard';
+    console.log(methodName+' entered for: ', req.body.id);
     let adminConnection = new AdminConnection();
     let _meta = {};
     for (let each in config.composer.metaData)
@@ -435,7 +439,14 @@ exports.createCard = function(req, res, next) {
         return adminConnection.importCard(req.body.id, tempCard)
         .then ((_res) => { let _msg = ((_res) ? 'card updated' : 'card imported');
             console.log('create Card succeeded:'+_msg);
-            res.send({'result': 'success', 'card': _msg});
+            let businessNetworkConnection = new BusinessNetworkConnection();
+            return businessNetworkConnection.connect(req.body.id)
+            .then(() => {
+                return businessNetworkConnection.ping()
+                .then((_msg) => { businessNetworkConnection.disconnect(); res.send({'result': 'success', 'card': _msg}); })
+                .catch((error) => { console.log(methodName+' businessNetworkConnection.ping() failed. error: ',error); businessNetworkConnection.disconnect(); res.send({'result': 'failed', 'card': error});});
+            })
+            .catch((error) =>{ console.log(methodName+' businessNetworkConnection.connect('+req.body.id+') failed. error: ',error); res.send({'result': 'failed', 'card': error});});
         })
         .catch((error) => {
             console.error('adminConnection.importCard failed. ',error.message);
@@ -618,6 +629,7 @@ exports.removeMember = function(req, res, next) {
     // connection prior to V0.15
     // return businessNetworkConnection.connect(config.composer.connectionProfile, config.composer.network, config.composer.adminID, config.composer.adminPW)
     // connection in v0.15
+    /*
     return businessNetworkConnection.connect(config.composer.adminCard)
     .then(() => {
         return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
@@ -637,6 +649,7 @@ exports.removeMember = function(req, res, next) {
         .catch((error) => {console.log('error with getParticipantRegistry', error); res.send(error.message);});
     })
     .catch((error) => {console.log('error with businessNetworkConnection', error); res.send(error.message);});
+    */
 };
 
 /**
@@ -692,4 +705,20 @@ exports.getHistory = function(req, res, next) {
  */
 exports.getKubeAddress = function(req, res, next) {
     res.send(config.kube_address);
+};
+/**
+ * check to see if the system has been loaded with members yet.
+ * memberStatus.JSON: BUILD_MEMBERS === 'NOT STARTED', the autoLoad process has not yet been run
+ * memberStatus.JSON: BUILD_MEMBERS === 'COMPLETE', the autoLoad process has been run to completion
+ * Folder abby@kidfriendlyinc.com exists, this system has not yet been restarted since autoLoad was run to completion
+ * Folder abby@kidfriendlyinc.com does not exist, this system has been restarted since autoLoad was run to completion
+ * 
+ * ===> Not Yet Active <===
+ * @param {express.req} req - the inbound request object from the client
+ * @param {express.res} res - the outbound response object for communicating back to client
+ * @param {express.next} next - an express service to enable post processing prior to responding to the client
+ * @function
+ */
+exports.checkLoadStatus = function(req, res, next) {
+    res.send({status: ''});
 };

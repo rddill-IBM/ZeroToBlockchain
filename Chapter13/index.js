@@ -25,6 +25,7 @@ const fs = require('fs');
 const mime = require('mime');
 const bodyParser = require('body-parser');
 const cfenv = require('cfenv');
+const request = require('request');
 
 const cookieParser = require('cookie-parser');
 // const session = require('express-session');
@@ -37,6 +38,7 @@ const appEnv = cfenv.getAppEnv();
 const app = express();
 const busboy = require('connect-busboy');
 app.use(busboy());
+
 
 // the session secret is a text string of arbitrary length which is
 //  used to encode and decode cookies sent between the browser and the server
@@ -63,6 +65,10 @@ app.use(express.static(__dirname + '/HTML'));
 app.use(bodyParser.json());
 
 // Define your own router file in controller folder, export the router, add it into the index.js.
+if (cfenv.getAppEnv().isLocal == true)
+{let protocolToUse = 'http';}
+else
+{let protocolToUse = 'https';}
 
 app.use('/', require('./controller/restapi/router'));
 
@@ -84,7 +90,7 @@ app.locals.wsServer.on('request', function(request)
     app.locals.connection.on('message', function(message)
     {   let obj ={ime: (new Date()).getTime(),text: message.utf8Data};
         // broadcast message to all connected clients
-        let json = JSON.stringify({ type:'Message', data: obj });
+        let json = JSON.stringify({ type:'Message', data: obj.text });
         app.locals.processMessages(json);
     });
 
@@ -115,6 +121,25 @@ app.locals.processMessages = processMessages;
 // now set up the http server
 server.on( 'request', app );
 server.listen(appEnv.port, function() {console.log('Listening locally on port %d', server.address().port);});
+
+//
+//
+//
+let urlBase = cfenv.getAppEnv(url).url;
+console.log('index.js urlBase is: '+urlBase);
+//
+// execute autoload process to set up initial members and orders in network. 
+//
+let options = {};
+var url = urlBase+'/setup/autoLoad';
+var method = "POST";
+request( { url: url, json: options, method: method },
+    function(error, response, body) 
+    {
+        console.log('index.js autoload (error)', error);
+        console.log('index.js autoload (body)', body);
+    });
+
 /**
  * load any file requested on the server
  * @param {express.req} req - the inbound request object from the client

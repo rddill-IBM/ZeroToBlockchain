@@ -28,6 +28,8 @@ const svc = require('./Z2B_Services');
 // const util = require('./Z2B_Utilities');
 // const financeCoID = 'easymoney@easymoneyinc.com';
 const config = require('../../../env.json');
+// 9/12/18 change to read connection.json from PeerAdmin@hlfv1 card
+const admin_connection = require('./creds/cards/PeerAdmin@hlfv1/connection.json');
 const hlf1_profile = require('../../../connection.json');
 let chainEvents = false;
 
@@ -73,18 +75,18 @@ exports.getChainInfo = function(req, res, next)
                 // You will find the local profile definitions in the env.json file and use of these definitions can be found in Chapter 12 of this tutorial
                 if (user === null || user === undefined || user.isEnrolled() === false)
                 { console.error('User not defined, or not enrolled - error');}
-                if (HOST_NAME.slice(0,9) === 'localhost')
+                if (admin_connection.channel  === 'composerchannel')
                 {
-                    console.log(method+" running locally");
+                    console.log(method+" running against Docker images");
                     channel = client.newChannel(config.fabric.channelName);
                     channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
                     channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
                 }else
                 {
-                    console.log(method+" running locally");
-                    channel = client.newChannel(hlf1_profile.channel);
-                    channel.addPeer(client.newPeer(hlf1_profile.peers[0].requestURL));
-                    channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));    
+                    console.log(method+" running against kubernetes immages");
+                    channel = client.newChannel(admin_connection.channel);
+                    channel.addPeer(client.newPeer(admin_connection.peers[0].requestURL));
+                    channel.addOrderer(client.newOrderer(admin_connection.orderers[0].url));    
                 }
             })
                 .then(() => {
@@ -142,17 +144,21 @@ exports.getChainEvents = function(req, res, next)
                 // place where the remote addresseses are loaded (from hlf1_profile) will need to be replaced with the local profiles. 
                 // You will find the local profile definitions in the env.json file and use of these definitions can be found in Chapter 12 of this tutorial
                 // get the channel name
-                channel = client.newChannel(hlf1_profile.channel);
+                if (admin_connection.channel  === 'composerchannel')
+                {console.log(method+" running against Docker images");}
+                else
+                {console.log(method+" running against kubernetes images");}
+                channel = client.newChannel(admin_connection.channel);
                 //get the request URL for the Peer0 container
-                channel.addPeer(client.newPeer(hlf1_profile.peers[0].requestURL));
+                channel.addPeer(client.newPeer(admin_connection.peers[0].requestURL));
                 // get the orderer URL 
-                channel.addOrderer(client.newOrderer(hlf1_profile.orderers[0].url));
+                channel.addOrderer(client.newOrderer(admin_connection.orderers[0].url));
                 // change Admin in following line to admin
                 var pemPath = path.join(__dirname,'creds','ca.pem');
                 var adminPEM = fs.readFileSync(pemPath).toString();
                 var bcEvents = new hfcEH(client);
-                bcEvents.setPeerAddr(hlf1_profile.peers[0].eventURL, {pem: adminPEM});
-                bcEvents.registerBlockEvent(
+                bcEvents.setPeerAddr(admin_connection.peers[0].eventURL, {pem: adminPEM});
+            bcEvents.registerBlockEvent(
                     function(event){svc.send(req.app.locals, 'BlockChain', event);},
                     function(error){console.log(method+': registerBlockEvent error: ', error);}
                 );
