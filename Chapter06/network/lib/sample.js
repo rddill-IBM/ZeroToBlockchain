@@ -159,11 +159,11 @@ function RequestPayment(purchase) {
         {purchase.order.status = JSON.stringify(orderStatus.PayRequest);
         purchase.order.financeCo = purchase.financeCo;
         purchase.order.paymentRequested = new Date().toISOString();
-        }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-        });
+        return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(purchase.order);
+            });
+    }
 }
  /**
  * Record a payment to the seller
@@ -174,11 +174,11 @@ function AuthorizePayment(purchase) {
     if ((JSON.parse(purchase.order.status).text == orderStatus.PayRequest.text ) || (JSON.parse(purchase.order.status).text == orderStatus.Resolve.text ))
     {purchase.order.status = JSON.stringify(orderStatus.Authorize);
         purchase.order.approved = new Date().toISOString();
-        }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-        });
+        return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(purchase.order);
+            });
+    }
 }
  /**
  * Record a payment to the seller
@@ -189,11 +189,11 @@ function Pay(purchase) {
     if (JSON.parse(purchase.order.status).text == orderStatus.Authorize.text )
         {purchase.order.status = JSON.stringify(orderStatus.Paid);
         purchase.order.paid = new Date().toISOString();
-        }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-        });
+        return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+            .then(function (assetRegistry) {
+                return assetRegistry.update(purchase.order);
+            });
+    }
 }
  /**
  * Record a dispute by the buyer
