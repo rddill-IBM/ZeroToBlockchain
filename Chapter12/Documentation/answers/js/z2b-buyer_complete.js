@@ -32,22 +32,20 @@ function loadBuyerUX ()
 {
     // get the html page to load
     let toLoad = 'buyer.html';
-    // get the port to use for web socket communications with the server
-    getPort();
     // if (buyers.length === 0) then autoLoad() was not successfully run before this web app starts, so the sie of the buyer list is zero
     // assume user has run autoLoad and rebuild member list
     // if autoLoad not yet run, then member list length will still be zero
     if ((typeof(buyers) === 'undefined') || (buyers === null) || (buyers.length === 0))
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupBuyer(page[0], port[0]);});
-    }
-    else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupBuyer(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {setupBuyer(page);});
+        }
+        else{
+            $.when($.get(toLoad)).done(function (page)
+            {setupBuyer(page);});
     }
 }
 
-function setupBuyer(page, port)
+function setupBuyer(page)
 {
     // empty the hetml element that will hold this page
     $('#buyerbody').empty();
@@ -60,9 +58,6 @@ function setupBuyer(page, port)
     else {$(b_notify).removeClass('off'); $(b_notify).addClass('on'); }
       // update the text on the page using the prompt data for the selected language
     updatePage('buyer');
-    msgPort = port.port;
-    // connect to the web socket and tell the web socket where to display messages
-    wsDisplay('buyer_messages', msgPort);
     // enable the buttons to process an onClick event
     let _create = $('#newOrder');
     let _list = $('#orderStatus');
@@ -120,7 +115,7 @@ function displayOrderForm()
         $('#amount').append('$'+totalAmount+'.00');
         // build a select list for the items
         let _str = '';
-        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>'})(each, itemTable)}
+        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>';})(each, itemTable);}
         $('#items').empty();
         $('#items').append(_str);
         $('#cancelNewOrder').on('click', function (){_orderDiv.empty();});

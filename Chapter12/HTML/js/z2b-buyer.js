@@ -32,39 +32,32 @@ function loadBuyerUX ()
 {
     // get the html page to load
     let toLoad = 'buyer.html';
-    // get the port to use for web socket communications with the server
-    getPort();
     // if (buyers.length === 0) then autoLoad() was not successfully run before this web app starts, so the sie of the buyer list is zero
     // assume user has run autoLoad and rebuild member list
     // if autoLoad not yet run, then member list length will still be zero
     if ((typeof(buyers) === 'undefined') || (buyers === null) || (buyers.length === 0))
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupBuyer(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {setupBuyer(page);});
+        }
+        else{
+            $.when($.get(toLoad)).done(function (page)
+            {setupBuyer(page);});
+        }
     }
-    else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupBuyer(page[0], port[0]);});
-    }
-}
-
-function setupBuyer(page, port)
-{
+    
+    function setupBuyer(page)
+    {
     // empty the hetml element that will hold this page
     $('#buyerbody').empty();
     $('#buyerbody').append(page);
     // empty the buyer alerts array
-    // =====> Your Code Goes Here <=========
+    b_alerts = [];
     // if there are no alerts, then remove the 'on' class and add the 'off' class
     if (b_alerts.length === 0)
-    {
-    // =====> Your Code Goes Here <=========
-    }
+    {$(b_notify).removeClass('on'); $(b_notify).addClass('off'); }
     else {$(b_notify).removeClass('off'); $(b_notify).addClass('on'); }
       // update the text on the page using the prompt data for the selected language
     updatePage('buyer');
-    msgPort = port.port;
-    // connect to the web socket and tell the web socket where to display messages
-    wsDisplay('buyer_messages', msgPort);
     // enable the buttons to process an onClick event
     let _create = $('#newOrder');
     let _list = $('#orderStatus');
@@ -80,20 +73,20 @@ function setupBuyer(page, port)
     // display the name of the current buyer
     $('#company')[0].innerText = buyers[0].companyName;
     // save the current buyer id as b_id
-    // =====> Your Code Goes Here <=========
+    b_id = buyers[0].id;
     // subscribe to events
-    // =====> Your Code Goes Here <=========
+    z2bSubscribe('Buyer', b_id);
       // create a function to execute when the user selects a different buyer
     $('#buyer').on('change', function() 
     { _orderDiv.empty(); $('#buyer_messages').empty(); 
         $('#company')[0].innerText = findMember($('#buyer').find(':selected').text(),buyers).companyName; 
         // unsubscribe the current buyer
-        // =====> Your Code Goes Here <=========
+        z2bUnSubscribe(b_id);
         // get the new buyer id
-        // =====> Your Code Goes Here <=========
+        b_id = findMember($('#buyer').find(':selected').text(),buyers).id;
         // subscribe the new buyer
-        // =====> Your Code Goes Here <=========
-});
+        z2bSubscribe('Buyer', b_id);
+    });
 
 }
 /**
@@ -122,7 +115,7 @@ function displayOrderForm()
         $('#amount').append('$'+totalAmount+'.00');
         // build a select list for the items
         let _str = '';
-        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>'})(each, itemTable)}
+        for (let each in itemTable){(function(_idx, _arr){_str+='<option value="'+_idx+'">'+_arr[_idx].itemDescription+'</option>';})(each, itemTable);}
         $('#items').empty();
         $('#items').append(_str);
         $('#cancelNewOrder').on('click', function (){_orderDiv.empty();});
@@ -326,11 +319,11 @@ function formatOrders(_target, _orders)
             });
             // use the notifyMe function to determine if this order is in the alert array. 
             // if it is, the highlight the $('#b_status'+_idx) html element by adding the 'highlight' class
-            // =====> Your Code Goes Here <=========
-})(each, _orders);
+            if (notifyMe(b_alerts, _arr[_idx].id)) {$('#b_status'+_idx).addClass('highlight'); }
+        })(each, _orders);
     }
     // reset the b_alerts array to a new array
     b_alerts = new Array();
     // call the toggleAlerts function to reset the alert icon
-    // =====> Your Code Goes Here <=========
+    toggleAlert($('#buyer_notify'), b_alerts, b_alerts.length);
 }

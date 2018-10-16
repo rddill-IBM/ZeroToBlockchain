@@ -13,26 +13,30 @@
  */
 
 
-var express = require('express');
-var router = express.Router();
-var format = require('date-format');
+'use strict';
 
-var multi_lingual = require('./features/multi_lingual');
-var resources = require('./features/resources');
-var getCreds = require('./features/getCredentials');
-var hlcAdmin = require('./features/composer/hlcAdmin');
-var hlcClient = require('./features/composer/hlcClient');
-var setup = require('./features/composer/autoLoad');
-var hlcFabric = require('./features/composer/queryBlockChain');
-router.post('/setup/autoLoad*', setup.autoLoad);
-router.get('/setup/getPort*', setup.getPort);
+let express = require('express');
+let router = express.Router();
+let format = require('date-format');
+
+let multi_lingual = require('./features/multi_lingual');
+let resources = require('./features/resources');
+let getCreds = require('./features/getCredentials');
+let hlcAdmin = require('./features/composer/hlcAdmin');
+let hlcClient = require('./features/composer/hlcClient');
+let setup = require('./features/composer/autoLoad');
+let hlcFabric = require('./features/composer/queryBlockChain');
+
 
 router.get('/fabric/getChainInfo', hlcFabric.getChainInfo);
 router.get('/fabric/getChainEvents', hlcFabric.getChainEvents);
 router.get('/fabric/getHistory', hlcAdmin.getHistory);
 
+router.post('/setup/autoLoad*', setup.autoLoad);
+router.get('/composer/client/initEventRegistry*', hlcClient.init_z2bEvents);
+
 module.exports = router;
-var count = 0;
+let count = 0;
 /**
  * This is a request tracking function which logs to the terminal window each request coming in to the web serve and 
  * increments a counter to allow the requests to be sequenced.

@@ -16,8 +16,7 @@
 
 'use strict';
 
-let alertPort = null;
-let financeAlertPort = null;
+let wsSocket;
 
 /**
  * load the four initial user roles into a single page.
@@ -26,8 +25,8 @@ function singleUX ()
 {
     let toLoad = 'singleUX.html';
     if ((typeof(buyers) === 'undefined') || (buyers === null) || (buyers.length === 0))
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (_page, _port, _res)
-        {  msgPort = _port.port;
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (_page, _res)
+        {
         $('#body').empty();
         $('#body').append(_page);
         loadBuyerUX();
@@ -35,8 +34,8 @@ function singleUX ()
         loadProviderUX();
         loadShipperUX();
         // Initialize Registration for all Z2B Business Events
-    // =====> Your Code Goes Here <=========
-});
+        goEventInitialize();
+    });
     }
     else{
         $.when($.get(toLoad)).done(function(_page)
@@ -48,8 +47,8 @@ function singleUX ()
             loadProviderUX();
             loadShipperUX();
             // Initialize Registration for all Z2B Business Events
-    // =====> Your Code Goes Here <=========
-});
+            goEventInitialize();
+        });
     }
 }
 /**
@@ -85,8 +84,8 @@ function memberLoad ()
  */
 function dropDummy(_in)
 {
-    let _a = new Array()
-    for (let each in _in){(function(_idx, _arr){console.log('_arr['+_idx+'].id is: '+_arr[_idx].id); if (_arr[_idx].id !== 'noop@dummy')_a.push(_arr[_idx]);})(each, _in);}
+    let _a = new Array();
+    for (let each in _in){(function(_idx, _arr){if (_arr[_idx].id.slice(0,10) !== 'noop@dummy'){_a.push(_arr[_idx]);}})(each, _in);}
     return _a;
 }
 /**
@@ -136,61 +135,17 @@ function _getMembers(_members)
  */
 function goEventInitialize()
 {
-    $.when($.get('/composer/client/initEventRegistry')).done(function(_res){console.log(_res);})
+    $.when($.get('/composer/client/initEventRegistry')).done(function(_res){console.log('getChainEvents results: ', _res);});
 }
 
 /**
- * get the alert web socket port
- */
-function getAlertPort ()
-{
-    if (alertPort === null)
-    {
-        $.when($.get('/setup/getAlertPort')).done(function (port)
-        {
-            console.log('alert port is: '+port.port); alertPort = port.port;
-            let wsSocket = new WebSocket('ws://localhost:'+alertPort);
-            wsSocket.onopen = function () {wsSocket.send('connected to alerts');};
-            wsSocket.onmessage = function (message) {
-                console.log(message.data);
-                let event = JSON.parse(message.data);
-                addNotification(event.type, event.ID, event.orderID);
-            };
-            wsSocket.onerror = function (error) {console.log('Alert Socket error on wsSocket: ' + error);};
-        });
-    }
-}
-/**
- * get the finance alert web socket port
- */
-function getFinanceAlertPort ()
-{
-    if (financeAlertPort === null)
-    {
-        $.when($.get('/setup/getFinanceAlertPort')).done(function (port)
-        {
-            console.log('finance alert port is: '+port.port); financeAlertPort = port.port;
-            let wsSocket = new WebSocket('ws://localhost:'+financeAlertPort);
-            wsSocket.onopen = function () {wsSocket.send('connected to finance alerts');};
-            wsSocket.onmessage = function (message) {
-                console.log(message.data);
-                let event = JSON.parse(message.data);
-                addNotification(event.type, event.ID, event.orderID);
-            };
-            wsSocket.onerror = function (error) {console.log('Finance Alert Socket error on wsSocket: ' + error);};
-        });
-    }
-}
-
-/**
- * 
  * @param {Event} _event - inbound Event
  * @param {String} _id - subscriber target
  * @param {String} _orderID - inbound order id
  */
 function addNotification(_event, _id, _orderID)
 {
-    let method = 'showNotification';
+    let method = 'addNotification';
     console.log(method+' _event'+_event+' id: '+_id+' orderID: '+_orderID);
     let type = getSubscriber(_id);
     if (type === 'none') {return;}
@@ -277,4 +232,52 @@ function notifyMe (_alerts, _id)
     let b_h = false;
     for (let each in _alerts) {(function(_idx, _arr){if (_id === _arr[_idx].order){b_h = true;}})(each, _alerts);}
     return b_h;
+}
+/**
+ * connect to web socket
+ */
+function wsConnect()
+{
+    let method = 'wsConnect';
+    if (!window.WebSocket) {console.log('this browser does not support web sockets');}
+    let content = $('#body');
+    let blockchain = $('#blockchain');
+    // updated from ws: to wss: to support access over https
+    if (host_address.slice(0,9) === 'localhost')
+    {
+        wsSocket = new WebSocket('ws://'+host_address);
+    }else
+    {
+        wsSocket = new WebSocket('wss://'+host_address);
+    }
+    wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ', error);};
+    wsSocket.onopen = function ()
+    {console.log ('connect.onOpen initiated to: '+host_address); wsSocket.send('connected to client');};
+    wsSocket.onmessage = function (message)
+    {
+        let incoming
+        incoming = message.data;
+        // console.log(method+ ' incoming is: '+incoming);
+        while (incoming instanceof Object === false){incoming = JSON.parse(incoming);}
+        switch (incoming.type)
+        {
+        case 'Message':
+            content.append(formatMessage(incoming.data));
+            break;
+        case 'Alert':
+            let event = JSON.parse(incoming.data);
+            addNotification(event.type, event.ID, event.orderID);
+            break;
+        case 'BlockChain':
+            _blctr ++;
+            if (incoming.data !== 'connected')
+            {
+                $(blockchain).append('<span class="block">block '+incoming.data.header.number+'<br/>Hash: '+incoming.data.header.data_hash+'</span>');
+                if (_blctr > 4) {let leftPos = $(blockchain).scrollLeft(); $(blockchain).animate({scrollLeft: leftPos + 300}, 250);}
+            }
+            break;
+        default:
+            console.log('Can Not Process message type: ',incoming.type);
+        }
+    };
 }

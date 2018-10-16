@@ -17,6 +17,10 @@
 'use strict';
 
 let shipperOrderDiv = 'shipperOrderDiv';
+let sh_alerts = [];
+let sh_notify = '#shipper_notify';
+let sh_count = '#shipper_count';
+let sh_id;
 
 /**
  * load the shipper User Experience
@@ -24,29 +28,27 @@ let shipperOrderDiv = 'shipperOrderDiv';
 function loadShipperUX ()
 {
     let toLoad = 'shipper.html';
-    getPort();
     if (buyers.length === 0)
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupShipper(page[0], port[0]);});
+    { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+    {setupShipper(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupShipper(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupShipper(page);});
     }
 }
 /**
  *
  * @param {String} page - the page to load
- * @param {Integer} port - the web socket to use
  */
-function setupShipper(page, port)
+function setupShipper(page)
 {
     $('#shipperbody').empty();
     $('#shipperbody').append(page);
+    if (sh_alerts.length === 0)
+    {$(sh_notify).removeClass('on'); $(sh_notify).addClass('off'); }
+    else {$(sh_notify).removeClass('off'); $(sh_notify).addClass('on'); }
     updatePage('shipper');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('shipper_messages', msgPort);
     let _clear = $('#shipper_clear');
     let _list = $('#shipperOrderStatus');
     let _orderDiv = $('#'+shipperOrderDiv);
@@ -56,9 +58,15 @@ function setupShipper(page, port)
     $('#shipper').append(sh_string);
     $('#shipperCompany').empty();
     $('#shipperCompany').append(providers[0].companyName);
+    sh_id = shippers[0].id;
+    z2bSubscribe('Shipper', sh_id);
+    // create a function to execute when the user selects a different provider
     $('#shipper').on('change', function() {
         $('#shipperCompany').empty(); _orderDiv.empty(); $('#shipper_messages').empty();
         $('#shipperCompany').append(findMember($('#shipper').find(':selected').val(),shippers).companyName);
+        z2bUnSubscribe(sh_id);
+        sh_id = findMember($('#shipper').find(':selected').text(),shippers).id;
+        z2bSubscribe('Shipper', sh_id);
     });
 }
 /**
@@ -87,7 +95,7 @@ function listShipperOrders()
 function formatShipperOrders(_target, _orders)
 {
     _target.empty();
-    let _str = ''; let _date = ''; let _statusText;  
+    let _str = ''; let _date = ''; let _statusText;
     for (let each in _orders)
     {(function(_idx, _arr)
         { let _action = '<th><select id=sh_action'+_idx+'><option value="'+textPrompts.orderProcess.NoAction.select+'">'+textPrompts.orderProcess.NoAction.message+'</option>';
@@ -143,7 +151,7 @@ function formatShipperOrders(_target, _orders)
         console.log('shipper _action: '+_action);
         if (_idx > 0) {_str += '<div class="spacer"></div>';}
         _str += '<table class="wide"><tr><th>'+textPrompts.orderProcess.orderno+'</th><th>'+textPrompts.orderProcess.status+'</th><th class="right">'+textPrompts.orderProcess.total+'</th><th colspan="3" class="right message">Buyer: '+findMember(_arr[_idx].buyer.split('#')[1],buyers).companyName+'</th></tr>';
-        _str += '<tr><th id ="sh_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+_statusText+'</th>'+_button+'</tr></table>';
+        _str += '<tr><th id ="sh_order'+_idx+'" width="20%">'+_arr[_idx].id+'</th><th width="50%" id="sh_status'+_idx+'">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+_statusText+'</th>'+_button+'</tr></table>';
         _str+= '<table class="wide"><tr align="center"><th>'+textPrompts.orderProcess.itemno+'</th><th>'+textPrompts.orderProcess.description+'</th><th>'+textPrompts.orderProcess.qty+'</th><th>'+textPrompts.orderProcess.price+'</th></tr>'
         for (let every in _arr[_idx].items)
         {(function(_idx2, _arr2)
@@ -173,6 +181,9 @@ function formatShipperOrders(_target, _orders)
                 $('#shipper_messages').prepend(formatMessage(_results.result));
             });
         });
+            if (notifyMe(sh_alerts, _arr[_idx].id)) {$("#sh_status"+_idx).addClass('highlight'); }
         })(each, _orders);
     }
-}
+    sh_alerts = new Array();
+    toggleAlert($('#shipper_notify'), sh_alerts, sh_alerts.length);
+  }

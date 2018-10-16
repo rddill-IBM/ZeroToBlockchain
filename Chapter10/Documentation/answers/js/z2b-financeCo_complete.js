@@ -19,6 +19,11 @@
 let financeCOorderDiv = 'financeCOorderDiv';
 let orders = [];
 const financeCoID = 'easymoney@easymoneyinc.com';
+const financeCoName = 'The Global Financier';
+let f_notify = '#financeCo_notify';
+let f_id = 'easymoney@easymoneyinc.com';
+let f_count = '#financeCo_count';
+let f_alerts;
 
 /**
  * load the finance company User Experience
@@ -26,33 +31,34 @@ const financeCoID = 'easymoney@easymoneyinc.com';
 function loadFinanceCoUX ()
 {
     let toLoad = 'financeCo.html';
-    getPort();
     if (buyers.length === 0)
-    { $.when($.get(toLoad), $.get('/setup/getPort'), deferredMemberLoad()).done(function (page, port, res)
-    {setupFinanceCo(page[0], port[0]);});
+        { $.when($.get(toLoad), deferredMemberLoad()).done(function (page, res)
+        {setupFinanceCo(page[0]);});
     }
     else{
-        $.when($.get(toLoad), $.get('/setup/getPort')).done(function (page, port)
-        {setupFinanceCo(page[0], port[0]);});
+        $.when($.get(toLoad)).done(function (page)
+        {setupFinanceCo(page);});
     }
 }
 /**
  * @param {String} page HTML page to load
- * @param {Integer} port Websocket port to use
  */
-function setupFinanceCo(page, port)
+function setupFinanceCo(page)
 {
     $('#body').empty();
     $('#body').append(page);
+    f_alerts = [];
+    if (f_alerts.length === 0)
+      {$(f_notify).removeClass('on'); $(f_notify).addClass('off'); }
+    else
+      {$(f_notify).removeClass('off'); $(f_notify).addClass('on'); }
     updatePage( 'financeCo');
-    console.log('port is: '+port.port);
-    msgPort = port.port;
-    wsDisplay('finance_messages', msgPort);
     let _clear = $('#financeCOclear');
     let _list = $('#financeCOorderStatus');
     let _orderDiv = $('#'+financeCOorderDiv);
     _clear.on('click', function(){_orderDiv.empty();});
     _list.on('click', function(){listFinanceOrders();});
+    z2bSubscribe('FinanceCo', f_id);
 }
 /**
  * lists all orders for the selected financier
@@ -75,13 +81,13 @@ function listFinanceOrders()
  * used by the listOrders() function
  * formats the orders for a financier. Orders to be formatted are provided in the _orders array
  * output replaces the current contents of the html element identified by _target
- * @param _target - string with div id prefaced by #
- * @param _orders - array with order objects
+ * @param {String} _target - string with div id prefaced by #
+ * @param {Integer} _orders - array with order objects
  */
 function formatFinanceOrders(_target, _orders)
 {
     _target.empty();
-    let _str = ''; let _date = ''; 
+    let _str = ''; let _date = '';
     for (let each in _orders)
     {(function(_idx, _arr)
         { let _action = '<th><select id=f_action'+_idx+'><option value="NoAction">No Action</option>';
@@ -148,7 +154,7 @@ function formatFinanceOrders(_target, _orders)
         let _len = 'resource:org.acme.Z2BTestNetwork.Buyer#'.length;
         let _buyer = _arr[_idx].buyer.substring(_len, _arr[_idx].buyer.length);
         _str += '<div class="acc_header off" id="order'+_idx+'_h" target="order'+_idx+'_b"><table class="wide"><tr><th>Order #</th><th>Status</th><th class="right">Total</th><th colspan="3" class="right message">Buyer: '+findMember(_buyer,buyers).companyName+'</th></tr>';
-        _str += '<tr><th id ="f_order'+_idx+'" class="showFocus" width="20%">'+_arr[_idx].id+'</th><th width="50%">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+'</th>'+_button+'</tr></table></div>';
+        _str += '<tr><th id ="f_order'+_idx+'" class="showFocus" width="20%">'+_arr[_idx].id+'</th><th width="50%" id="f_status'+_idx+'">'+JSON.parse(_arr[_idx].status).text+': '+_date+'</th><th class="right">$'+_arr[_idx].amount+'.00</th>'+_action+'</th>'+_button+'</tr></table></div>';
         _str+= formatDetail(_idx, _arr[_idx]);
     })(each, _orders);
     }
@@ -171,11 +177,17 @@ function formatFinanceOrders(_target, _orders)
                     $('#finance_messages').prepend(formatMessage(_results.result));
                 });
             });
+            if (notifyMe(f_alerts, _arr[_idx].id)) {$("#f_status"+_idx).addClass('highlight'); }
         })(each, _orders);
     }
+    f_alerts = new Array();
+    toggleAlert($('#financeCo_notify'), f_alerts, f_alerts.length);
 }
 /**
  * format the accordian with the details for this order
+ * @param {Integer} _cur - offset into order array
+ * @param {JSON} _order - JSON object with current order data
+ * @returns {String} - html string to append to browser page
  */
 function formatDetail(_cur, _order)
 {

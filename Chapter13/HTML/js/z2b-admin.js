@@ -25,11 +25,13 @@ let _blctr = 0;
  */
 function loadAdminUX ()
 {
+    let methodName = 'loadAdminUX';
     let toLoad = 'admin.html';
     $.when($.get(toLoad)).done(function (page)
         {$('#body').empty();
         $('#body').append(page);
         updatePage('admin');
+        $.when($.get('/setup/getLastRestart')).done(function(_res) { $('#lastUpdate').append(_res.timeStamp); });
         listMemRegistries();
     });
 }

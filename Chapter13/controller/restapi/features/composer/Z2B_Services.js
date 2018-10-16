@@ -16,6 +16,7 @@
 let fs = require('fs');
 let path = require('path');
 const sleep = require('sleep');
+var request = require('request');
 
 // const ws = require('websocket');
 // const http = require('http');
@@ -26,7 +27,18 @@ const cfenv = require('cfenv');
 const appEnv = cfenv.getAppEnv();
 const util = require('./Z2B_Utilities');
 app.set('port', appEnv.port);
-
+let protocolToUse;
+if (cfenv.getAppEnv().isLocal)
+{
+    console.log(" Z2B is running locally");
+    protocolToUse = "http";
+}
+else
+{
+    console.log("Z2B is running in cloud");
+    protocolToUse = "https";
+}
+const restartDate = new Date().toISOString();
 
 
 /**
@@ -125,10 +137,10 @@ let  Z2Blockchain  = {
  */
     loadTransaction: function (_con, _item, _id, businessNetworkConnection)
     {
-        let method = 'loadTransaction';
+        let methodName = 'loadTransaction';
         return businessNetworkConnection.submitTransaction(_item)
         .then(() => {
-            console.log(method+': order '+_id+' successfully added ');
+            console.log(methodName+': order '+_id+' successfully added ');
             this.send(_con, 'Message', 'Order '+_id+' successfully added');
         })
         .catch((error) => {
@@ -150,7 +162,7 @@ let  Z2Blockchain  = {
  */
     addOrder: function (_con, _order, _registry, _createNew, _bnc)
     {
-        let method = 'addOrder';
+        let methodName = 'addOrder';
         return _registry.add(_order)
         .then(() => {
             this.loadTransaction(_con, _createNew, _order.orderNumber, _bnc);
@@ -160,7 +172,7 @@ let  Z2Blockchain  = {
             {console.log(_order.orderNumber+' addOrder retrying assetRegistry.add for: '+_order.orderNumber);
                 this.addOrder(_con, _order, _registry, _createNew, _bnc);
             }
-            else {console.log(method+' error with assetRegistry.add', error);}
+            else {console.log(methodName+' error with assetRegistry.add', error);}
         });
     },
 
@@ -174,18 +186,146 @@ let  Z2Blockchain  = {
  */
     bindIdentity: function (_con, _id, _cert, _bnc)
     {
-        let method = 'bindIdentity';
-        console.log(method+' retrying bindIdentity for: '+_id);
+        let methodName = 'bindIdentity';
+        console.log(methodName+' retrying bindIdentity for: '+_id);
         return _bnc.bindIdentity(_id, _cert)
         .then(() => {
-            console.log(method+' Succeeded for: '+_id);
+            console.log(methodName+' Succeeded for: '+_id);
         })
         .catch((error) => {
             if (error.message.search('MVCC_READ_CONFLICT') !== -1)
             {console.log(' bindIdentity retrying _bnc.bindIdentity(_id, _cert) for: '+_id);
                 this.bindIdentity(_con, _id, _cert,  _bnc);
             }
-            else {console.log(method+' error with _bnc.bindIdentity(_id, _cert) for: '+_id+' with error: ', error);}
+            else {console.log(methodName+' error with _bnc.bindIdentity(_id, _cert) for: '+_id+' with error: ', error);}
+        });
+    },
+/**
+ * saves the member table with ids and secrets
+ * @param {string} _dbName  - string, name of database to access
+ * @param {String} _key - key field for this record
+ * @param {String} _host - host url
+ */
+    getThisMember: function (_locals, _dbName, _key, _host)
+    {
+        let methodName = 'getThisMember';
+        console.log(methodName+' entered for '+_dbName+' with key: '+_key);
+        return new Promise(function(resolve, reject) 
+        {
+            let options = {};
+            options.name = _dbName;
+            options.oid = _key;
+            var url = protocolToUse+'://'+_host+'/db/getOne';
+            var method = "POST";
+            console.log(methodName+' requesting from url: '+url+' with options: ', options);
+            request( { url: url, json: options, method: method },
+            function(error, response, body) 
+            {
+                if (typeof(body.success) != 'undefined') 
+                {console.log(methodName+" "+_key+" retrieved successfully"); resolve(body.success);}
+                else
+                {console.log(methodName+' error body: ', body);  reject(body);}
+            });
+        });
+},
+/**
+ * saves the member table with ids and secrets
+ * @param {string} _dbName  - string, name of database to access
+ * @param {JSON} _item - data to store in dbName
+ * @param {String} _key - key field for this record
+ * @param {String} _host - host url
+ */
+saveToDB: function (_dbName, _item, _key, _host)
+{
+    let methodName = 'saveToDB';
+    let _this = this;
+    _item.lastUpdated=restartDate;
+    let options = {};
+    options.name = _dbName;
+    options.content = _item;
+    options.content._id = _key;
+    var url = protocolToUse+'://'+_host+'/db/insert';
+    var method = "POST";
+    request( { url: url, json: options, method: method },
+    function(error, response, body) 
+    {
+        if ((typeof(body.success) != 'undefined') && (body.success.ok == 'true'))
+        {console.log(body.id+" stored in db successfully");}
+        else
+        {
+            // { success: { error: 'conflict', reason: 'Document update conflict.' } }
+            // this occurs when the network has been reloaded and the database still has the previous
+            // version information
+            if ((typeof(body.success.error) != 'undefined') && (body.success.error == 'conflict'))
+            {
+                _this.updateDB (_dbName, _item, _key, _host)
+            }
+            else {console.log(methodName+' error body: ', body);}
+        }
+    });
+},
+/**
+ * saves the member table with ids and secrets
+ * @param {string} _dbName  - string, name of database to access
+ * @param {JSON} _item - data to store in dbName
+ * @param {String} _key - key field for this record
+ * @param {String} _host - host url
+ */
+    updateDB: function (_dbName, _item, _key, _host)
+    {
+        let methodName = 'updateDB';
+        _item.lastUpdated=restartDate;
+        let options = {};
+        options.name = _dbName;
+        options.content = _item;
+        options.oid = _key;
+        var url = protocolToUse+'://'+_host+'/db/update';
+        var method = "POST";
+        request( { url: url, json: options, method: method },
+        function(error, response, body) 
+        {
+            // updateDB error body:  { success:  { ok: true, id: 'abdul@cognitiveadvantageinc.com', rev: '2-b42cdc8bfa78e8e62d11947e4357a0d4' } }
+            if ((typeof(body.success) != 'undefined') && (body.success.ok == true))
+            {console.log(body.success.id+" updated in db successfully");}
+            else
+            {
+                console.log(methodName+' error body: ', body);
+            }
+        });
+    },
+/**
+ * saves the member table with ids and secrets
+ * @param {string} _dbName  - string, name of database to create if missing
+ * @param {String} _host - host url
+ */
+    connectToDB: function (_dbName, _host)
+    {
+        let methodName = 'connectToDB';
+        return new Promise(function(resolve, reject) 
+        {
+            let options = {};
+            options.name = _dbName;
+            var url = protocolToUse+'://'+_host+'/db/createTable';
+            var method = "POST";
+            request( { url: url, json: options, method: method },
+            function(error, response, body) 
+            {
+                if ((typeof(body.success) != 'undefined') && (body.success.ok == 'true'))
+                {console.log(_dbName+" created successfully"); resolve("success");}
+                else
+                {
+                    if ((typeof(body.error) != 'undefined') && (body.error == 'file_exists'))
+                    {
+                        console.log(_dbName+' database already exists');
+                        resolve("success");
+                    }
+                    else
+                    {
+                        console.log(methodName+' error is: ', error);
+                        reject(error);
+                    }
+                }
+            });
         });
     },
 

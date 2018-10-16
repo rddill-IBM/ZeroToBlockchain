@@ -2,6 +2,22 @@
 
 [Return to Table of Contents](../README.md)
 
+## c13-database branch
+ - This branch is to replace the file folder based persistence in for member cards with a database approach
+ - Potentially required to address Cloud-Foundry based restarts of application, which causes the current folder to be deleted and recreated. 
+### Concept flow
+ - Database is created during admin - load process
+    - erase existing cards
+    - if database does not exist || database exists but is empty
+        - create database
+        - add record to database when create card complete 
+    - else
+        - read database
+        - create card for each entry in database
+        - write card to .hfc-key-store
+    - fi
+- This requires a manual step to drop the database when cluster is loaded
+  
 ## (1) network information
  - Docker and the Kubernetes deploy use different names for the CA and for the channel 
    - Docker

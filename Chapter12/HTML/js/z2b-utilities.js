@@ -292,14 +292,6 @@ function displayAPI(_api)
  */
 function formatMessage(_msg) {return '<p class="message">'+_msg+'</p>';}
 
-/**
- * get the web socket port
- */
-function getPort ()
-{
-    if (msgPort === null)
-    { $.when($.get('/setup/getPort')).done(function (port){console.log('port is: '+port.port); msgPort = port.port;});}
-}
 
 /**
  * closes all accordians in this div
@@ -340,4 +332,3 @@ function accToggle(_parent, _body, _header)
         $(parent).removeClass('off'); $(parent).addClass('on');
     }
 }
-
