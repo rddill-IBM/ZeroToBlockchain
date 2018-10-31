@@ -126,11 +126,11 @@ function nodeV8Install()
 	[ -s "${NVM_DIR}/bash_completion" ] && . "${NVM_DIR}/bash_completion"
 
 	showStep "Installing nodeJS"
-	nvm install --lts
-
+	nvm install 8.12.0
 	showStep "Configure nvm to use version 8"
-	nvm use --lts
-	nvm alias default 'lts/*'
+    nvm alias default 8.12.0
+
+	nvm use v8.12.0
 
 	# Install the latest version of npm
 	showStep "Installing npm"
