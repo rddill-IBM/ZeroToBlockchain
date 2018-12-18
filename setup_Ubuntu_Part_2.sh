@@ -5,11 +5,12 @@
  RED='\033[1;31m'
  GREEN='\033[1;32m'
  RESET='\033[0m'
+ GREY='\033[2m'
 
 # exit on error
 
 # Array of supported versions
-declare -a versions=('trusty' 'xenial' 'yakkety');
+declare -a versions=('trusty' 'xenial' 'yakkety' 'bionic');
 
 # check the version and extract codename of ubuntu if release codename not provided by user
     lsb_release -a || (echo "Error: Release information not found, run script passing Ubuntu version codename as a parameter"; exit 1)
@@ -36,9 +37,9 @@ function indent() {
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {
-        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${GREY}=====================================================" | indent
         echo -e "${RESET}-----> $*" | indent
-        echo -e "${YELLOW}=====================================================${RESET}" | indent
+        echo -e "${GREY}=====================================================${RESET}" | indent
     }
 
 # Grab the current directory
@@ -55,8 +56,11 @@ function getCurrent()
             showStep "Install Failed, need a 64 bit system. This is ${UBUNTU_ARCH}"
             exit 1
         fi
-        if [[ ${UBUNTU_VERSION} != "xenial" ]]; then
-            showStep "Install Failed, need a Ubuntu 16 LTS. This is ${UBUNTU_VERSIO}"
+        # check version is supported
+        if echo ${versions[@]} | grep -q -w ${CODENAME}; then
+            echo "Installing Hyperledger Composer prereqs for Ubuntu ${CODENAME}"
+        else
+            echo "Error: Ubuntu ${CODENAME} is not supported"
             exit 1
         fi
     }
@@ -123,7 +127,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}installation script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Linux ONLY. It has been tested on Ubuntu 16.04 LTS" | indent
+    echo -e "${RED}This is for Linux ONLY. It has been tested on Ubuntu 16 LTS and on Ubuntu 18 LTS" | indent
     echo -e "${YELLOW}Other versions of Linux are not supported via this script. " | indent
     echo -e "${YELLOW}The following will be downloaded by this script" | indent
      echo -e "${YELLOW}The script will finish by downloading the docker images for hyperledger${RESET}" | indent

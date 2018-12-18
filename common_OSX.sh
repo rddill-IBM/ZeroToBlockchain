@@ -4,6 +4,7 @@
  RED='\033[1;31m'
  GREEN='\033[1;32m'
  RESET='\033[0m'
+ GREY='\033[2m'
 
 # indent text on echo
 function indent() {
@@ -20,9 +21,9 @@ export OS=$OS
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {
-        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${GREY}=====================================================" | indent
         echo -e "${RESET}-----> $*" | indent
-        echo -e "${YELLOW}=====================================================${RESET}" | indent
+        echo -e "${GREY}=====================================================${RESET}" | indent
     }
 
 # Grab the current directory

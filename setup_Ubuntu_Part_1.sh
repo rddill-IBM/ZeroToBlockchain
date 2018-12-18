@@ -4,11 +4,12 @@
  RED='\033[1;31m'
  GREEN='\033[1;32m'
  RESET='\033[0m'
+ GREY='\033[2m'
 
 # exit on error
 
 # Array of supported versions
-declare -a versions=('trusty' 'xenial' 'yakkety');
+declare -a versions=('trusty' 'xenial' 'yakkety' 'bionic');
 
 
 # check the version and extract codename of ubuntu if release codename not provided by user
@@ -27,9 +28,9 @@ function indent() {
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {
-        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${GREY}=====================================================" | indent
         echo -e "${RESET}-----> $*" | indent
-        echo -e "${YELLOW}=====================================================${RESET}" | indent
+        echo -e "${GREY}=====================================================${RESET}" | indent
     }
 
 # Grab the current directory
@@ -84,6 +85,37 @@ function checkaptget ()
 
     }
 
+# check to see if Python V2.7 is installed. Install it if it's not already there. 
+function checkPython2 ()
+{
+    which python
+    if [ "$?" -ne 0 ]; then
+        showStep "No versions of Python installed. Installing Python 2.7"
+        sudo apt-get -y install python2.7 python-pip
+        RC=$?
+        if [[ $RC != 0 ]]; then
+            showStep "python 2.7 install exited with $RC"
+            exit $RC
+        fi
+
+    else
+        PYTHON_VERSION=`python -c 'import sys; version=sys.version_info[:3]; print("{0}.{1}.{2}".format(*version))'`
+        PYTHON_CHECK=`python -c 'import sys; version=sys.version_info[:3]; print("{0}.{1}.{2}".format(*version))' | grep "2.7"`
+        showStep "python version is: ${PYTHON_VERSION}"
+        showStep "python check is: ${PYTHON_CHECK}"
+        if [[ ${PYTHON_CHECK} == "" ]]; then
+            showStep "python V2.7 not installed, installing it now."
+            sudo apt-get -y install python2.7 python-pip
+            RC=$?
+            if [[ $RC != 0 ]]; then
+                showStep "python 2.7 install exited with $RC"
+                exit $RC
+            fi
+        else
+            showStep "${GREEN}python V2.7 already installed, skipping install step."
+        fi
+    fi
+}
 # check to see if nodeV8 is installed. install it if it's not already there. 
 function check4node ()
     {
@@ -92,7 +124,7 @@ function check4node ()
             if [ "$?" -ne 0 ]; then
 		        nodeV8Install
             else            
-                NODE_VERSION=`node --version | grep "V8"`  
+                NODE_VERSION=`node --version | grep "v8"`  
                 showStep "Node Version is  ${NODE_VERSION}"       
                 if [[ ${NODE_VERSION} == "" ]]; then
                     showStep "${RED}found node $? installed, but not V8. installing Node V8"
@@ -119,6 +151,11 @@ function nodeV8Install()
 	# Execute nvm installation script
 	showStep "Executing nvm installation script"
 	curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+    RC=$?
+    if [[ $RC != 0 ]]; then
+        showStep "nvm install exited with $RC"
+        exit $RC
+    fi
 
 	showStep "Set up nvm environment without restarting the shell"
 	export NVM_DIR="${HOME}/.nvm"
@@ -127,6 +164,12 @@ function nodeV8Install()
 
 	showStep "Installing nodeJS"
 	nvm install 8.12.0
+    RC=$?
+    if [[ $RC != 0 ]]; then
+        showStep "nvm lts install exited with $RC"
+        exit $RC
+    fi
+
 	showStep "Configure nvm to use version 8"
     nvm alias default 8.12.0
 
@@ -135,6 +178,11 @@ function nodeV8Install()
 	# Install the latest version of npm
 	showStep "Installing npm"
 	npm install npm@latest -g
+    RC=$?
+    if [[ $RC != 0 ]]; then
+        showStep "npm install exited with $RC"
+        exit $RC
+    fi
 
 }
 # check to see if git is installed. install it if it's not already there. 
@@ -147,6 +195,11 @@ function check4git ()
 		sudo apt-add-repository -y ppa:git-core/ppa
 		sudo apt-get update
                 sudo apt-get install -y git
+                RC=$?
+                if [[ $RC != 0 ]]; then
+                    showStep "git install exited with $RC"
+                    exit $RC
+                fi
             else
                 showStep "${GREEN}git already installed"
             fi
@@ -237,7 +290,7 @@ function printHeader ()
 {
     echo ""
     echo -e "${YELLOW}installation script for the Zero To Blockchain Series" | indent
-    echo -e "${RED}This is for Linux ONLY. It has been tested on Ubuntu 16.04 LTS" | indent
+    echo -e "${GREEN}This is for Linux ONLY. It has been tested on Ubuntu 16 LTS and on Ubuntu 18 LTS" | indent
     echo -e "${YELLOW}Other versions of Linux are not supported via this script. " | indent
     echo -e "${YELLOW}The following will be downloaded by this script" | indent
     echo -e "${YELLOW}dos2unix, to correct scripts from hyperledger and composer" | indent
@@ -295,6 +348,8 @@ do
     getCurrent
     showStep "checking apt-get status"
     checkaptget
+    showStep "checking python V2.7"
+    checkPython2
     showStep "checking git"
     check4git
     showStep "checking nodejs"

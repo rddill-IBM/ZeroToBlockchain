@@ -4,6 +4,7 @@
  RED='\033[1;31m'
  GREEN='\033[1;32m'
  RESET='\033[0m'
+ GREY='\033[2m'
 
 # indent text on echo
 function indent() {
@@ -17,9 +18,9 @@ function indent() {
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {
-        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${GREY}=====================================================" | indent
         echo -e "${RESET}-----> $*" | indent
-        echo -e "${YELLOW}=====================================================${RESET}" | indent
+        echo -e "${GREY}=====================================================${RESET}" | indent
     }
 
 # Grab the current directory
@@ -193,6 +194,10 @@ function install_hlf ()
             dos2unix `ls *.sh`
             showStep "getting docker images for HyperLedger Fabric V1"
             export FABRIC_VERSION=hlfv1
+            echo 'FABRIC_VERSION="hlfv1"' >> ~/.bash_profile
+            # the following line is here to ensure that the subsequent echos start on a new line. 
+            echo ' ' >> ~/.bash_profile
+            echo 'FABRIC_VERSION is ${FABRIC_VERSION}'
             cd $HLF_INSTALL_PATH
             ./downloadFabric.sh
             showStep "installing platform specific binaries for OSX"
@@ -209,9 +214,6 @@ function install_hlf ()
             export PATH=$HLF_INSTALL_PATH/bin:$PATH
             export HLF_INSTALL_PATH=$HLF_INSTALL_PATH
             showStep "updating .bash_profile with new paths"
-            # ensure that the following lines start with a new line
-            echo "  "  >>~/.bash_profile
-            echo "export FABRIC_VERSION=hlfv1" >>~/.bash_profile
             echo "export HLF_INSTALL_PATH=${HLF_INSTALL_PATH}"  >>~/.bash_profile
             echo "PATH=${HLF_INSTALL_PATH}/bin:"'$PATH' >>~/.bash_profile
         else   

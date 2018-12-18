@@ -4,11 +4,12 @@
  RED='\033[1;31m'
  GREEN='\033[1;32m'
  RESET='\033[0m'
+ GREY='\033[2m'
 
 # exit on error
 
 # Array of supported versions
-declare -a versions=('trusty' 'xenial' 'yakkety');
+declare -a versions=('trusty' 'xenial' 'yakkety' 'bionic');
 
 # check the version and extract codename of ubuntu if release codename not provided by user
     lsb_release -a || (echo "Error: Release information not found, run script passing Ubuntu version codename as a parameter"; exit 1)
@@ -35,9 +36,9 @@ function indent() {
 # displays where we are, uses the indent function (above) to indent each line
 function showStep ()
     {
-        echo -e "${YELLOW}=====================================================" | indent
+        echo -e "${GREY}=====================================================" | indent
         echo -e "${RESET}-----> $*" | indent
-        echo -e "${YELLOW}=====================================================${RESET}" | indent
+        echo -e "${GREY}=====================================================${RESET}" | indent
     }
 
 # Grab the current directory
@@ -55,7 +56,7 @@ function getCurrent()
             exit 1
         fi
         if [[ ${UBUNTU_VERSION} != "xenial" ]]; then
-            showStep "Install Failed, need a Ubuntu 16 LTS. This is ${UBUNTU_VERSIO}"
+            showStep "Install Failed, need an Ubuntu 16 LTS or Ubuntu 18 LTS. This is ${UBUNTU_VERSION}"
             exit 1
         fi
     }
