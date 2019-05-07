@@ -27,8 +27,8 @@ The installation process for OSX has been automated and is designed to be invoke
    - Check for the presence of nodeJS version 8 (Required for hyper ledger) and install it if it’s missing
    - Install the nodejs SDK for hyper ledger composer
    - Install the hyper ledger fabric docker images
-   - Install the fabric tools and update your .bash_profile
-   - Install hyper ledger  composer platform-specific binaries
+   - Install the fabric tools and update your `.bash_profile`
+   - Install hyper ledger composer platform-specific binaries
 
 If you do not want to automatically take all of these actions, then execute the following command, instead, to just download the file to your system:
    - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_OSX.sh -o setup_OSX.sh```
@@ -62,7 +62,7 @@ You have the ability to turn off any of the installation services. This is depen
  ```
  - So if you want to install only the node services (that is, don't install git or brew), then you would type in the following: ```./setup_OSX.sh -g false -b false```, which turns off the installation options for git and brew. 
 
- Once you have run this exec, your development environment will be installed. Before you can run it, you'll have to start Docker. Press CMD+spacebar and type in docker. Highlight Docker.app and press enter. On most OSX systems, Docker.app will automatically restart each time you start up, or restart OSX. 
+ Once you have run this exec, your development environment will be installed. Before you can run it, you'll have to start Docker. Press CMD+spacebar and type in docker. Highlight ``Docker.app`` and press enter. On most OSX systems, ``Docker.app`` will automatically restart each time you start up, or restart OSX. 
 
 ## Install on Ubuntu
 
@@ -98,7 +98,7 @@ The installation process for Ubuntu has been automated and is designed to be inv
        -s defaults to true. use -s false if you do not want to have node SDK installation checked
        -d defaults to true. use -d false if you do not want to have docker installed
 ```
- - type in ./setup_Ubuntu_Part_1.sh followed by any flag (e.g. -g) followed by the word false to disable the installation of that service.
+ - type in ``./setup_Ubuntu_Part_1.sh`` followed by any flag (e.g. ``-g``) followed by the word false to disable the installation of that service.
  - ***You will then need to reboot your system prior to executing the following command:***
  - ```curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/rddill-IBM/ZeroToBlockchain/master/setup_Ubuntu_Part_2.sh | bash```
  - This will complete the installation of the hyper ledger images and the supporting tools. 
@@ -136,7 +136,7 @@ You have the ability to turn off any of the installation services. This is depen
 
  ```
 
- Once you have run this exec, your development environment will be installed. Before you can run it, you'll have to start Docker. Press CMD+spacebar and type in docker. Highlight Docker.app and press enter. On most OSX systems, Docker.app will automatically restart each time you start up, or restart OSX. 
+ Once you have run this exec, your development environment will be installed. Before you can run it, you'll have to start Docker. Press CMD+spacebar and type in docker. Highlight ``Docker.app`` and press enter. On most OSX systems, ``Docker.app`` will automatically restart each time you start up, or restart OSX. 
  
 ## Install on Windows V7 or V10
 
@@ -229,7 +229,7 @@ This will make a local copy of the tutorial on your computer and, because you cl
 # Check out the network
 
  - Open a Terminal Window and change to Chapter03
- - Issue the command ```buildAndDeploy``` and press enter, which will create a file called zerotoblockchain-network.bna in the Chapter03/network/dist folder. 
+ - Issue the command ```buildAndDeploy``` and press enter, which will create a file called ``zerotoblockchain-network.bna`` in the ``Chapter03/network/dist`` folder. 
  - Open HyperLedger Composer [Playground](https://composer-playground.mybluemix.net) and then click on the web page to select the option to use your own business network 
     - You may get the following message. If so, congrats! You've used playground before. Click on ```Clear local Storage```
     ![Invalid Storage](../assets/IBMCloud_playground_invalid.png)
